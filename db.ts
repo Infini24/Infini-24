@@ -1,6 +1,7 @@
-import { db, auth } from './firebaseConfig';
-import { collection, addDoc, getDocs, updateDoc, doc, deleteDoc, query, where, setDoc, getDoc } from "firebase/firestore";
+import { db, auth, storage } from './firebaseConfig';
+import { collection, addDoc, getDocs, updateDoc, doc, deleteDoc, query, where, setDoc, getDoc, arrayUnion } from "firebase/firestore";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, updateProfile } from "firebase/auth";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { User } from './types';
 
 // --- GESTION UTILISATEURS (FIREBASE AUTH) ---
@@ -99,4 +100,37 @@ export const deleteProject = async (id: string | number) => {
     try {
         await deleteDoc(doc(db, "projects", String(id)));
     } catch (e) { console.error(e); }
+};
+
+// --- GESTION FICHIERS (STORAGE) ---
+
+export const uploadProjectFile = async (projectId: string, file: File) => {
+    if (!storage) throw new Error("Storage non configuré");
+    
+    try {
+        // 1. Créer une référence (Dossier Projet > Nom du fichier)
+        // On ajoute un timestamp pour éviter d'écraser les fichiers du même nom
+        const fileRef = ref(storage, `projects/${projectId}/${Date.now()}_${file.name}`);
+        
+        // 2. Envoyer le fichier
+        const snapshot = await uploadBytes(fileRef, file);
+        
+        // 3. Récupérer l'URL de téléchargement
+        const downloadURL = await getDownloadURL(snapshot.ref);
+
+        // 4. Mettre à jour le projet dans Firestore avec ce nouveau fichier
+        const projectRef = doc(db, "projects", projectId);
+        await updateDoc(projectRef, {
+            files: arrayUnion({
+                name: file.name,
+                url: downloadURL,
+                date: new Date().toLocaleDateString()
+            })
+        });
+
+        return downloadURL;
+    } catch (error) {
+        console.error("Erreur Upload:", error);
+        throw error;
+    }
 };

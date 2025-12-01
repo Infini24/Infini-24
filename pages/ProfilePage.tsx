@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { User } from '../types';
-import { FolderOpen, LogIn, Infinity, Download, ExternalLink, CheckCircle, Clock, AlertCircle, Plus, Trash2, Send, Info, Eye, Edit2, FileCheck, Package, Facebook } from 'lucide-react';
-import { getProjects, updateProjectStatus, deleteProject, saveProject } from '../db'; // Import du gestionnaire
+import { FolderOpen, LogIn, Infinity, Download, ExternalLink, CheckCircle, Clock, AlertCircle, Plus, Trash2, Send, Info, Eye, Edit2, FileCheck, Package, Facebook, UploadCloud, FileText, Loader2 } from 'lucide-react';
+import { getProjects, updateProjectStatus, deleteProject, saveProject, uploadProjectFile } from '../db'; // Import du gestionnaire
+import toast from 'react-hot-toast';
 
 interface ProfilePageProps {
   user?: User | null;
@@ -12,8 +13,14 @@ interface ProfilePageProps {
 // Étapes possibles d'un projet
 type ProjectStep = 'request_received' | 'in_creation' | 'validation' | 'delivered';
 
+interface ProjectFile {
+    name: string;
+    url: string;
+    date: string;
+}
+
 interface LocalProject {
-  id: string | number;
+  id: string;
   title: string;
   type: string;
   step: ProjectStep;
@@ -23,6 +30,7 @@ interface LocalProject {
   clientName?: string; // Pour l'admin
   clientEmail?: string; // Pour filtrage
   price?: number | string;
+  files?: ProjectFile[]; // Liste des fichiers envoyés par le client
 }
 
 const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick }) => {
@@ -30,10 +38,15 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
   const [projects, setProjects] = useState<LocalProject[]>([]);
   const isAdmin = user?.email === 'wendy.toussaint@icloud.com';
   
+  // Upload State
+  const [uploadingId, setUploadingId] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
+
   // Chargement des données (Async via db.ts)
   const loadProjects = async () => {
       const data = await getProjects();
-      setProjects(data);
+      setProjects(data as LocalProject[]);
   };
 
   useEffect(() => {
@@ -57,8 +70,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
           progress: 10,
           date: new Date().toLocaleDateString(),
           clientName: newClientName || "Client Inconnu",
-          clientEmail: "", // Created manually
-          id: Date.now() // Temp ID
+          clientEmail: "", 
       };
       
       await saveProject(newProj);
@@ -82,6 +94,36 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
       if(window.confirm("Supprimer ce projet de la liste ?")) {
           await deleteProject(id);
           await loadProjects();
+      }
+  };
+
+  // --- ACTIONS CLIENT (UPLOAD) ---
+  const handleUploadClick = (projectId: string) => {
+      setSelectedProjectId(projectId);
+      if (fileInputRef.current) {
+          fileInputRef.current.click();
+      }
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (!file || !selectedProjectId) return;
+
+      setUploadingId(selectedProjectId);
+      const toastId = toast.loading("Envoi du fichier...");
+
+      try {
+          await uploadProjectFile(selectedProjectId, file);
+          toast.success("Fichier envoyé avec succès !", { id: toastId });
+          await loadProjects();
+      } catch (error) {
+          console.error(error);
+          toast.error("Erreur lors de l'envoi", { id: toastId });
+      } finally {
+          setUploadingId(null);
+          setSelectedProjectId(null);
+          // Reset input
+          if (fileInputRef.current) fileInputRef.current.value = "";
       }
   };
 
@@ -143,20 +185,62 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
         {/* Timeline VISUELLE */}
         {renderTimeline(project.step as ProjectStep)}
 
-        {/* Action (Téléchargement) */}
-        {project.step === 'delivered' && (
-            <div className="mt-6 animate-in fade-in">
-                <div className="bg-white rounded-2xl p-4 border border-[#B48646]/20 flex flex-col md:flex-row items-center justify-between gap-4">
-                    <div className="text-center md:text-left">
-                        <p className="text-sm font-bold text-slate-800">Vos fichiers sont prêts !</p>
-                        <p className="text-xs text-slate-500">Téléchargez-les avant expiration.</p>
+        {/* --- ZONE FICHIERS (UPLOAD & VIEW) --- */}
+        <div className="mt-6 pt-4 border-t border-slate-100/50">
+            
+            {/* Liste des fichiers envoyés */}
+            {project.files && project.files.length > 0 && (
+                <div className="mb-4">
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-1">
+                        <FileText size={10} /> Fichiers transmis ({project.files.length})
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                        {project.files.map((file, idx) => (
+                            <a 
+                                key={idx} 
+                                href={file.url} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
+                            >
+                                <span className="truncate max-w-[100px]">{file.name}</span>
+                                <ExternalLink size={10} />
+                            </a>
+                        ))}
                     </div>
-                    <button className="w-full md:w-auto bg-[#B48646] hover:bg-[#9a733c] text-white px-6 py-3 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#B48646]/20">
-                        <Download size={18} /> Télécharger
-                    </button>
                 </div>
+            )}
+
+            <div className="flex flex-col gap-3">
+                {/* Bouton Upload (Visible pour le client si projet non livré) */}
+                {project.step !== 'delivered' && project.step !== 'request_received' && !isAdmin && (
+                    <button 
+                        onClick={() => handleUploadClick(project.id)}
+                        disabled={uploadingId === project.id}
+                        className="w-full bg-white border-2 border-dashed border-slate-300 text-slate-500 hover:border-[#B48646] hover:text-[#B48646] hover:bg-[#B48646]/5 px-4 py-3 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2"
+                    >
+                        {uploadingId === project.id ? (
+                            <><Loader2 className="animate-spin" size={18} /> Envoi en cours...</>
+                        ) : (
+                            <><UploadCloud size={18} /> Ajouter des fichiers (Photos/Logos)</>
+                        )}
+                    </button>
+                )}
+
+                {/* Bouton Téléchargement Final (Si livré) */}
+                {project.step === 'delivered' && (
+                    <div className="bg-white rounded-2xl p-4 border border-[#B48646]/20 flex flex-col md:flex-row items-center justify-between gap-4">
+                        <div className="text-center md:text-left">
+                            <p className="text-sm font-bold text-slate-800">Vos fichiers sont prêts !</p>
+                            <p className="text-xs text-slate-500">Téléchargez-les avant expiration.</p>
+                        </div>
+                        <button className="w-full md:w-auto bg-[#B48646] hover:bg-[#9a733c] text-white px-6 py-3 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#B48646]/20">
+                            <Download size={18} /> Télécharger
+                        </button>
+                    </div>
+                )}
             </div>
-        )}
+        </div>
     </div>
   );
 
@@ -174,6 +258,15 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
   return (
     <div className="flex flex-col h-full bg-[#FDFCF8] overflow-y-auto no-scrollbar">
       
+      {/* Hidden File Input */}
+      <input 
+        type="file" 
+        ref={fileInputRef} 
+        onChange={handleFileChange} 
+        className="hidden" 
+        accept="image/*,.pdf,.zip,.rar" // Accept images, pdfs, archives
+      />
+
       {/* Header */}
       <header className="flex-none pt-14 pb-10 px-6 bg-white border-b border-slate-50 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] relative overflow-hidden rounded-b-[3.5rem] mb-6 z-10">
             <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-[#B48646] to-[#F3C06B] rounded-full blur-[80px] opacity-15 -mr-16 -mt-16 animate-pulse"></div>
