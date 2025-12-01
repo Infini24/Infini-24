@@ -1,0 +1,21 @@
+{
+  "name": "Infini 24",
+  "short_name": "Infini 24",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FDFCF8",
+  "theme_color": "#FFFFFF",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3094/3094919.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3094/3094919.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
