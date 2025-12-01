@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { User } from '../types';
-import { FolderOpen, LogIn, Infinity, Download, ExternalLink, CheckCircle, Clock, AlertCircle, Plus, Trash2, Send, Info, Eye, Edit2, FileCheck, Package, Facebook, UploadCloud, FileText, Loader2, Users, Phone as PhoneIcon, Calendar } from 'lucide-react';
-import { getProjects, updateProjectStatus, deleteProject, saveProject, uploadProjectFile, getUsers } from '../db'; // Import du gestionnaire
+import { FolderOpen, LogIn, Infinity, Download, ExternalLink, CheckCircle, Clock, AlertCircle, Plus, Trash2, Send, Info, Eye, Edit2, FileCheck, Package, Facebook, UploadCloud, FileText, Loader2, Users, Phone as PhoneIcon, Calendar, Gift } from 'lucide-react';
+import { getProjects, updateProjectStatus, deleteProject, saveProject, uploadProjectFile, getUsers, uploadFinalDelivery } from '../db'; // Import du gestionnaire
 import toast from 'react-hot-toast';
 
 interface ProfilePageProps {
@@ -25,7 +25,7 @@ interface LocalProject {
   type: string;
   step: ProjectStep;
   progress: number; // 0 to 100
-  downloadUrl?: string;
+  downloadUrl?: string; // URL du livrable final
   date: string;
   clientName?: string; // Pour l'admin
   clientEmail?: string; // Pour filtrage
@@ -40,10 +40,14 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
   // Mise à jour de l'email admin officiel
   const isAdmin = user?.email === 'infinivingtquatre@gmail.com';
   
-  // Upload State
+  // Upload State Client
   const [uploadingId, setUploadingId] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
+
+  // Upload State Admin (Livraison)
+  const deliveryInputRef = useRef<HTMLInputElement>(null);
+  const [deliveringId, setDeliveringId] = useState<string | null>(null);
 
   // Chargement des données (Async via db.ts)
   const loadData = async () => {
@@ -105,6 +109,38 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
           await loadData();
       }
   };
+
+  // Admin : Livraison de fichier final
+  const handleDeliveryClick = (projectId: string) => {
+      setDeliveringId(projectId);
+      if (deliveryInputRef.current) {
+          deliveryInputRef.current.click();
+      }
+  };
+
+  const handleDeliveryFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (!file || !deliveringId) return;
+
+      const toastId = toast.loading("Livraison en cours...");
+
+      try {
+          const currentProject = projects.find(p => p.id === deliveringId);
+          const clientEmail = currentProject?.clientEmail || "inconnu";
+
+          await uploadFinalDelivery(deliveringId, file, clientEmail);
+          
+          toast.success("Projet livré avec succès !", { id: toastId });
+          await loadData();
+      } catch (error) {
+          console.error(error);
+          toast.error("Erreur lors de la livraison.", { id: toastId });
+      } finally {
+          setDeliveringId(null);
+          if (deliveryInputRef.current) deliveryInputRef.current.value = "";
+      }
+  };
+
 
   // --- ACTIONS CLIENT (UPLOAD) ---
   const handleUploadClick = (projectId: string) => {
@@ -248,9 +284,18 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
                             <p className="text-sm font-bold text-slate-800">Vos fichiers sont prêts !</p>
                             <p className="text-xs text-slate-500">Téléchargez-les avant expiration.</p>
                         </div>
-                        <button className="w-full md:w-auto bg-[#B48646] hover:bg-[#9a733c] text-white px-6 py-3 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#B48646]/20">
-                            <Download size={18} /> Télécharger
-                        </button>
+                        {project.downloadUrl ? (
+                            <a 
+                                href={project.downloadUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="w-full md:w-auto bg-[#B48646] hover:bg-[#9a733c] text-white px-6 py-3 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#B48646]/20"
+                            >
+                                <Download size={18} /> Télécharger
+                            </a>
+                        ) : (
+                            <span className="text-xs text-orange-500 font-bold bg-orange-50 px-3 py-1 rounded-lg">Fichier en cours d'envoi...</span>
+                        )}
                     </div>
                 )}
             </div>
@@ -272,13 +317,22 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
   return (
     <div className="flex flex-col h-full bg-[#FDFCF8] overflow-y-auto no-scrollbar">
       
-      {/* Hidden File Input */}
+      {/* Hidden File Input pour Client */}
       <input 
         type="file" 
         ref={fileInputRef} 
         onChange={handleFileChange} 
         className="hidden" 
-        accept="image/*,.pdf,.zip,.rar" // Accept images, pdfs, archives
+        accept="image/*,.pdf,.zip,.rar" 
+      />
+
+      {/* Hidden File Input pour Admin (Livraison) */}
+      <input 
+        type="file" 
+        ref={deliveryInputRef} 
+        onChange={handleDeliveryFileChange} 
+        className="hidden" 
+        accept="*/*" 
       />
 
       {/* Header */}
@@ -344,7 +398,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
                     <div className="bg-white p-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 mb-8 text-center py-10 text-slate-400">
                         <FolderOpen size={40} className="mx-auto mb-4 opacity-50" />
                         <p className="text-sm">Aucun projet pour le moment.</p>
-                        {isAdmin && <p className="text-xs mt-2 text-red-400">Le mode Cloud n'est actif que si configuré.</p>}
                     </div>
                 )}
 
@@ -422,7 +475,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
                                                         <span className="text-[9px] text-slate-400 truncate">{p.clientName}</span>
                                                         <button onClick={() => handleDeleteProject(p.id)} className="text-red-400 hover:text-red-300 ml-2"><Trash2 size={12}/></button>
                                                     </div>
-                                                    <div className="grid grid-cols-4 gap-1">
+                                                    <div className="grid grid-cols-4 gap-1 mb-2">
                                                         <button 
                                                             onClick={() => handleUpdateStatus(p.id, 'request_received')} 
                                                             className={`h-1.5 rounded-full ${p.step === 'request_received' ? 'bg-blue-500' : 'bg-slate-600'}`}
@@ -444,6 +497,14 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
                                                             title="Livré"
                                                         />
                                                     </div>
+                                                    {/* BOUTON LIVRAISON ADMIN */}
+                                                    <button 
+                                                        onClick={() => handleDeliveryClick(p.id)}
+                                                        className="w-full text-[10px] bg-slate-700 hover:bg-slate-600 py-1.5 rounded-lg flex items-center justify-center gap-1 text-slate-300 transition-colors"
+                                                    >
+                                                        {deliveringId === p.id ? <Loader2 size={10} className="animate-spin"/> : <Gift size={10} />}
+                                                        {p.downloadUrl ? 'Modifier le livrable' : 'Déposer le livrable'}
+                                                    </button>
                                                 </div>
                                             ))}
                                         </div>
