@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Home, Calculator, Briefcase, Mail, ArrowRight, Infinity as InfinityIcon, LogIn, LogOut, User as UserIcon, Image as ImageIcon } from 'lucide-react';
 import { Toaster } from 'react-hot-toast';
+import { onAuthStateChanged } from 'firebase/auth'; // Listener Firebase
+import { auth, db } from './firebaseConfig';
+import { doc, getDoc } from 'firebase/firestore';
+
 import HomePage from './pages/HomePage';
 import ServicesPage from './pages/ServicesPage';
 import ProfilePage from './pages/ProfilePage';
@@ -8,6 +12,7 @@ import RealizationsPage from './pages/RealizationsPage';
 import ContactPage from './pages/ContactPage';
 import AuthPage from './pages/AuthPage';
 import { User, ServiceType } from './types';
+import { logoutUser } from './db';
 
 // --- SIDEBAR COMPONENT (DESKTOP) ---
 const DesktopSidebar = ({ 
@@ -125,16 +130,24 @@ const App = () => {
   const [showAuth, setShowAuth] = useState(false);
   const [pendingProject, setPendingProject] = useState<{service: ServiceType, name: string, price: number} | null>(null);
 
-  // Persistence de session
+  // Persistence de session via Firebase Auth
   useEffect(() => {
-      const storedUser = localStorage.getItem('infini_auth_user');
-      if (storedUser) {
-          try {
-              setUser(JSON.parse(storedUser));
-          } catch (e) {
-              console.error("Session invalide");
+      if (!auth) return;
+      const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+          if (currentUser) {
+              // Récupérer les infos détaillées depuis Firestore
+              const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+              if (userDoc.exists()) {
+                  setUser({ uid: currentUser.uid, ...userDoc.data() } as User);
+              } else {
+                  // Fallback
+                  setUser({ name: currentUser.displayName || 'Utilisateur', email: currentUser.email || '', type: 'Particulier', phone: '' });
+              }
+          } else {
+              setUser(null);
           }
-      }
+      });
+      return () => unsubscribe();
   }, []);
 
   const handleNavigate = (index: number, serviceType?: ServiceType) => {
@@ -151,16 +164,15 @@ const App = () => {
 
   const handleLogin = (loggedUser: User) => {
     setUser(loggedUser);
-    localStorage.setItem('infini_auth_user', JSON.stringify(loggedUser));
     setShowAuth(false);
     if (pendingProject) {
         setActiveTab(2);
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await logoutUser();
     setUser(null);
-    localStorage.removeItem('infini_auth_user');
     setActiveTab(0);
     setPendingProject(null);
   };
@@ -211,39 +223,15 @@ const App = () => {
 
   return (
     <div className="flex bg-[#FDFCF8] h-screen w-screen overflow-hidden text-slate-900 font-['Inter'] selection:bg-[#B48646]/20 selection:text-[#B48646]">
-      {/* Toast Notifications */}
       <Toaster 
         position="top-center" 
         toastOptions={{
-            style: {
-                background: '#333',
-                color: '#fff',
-                borderRadius: '1rem',
-                fontSize: '14px',
-                fontWeight: 'bold',
-            },
-            success: {
-                style: {
-                    background: '#F0FFF4',
-                    color: '#15803d',
-                    border: '1px solid #BBF7D0'
-                },
-                iconTheme: {
-                    primary: '#15803d',
-                    secondary: '#fff',
-                },
-            },
-            error: {
-                style: {
-                    background: '#FEF2F2',
-                    color: '#991B1B',
-                    border: '1px solid #FECACA'
-                },
-            }
+            style: { background: '#333', color: '#fff', borderRadius: '1rem', fontSize: '14px', fontWeight: 'bold' },
+            success: { style: { background: '#F0FFF4', color: '#15803d', border: '1px solid #BBF7D0' }, iconTheme: { primary: '#15803d', secondary: '#fff' } },
+            error: { style: { background: '#FEF2F2', color: '#991B1B', border: '1px solid #FECACA' } }
         }}
       />
 
-      {/* Sidebar Desktop */}
       <DesktopSidebar 
         activeTab={showAuth ? -1 : activeTab} 
         onNavigate={(idx) => { setShowAuth(false); handleNavigate(idx); }} 
@@ -252,10 +240,7 @@ const App = () => {
         onLogout={handleLogout}
       />
       
-      {/* Main Content Area */}
       <main className="flex-1 h-full relative flex flex-col md:pl-72 transition-all duration-300">
-        
-        {/* Back button on Mobile when Auth is open */}
         {showAuth && (
             <div className="absolute top-6 left-6 z-50 md:hidden">
                 <button 
@@ -266,13 +251,8 @@ const App = () => {
                 </button>
             </div>
         )}
-        
         {content}
-
-        {/* Mobile Nav - Hidden when Auth is open */}
-        {!showAuth && (
-            <MobileNavigation activeTab={activeTab} onNavigate={handleNavigate} />
-        )}
+        {!showAuth && <MobileNavigation activeTab={activeTab} onNavigate={handleNavigate} />}
       </main>
     </div>
   );

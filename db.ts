@@ -1,102 +1,102 @@
-import { db } from './firebaseConfig';
-import { collection, addDoc, getDocs, updateDoc, doc, deleteDoc, query, where } from "firebase/firestore";
+import { db, auth } from './firebaseConfig';
+import { collection, addDoc, getDocs, updateDoc, doc, deleteDoc, query, where, setDoc, getDoc } from "firebase/firestore";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, updateProfile } from "firebase/auth";
 import { User } from './types';
 
-// Clés pour le LocalStorage (Fallback)
-const LOCAL_USERS_KEY = 'infini_users_db';
-const LOCAL_PROJECTS_KEY = 'infini_projects_v4';
+// --- GESTION UTILISATEURS (FIREBASE AUTH) ---
 
-// --- GESTION UTILISATEURS ---
+// Inscription
+export const registerUser = async (user: User & { password?: string }) => {
+    if (!auth) return false;
+    try {
+        // 1. Créer le compte Auth (Email/Pass)
+        const userCredential = await createUserWithEmailAndPassword(auth, user.email, user.password || "123456");
+        
+        // 2. Mettre à jour le profil Auth (Nom)
+        await updateProfile(userCredential.user, { displayName: user.name });
 
-export const saveUser = async (user: User & { password?: string }) => {
-    if (db) {
-        // Mode CLOUD (Firebase)
-        try {
-            await addDoc(collection(db, "users"), user);
-            return true;
-        } catch (e) {
-            console.error("Erreur saveUser Firebase:", e);
-            return false;
-        }
-    } else {
-        // Mode LOCAL
-        const users = JSON.parse(localStorage.getItem(LOCAL_USERS_KEY) || '[]');
-        const filtered = users.filter((u: any) => u.email !== user.email);
-        localStorage.setItem(LOCAL_USERS_KEY, JSON.stringify([...filtered, user]));
-        return true;
+        // 3. Stocker les infos supplémentaires (Tel, Entreprise) dans Firestore
+        await setDoc(doc(db, "users", userCredential.user.uid), {
+            name: user.name,
+            email: user.email,
+            type: user.type,
+            companyName: user.companyName || "",
+            phone: user.phone,
+            createdAt: new Date().toISOString()
+        });
+
+        return userCredential.user;
+    } catch (error: any) {
+        console.error("Erreur Inscription:", error.code, error.message);
+        throw error; // On renvoie l'erreur pour l'afficher (ex: email déjà pris)
     }
 };
 
-export const getUser = async (email: string): Promise<(User & { password?: string }) | null> => {
-    if (db) {
-        // Mode CLOUD
-        try {
-            const q = query(collection(db, "users"), where("email", "==", email));
-            const querySnapshot = await getDocs(q);
-            if (!querySnapshot.empty) {
-                return querySnapshot.docs[0].data() as User;
-            }
-            return null;
-        } catch (e) {
-            console.error("Erreur getUser Firebase:", e);
-            return null;
+// Connexion
+export const loginUser = async (email: string, password: string) => {
+    if (!auth) return null;
+    try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        // Récupérer les infos supplémentaires depuis Firestore
+        const docRef = doc(db, "users", userCredential.user.uid);
+        const docSnap = await getDoc(docRef);
+        
+        if (docSnap.exists()) {
+            return { uid: userCredential.user.uid, ...docSnap.data() } as User;
+        } else {
+            // Fallback si pas de données Firestore (cas rare)
+            return { 
+                name: userCredential.user.displayName || "Utilisateur", 
+                email: userCredential.user.email || "", 
+                type: 'Particulier', 
+                phone: "" 
+            } as User;
         }
-    } else {
-        // Mode LOCAL
-        const users = JSON.parse(localStorage.getItem(LOCAL_USERS_KEY) || '[]');
-        return users.find((u: any) => u.email === email) || null;
+    } catch (error: any) {
+        console.error("Erreur Connexion:", error.code);
+        throw error;
     }
 };
 
-// --- GESTION PROJETS ---
+// Déconnexion
+export const logoutUser = async () => {
+    if (auth) await signOut(auth);
+};
+
+// Mot de passe oublié (Vrai email envoyé par Google)
+export const resetUserPassword = async (email: string) => {
+    if (auth) await sendPasswordResetEmail(auth, email);
+};
+
+
+// --- GESTION PROJETS (FIRESTORE) ---
 
 export const saveProject = async (project: any) => {
-    if (db) {
-        try {
-            await addDoc(collection(db, "projects"), project);
-        } catch (e) { console.error(e); }
-    } else {
-        const projects = JSON.parse(localStorage.getItem(LOCAL_PROJECTS_KEY) || '[]');
-        localStorage.setItem(LOCAL_PROJECTS_KEY, JSON.stringify([project, ...projects]));
-    }
+    try {
+        // Ajout dans Firestore
+        await addDoc(collection(db, "projects"), project);
+    } catch (e) { console.error(e); }
 };
 
 export const getProjects = async (): Promise<any[]> => {
-    if (db) {
-        try {
-            const querySnapshot = await getDocs(collection(db, "projects"));
-            return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })); // ID Firebase est un string
-        } catch (e) {
-            console.error(e);
-            return [];
-        }
-    } else {
-        return JSON.parse(localStorage.getItem(LOCAL_PROJECTS_KEY) || '[]');
+    try {
+        const querySnapshot = await getDocs(collection(db, "projects"));
+        return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })); 
+    } catch (e) {
+        console.error(e);
+        return [];
     }
 };
 
 export const updateProjectStatus = async (id: string | number, step: string, progress: number) => {
-    if (db) {
-        try {
-            // Note: ID doit être string pour Firebase
-            const projectRef = doc(db, "projects", String(id));
-            await updateDoc(projectRef, { step, progress });
-        } catch (e) { console.error(e); }
-    } else {
-        const projects = JSON.parse(localStorage.getItem(LOCAL_PROJECTS_KEY) || '[]');
-        const updated = projects.map((p: any) => p.id === id ? { ...p, step, progress } : p);
-        localStorage.setItem(LOCAL_PROJECTS_KEY, JSON.stringify(updated));
-    }
+    try {
+        const projectRef = doc(db, "projects", String(id));
+        await updateDoc(projectRef, { step, progress });
+    } catch (e) { console.error(e); }
 };
 
 export const deleteProject = async (id: string | number) => {
-    if (db) {
-        try {
-            await deleteDoc(doc(db, "projects", String(id)));
-        } catch (e) { console.error(e); }
-    } else {
-        const projects = JSON.parse(localStorage.getItem(LOCAL_PROJECTS_KEY) || '[]');
-        const filtered = projects.filter((p: any) => p.id !== id);
-        localStorage.setItem(LOCAL_PROJECTS_KEY, JSON.stringify(filtered));
-    }
+    try {
+        await deleteDoc(doc(db, "projects", String(id)));
+    } catch (e) { console.error(e); }
 };

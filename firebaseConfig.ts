@@ -1,6 +1,8 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAnalytics } from "firebase/analytics";
+import { getAuth } from "firebase/auth"; // Ajout du module Auth
+import { getStorage } from "firebase/storage"; // Ajout du module Storage
 
 // --- CONFIGURATION FIREBASE (Vos clés officielles) ---
 const firebaseConfig = {
@@ -16,12 +18,12 @@ const firebaseConfig = {
 // Initialisation de l'application Firebase
 const app = initializeApp(firebaseConfig);
 
-// Activation de la Base de Données (Vital pour le suivi projets)
+// Activation des services
 const db = getFirestore(app);
-
-// Activation des Statistiques (Optionnel mais inclus dans vos clés)
+const auth = getAuth(app); // Service d'Authentification
+const storage = getStorage(app); // Service de Stockage Fichiers
 const analytics = getAnalytics(app);
 
-console.log("🔥 Firebase connecté avec succès (Mode Cloud)");
+console.log("🔥 Firebase connecté (Auth + Database + Storage)");
 
-export { db, app, analytics };
+export { db, auth, storage, app, analytics };

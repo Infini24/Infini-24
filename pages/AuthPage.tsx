@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { User, UserType } from '../types';
-import { Mail, Lock, User as UserIcon, Briefcase, ArrowRight, Loader2, Infinity, AlertTriangle, ShieldCheck, Eye, EyeOff } from 'lucide-react';
-import { saveUser, getUser } from '../db';
-import toast from 'react-hot-toast'; // Import Toast
+import { Mail, Lock, User as UserIcon, Briefcase, ArrowRight, Loader2, Infinity, AlertTriangle, Eye, EyeOff } from 'lucide-react';
+import { registerUser, loginUser, resetUserPassword } from '../db';
+import toast from 'react-hot-toast';
 
 interface AuthPageProps {
   onLogin: (user: User) => void;
@@ -12,15 +12,8 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
   const [isRegistering, setIsRegistering] = useState(false);
   const [loading, setLoading] = useState(false);
   
-  // Password Visibility
   const [showPassword, setShowPassword] = useState(false);
   
-  // 2FA / Verification State
-  const [showVerification, setShowVerification] = useState(false);
-  const [generatedCode, setGeneratedCode] = useState('');
-  const [userEnteredCode, setUserEnteredCode] = useState('');
-  const [verificationError, setVerificationError] = useState('');
-
   // Form State
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -29,33 +22,24 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
   const [companyName, setCompanyName] = useState('');
   const [phone, setPhone] = useState('');
   
-  // Errors
   const [errors, setErrors] = useState<{[key: string]: string}>({});
 
   // --- VALIDATION ---
-  const validateEmail = (email: string) => {
-    const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    return re.test(String(email).toLowerCase());
-  };
-
   const validateForm = () => {
     const newErrors: {[key: string]: string} = {};
     const cleanEmail = email.trim().toLowerCase();
     
-    if (!cleanEmail || !validateEmail(cleanEmail)) {
-        newErrors.email = "Adresse email invalide.";
+    if (!cleanEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
+        newErrors.email = "Email invalide.";
     }
 
-    if (!isRegistering) {
-        if (!password) newErrors.password = "Veuillez entrer votre mot de passe (Code).";
-    } 
-    else {
-        if (!name.trim() || name.trim().length < 2) {
-            newErrors.name = "Le nom est trop court.";
-        }
-        if (userType === UserType.PME && (!companyName.trim() || companyName.trim().length < 2)) {
-            newErrors.companyName = "Nom de l'entreprise requis.";
-        }
+    if (!password || password.length < 6) {
+        newErrors.password = "6 caractères minimum.";
+    }
+
+    if (isRegistering) {
+        if (!name.trim() || name.trim().length < 2) newErrors.name = "Nom trop court.";
+        if (userType === UserType.PME && !companyName.trim()) newErrors.companyName = "Entreprise requise.";
     }
 
     setErrors(newErrors);
@@ -66,10 +50,8 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setErrors({});
-
     if (!validateForm()) {
-        toast.error("Veuillez corriger les erreurs.");
+        toast.error("Veuillez vérifier les champs.");
         return;
     }
 
@@ -79,119 +61,54 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
         const cleanEmail = email.trim().toLowerCase();
 
         if (isRegistering) {
-            // --- REGISTRATION FLOW ---
-            const existingUser = await getUser(cleanEmail);
+            // --- INSCRIPTION ---
+            const newUser = {
+                name: name.trim(),
+                email: cleanEmail,
+                password: password, // Firebase gère le hashage
+                type: userType,
+                companyName: userType === UserType.PME ? companyName.trim() : undefined,
+                phone: phone.trim() || "Non renseigné",
+            };
             
-            if (existingUser) {
-                setErrors({ email: "Cet email possède déjà un compte." });
-                toast.error("Un compte existe déjà avec cet email.");
-                setLoading(false);
-                return;
-            }
-
-            // 2. Generate Code
-            const code = Math.floor(100000 + Math.random() * 900000).toString();
-            setGeneratedCode(code);
-            setShowVerification(true);
-            
-            // Simulation SMS (Alert via Toast)
-            toast.success(`Code envoyé : ${code}`, { duration: 6000, icon: '📩' });
-            // Fallback alerte système pour être sûr
-            alert(`[CODE SÉCURITÉ] Votre code Infini 24 est : ${code}\n\nCe code deviendra votre mot de passe.`);
-            setLoading(false);
+            await registerUser(newUser);
+            toast.success("Compte créé ! Connexion...");
+            // Auto login après inscription
+            const loggedUser = await loginUser(cleanEmail, password);
+            if(loggedUser) onLogin(loggedUser);
 
         } else {
-            // --- LOGIN FLOW ---
-            const foundUser = await getUser(cleanEmail);
-
-            if (!foundUser) {
-                setErrors({ email: "Aucun compte trouvé avec cet email." });
-                toast.error("Email inconnu.");
-            } else if (foundUser.password !== password) {
-                setErrors({ password: "Mot de passe (Code) incorrect." });
-                toast.error("Code de sécurité incorrect.");
-            } else {
-                toast.success(`Bienvenue, ${foundUser.name} !`);
-                onLogin(foundUser);
+            // --- CONNEXION ---
+            const loggedUser = await loginUser(cleanEmail, password);
+            if (loggedUser) {
+                toast.success(`Bonjour ${loggedUser.name}`);
+                onLogin(loggedUser);
             }
-            setLoading(false);
         }
-    } catch (error) {
-        console.error("Auth Error", error);
-        toast.error("Erreur de connexion.");
+    } catch (error: any) {
+        console.error(error);
+        if (error.code === 'auth/email-already-in-use') toast.error("Cet email est déjà utilisé.");
+        else if (error.code === 'auth/invalid-credential') toast.error("Email ou mot de passe incorrect.");
+        else if (error.code === 'auth/too-many-requests') toast.error("Trop d'essais. Réessayez plus tard.");
+        else toast.error("Erreur de connexion.");
+    } finally {
         setLoading(false);
     }
   };
 
-  const handleVerifyCode = async (e: React.FormEvent) => {
-      e.preventDefault();
-      if (userEnteredCode === generatedCode) {
-          
-          const newUser = {
-            name: name.trim(),
-            email: email.trim().toLowerCase(),
-            type: userType,
-            companyName: userType === UserType.PME ? companyName.trim() : undefined,
-            phone: phone.trim() || "Non renseigné",
-            password: generatedCode
-          };
-          
-          await saveUser(newUser);
-          toast.success("Compte créé avec succès !");
-          onLogin(newUser);
-      } else {
-          setVerificationError("Code incorrect.");
-          toast.error("Le code est incorrect.");
+  const handleForgotPassword = async () => {
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          toast.error("Entrez votre email dans le champ d'abord.");
+          return;
+      }
+      try {
+          await resetUserPassword(email);
+          toast.success("Email de réinitialisation envoyé !", { duration: 5000 });
+      } catch (error: any) {
+          if(error.code === 'auth/user-not-found') toast.error("Aucun compte avec cet email.");
+          else toast.error("Erreur lors de l'envoi.");
       }
   };
-
-  if (showVerification) {
-      return (
-        <div className="flex flex-col h-full bg-[#FDFCF8] overflow-y-auto no-scrollbar items-center justify-center p-6">
-            <div className="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 p-8 max-w-md w-full text-center animate-in zoom-in duration-300">
-                <div className="w-20 h-20 bg-[#B48646]/10 text-[#B48646] rounded-full flex items-center justify-center mx-auto mb-6">
-                    <ShieldCheck size={40} />
-                </div>
-                <h2 className="text-2xl font-bold text-slate-900 mb-2">Code de sécurité</h2>
-                <p className="text-slate-500 text-sm mb-6 leading-relaxed">
-                    Un code à 6 chiffres a été envoyé pour sécuriser votre compte.
-                    <br/>
-                    <span className="text-xs text-[#B48646] font-bold">Important : Ce code sera votre mot de passe pour vos futures connexions.</span>
-                </p>
-                
-                <form onSubmit={handleVerifyCode} className="space-y-4">
-                    <input 
-                        type="text" 
-                        maxLength={6}
-                        value={userEnteredCode}
-                        onChange={(e) => { setUserEnteredCode(e.target.value); setVerificationError(''); }}
-                        className="w-full text-center text-3xl font-bold tracking-[0.5em] py-4 border-b-2 border-slate-200 focus:border-[#B48646] outline-none bg-transparent transition-colors text-slate-800"
-                        placeholder="000000"
-                        autoFocus
-                    />
-                    
-                    {verificationError && (
-                        <p className="text-red-500 text-xs font-bold animate-pulse">{verificationError}</p>
-                    )}
-
-                    <button 
-                        type="submit"
-                        className="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold shadow-lg hover:bg-[#B48646] hover:shadow-[#B48646]/30 transition-all active:scale-95 mt-4"
-                    >
-                        Valider & Accéder
-                    </button>
-                </form>
-                
-                <button onClick={() => {
-                    toast.success(`Code renvoyé : ${generatedCode}`, {icon: '🔄'});
-                    alert(`Rappel : Votre code est ${generatedCode}`);
-                }} className="mt-6 text-xs text-slate-400 hover:text-slate-600 underline">
-                    Renvoyer le code
-                </button>
-            </div>
-        </div>
-      );
-  }
 
   return (
     <div className="flex flex-col h-full bg-[#FDFCF8] overflow-y-auto no-scrollbar">
@@ -212,7 +129,7 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
                 
                 <div className="inline-block px-4 py-1.5 rounded-full bg-[#B48646]/5 border border-[#B48646]/10 backdrop-blur-sm">
                      <p className="text-[#B48646] text-[10px] font-bold tracking-[0.3em] uppercase">
-                        Connexion / Inscription
+                        {isRegistering ? 'Création de compte' : 'Connexion Sécurisée'}
                      </p>
                 </div>
             </div>
@@ -221,6 +138,7 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
       <div className="flex-1 px-4 md:px-6 relative z-20 pb-8">
         <div className="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 p-8 max-w-lg mx-auto w-full transition-all">
             
+            {/* Toggle Switch */}
             <div className="flex bg-slate-50 p-1.5 rounded-[1.5rem] mb-8 border border-slate-100">
                 <button 
                     onClick={() => { setIsRegistering(false); setErrors({}); }}
@@ -236,144 +154,118 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
                 </button>
             </div>
 
-            <div className="mb-6 text-center">
-                <h2 className="text-2xl font-bold text-slate-900 mb-2">{isRegistering ? 'Créer un compte' : 'Heureux de vous revoir'}</h2>
-                <p className="text-slate-400 text-sm font-medium">
-                    {isRegistering ? 'Rejoignez Infini 24 pour gérer vos projets.' : 'Connectez-vous avec votre email et votre code.'}
-                </p>
-            </div>
-
             <form onSubmit={handleSubmit} className="space-y-5" noValidate>
                 
                 {isRegistering && (
                     <div className="space-y-5 animate-in slide-in-from-top-2 duration-300">
-                        <div>
-                            <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 text-center">Vous êtes ?</label>
-                            <div className="grid grid-cols-2 gap-4">
-                                <label className={`border-2 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 cursor-pointer transition-all duration-300 hover:scale-[1.02] ${userType === UserType.PARTICULIER ? 'bg-[#fffcf5] border-[#B48646] text-[#B48646]' : 'border-slate-100 hover:bg-slate-50 text-slate-400'}`}>
-                                    <UserIcon size={24} />
-                                    <span className="text-xs font-bold">Particulier</span>
-                                    <input type="radio" name="userType" className="hidden" checked={userType === UserType.PARTICULIER} onChange={() => setUserType(UserType.PARTICULIER)} />
-                                </label>
-                                <label className={`border-2 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 cursor-pointer transition-all duration-300 hover:scale-[1.02] ${userType === UserType.PME ? 'bg-[#fffcf5] border-[#B48646] text-[#B48646]' : 'border-slate-100 hover:bg-slate-50 text-slate-400'}`}>
-                                    <Briefcase size={24} />
-                                    <span className="text-xs font-bold">PME / Pro</span>
-                                    <input type="radio" name="userType" className="hidden" checked={userType === UserType.PME} onChange={() => setUserType(UserType.PME)} />
-                                </label>
-                            </div>
+                        {/* User Type Selector */}
+                        <div className="grid grid-cols-2 gap-4">
+                            <label className={`border-2 p-3 rounded-2xl flex flex-col items-center justify-center gap-1 cursor-pointer transition-all ${userType === UserType.PARTICULIER ? 'bg-[#fffcf5] border-[#B48646] text-[#B48646]' : 'border-slate-100 text-slate-400'}`}>
+                                <UserIcon size={20} />
+                                <span className="text-[10px] font-bold">Particulier</span>
+                                <input type="radio" name="userType" className="hidden" checked={userType === UserType.PARTICULIER} onChange={() => setUserType(UserType.PARTICULIER)} />
+                            </label>
+                            <label className={`border-2 p-3 rounded-2xl flex flex-col items-center justify-center gap-1 cursor-pointer transition-all ${userType === UserType.PME ? 'bg-[#fffcf5] border-[#B48646] text-[#B48646]' : 'border-slate-100 text-slate-400'}`}>
+                                <Briefcase size={20} />
+                                <span className="text-[10px] font-bold">Professionnel</span>
+                                <input type="radio" name="userType" className="hidden" checked={userType === UserType.PME} onChange={() => setUserType(UserType.PME)} />
+                            </label>
                         </div>
 
+                        {/* Name Field */}
                         <div>
-                            <div className="relative group">
-                                <UserIcon className="absolute left-5 top-4 text-slate-300 group-focus-within:text-[#B48646] transition-colors" size={20} />
-                                <input 
-                                    type="text" 
-                                    name="name"
-                                    placeholder="Votre Nom complet"
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
-                                    className={`w-full pl-12 pr-6 py-4 bg-slate-50 border-2 rounded-2xl outline-none text-sm transition-all font-medium ${errors.name ? 'border-red-300 focus:border-red-500 focus:ring-red-100' : 'border-transparent focus:bg-white focus:border-[#B48646] focus:ring-[#B48646]/10'} focus:ring-4`}
-                                    required={isRegistering}
-                                    autoComplete="name"
-                                />
-                            </div>
-                            {errors.name && <p className="text-red-500 text-[10px] mt-1 ml-4 font-bold flex items-center gap-1"><AlertTriangle size={10}/> {errors.name}</p>}
+                            <input 
+                                type="text" 
+                                placeholder="Votre Nom complet"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none text-sm font-medium focus:border-[#B48646] focus:ring-4 focus:ring-[#B48646]/10"
+                            />
+                            {errors.name && <p className="text-red-500 text-[10px] mt-1 ml-2 font-bold">{errors.name}</p>}
                         </div>
 
+                        {/* Company Field */}
                         {userType === UserType.PME && (
-                            <div className="relative animate-in fade-in zoom-in duration-300 group">
-                                <Briefcase className="absolute left-5 top-4 text-slate-300 group-focus-within:text-[#B48646] transition-colors" size={20} />
+                            <div className="animate-in fade-in zoom-in">
                                 <input 
                                     type="text" 
-                                    name="company"
                                     placeholder="Nom de l'entreprise"
                                     value={companyName}
                                     onChange={(e) => setCompanyName(e.target.value)}
-                                    className={`w-full pl-12 pr-6 py-4 bg-slate-50 border-2 rounded-2xl outline-none text-sm transition-all font-medium ${errors.companyName ? 'border-red-300 focus:border-red-500 focus:ring-red-100' : 'border-transparent focus:bg-white focus:border-[#B48646] focus:ring-[#B48646]/10'} focus:ring-4`}
-                                    required={userType === UserType.PME}
-                                    autoComplete="organization"
+                                    className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none text-sm font-medium focus:border-[#B48646] focus:ring-4 focus:ring-[#B48646]/10"
                                 />
-                                {errors.companyName && <p className="text-red-500 text-[10px] mt-1 ml-4 font-bold flex items-center gap-1"><AlertTriangle size={10}/> {errors.companyName}</p>}
+                                {errors.companyName && <p className="text-red-500 text-[10px] mt-1 ml-2 font-bold">{errors.companyName}</p>}
                             </div>
                         )}
                          
+                         {/* Phone Field */}
                          <div>
-                             <div className="relative group">
-                                 <span className="absolute left-5 top-4 text-slate-300 font-bold text-xs flex items-center h-full pb-8 group-focus-within:text-[#B48646] transition-colors">Tel</span>
-                                <input 
-                                    type="tel" 
-                                    name="phone"
-                                    placeholder="Numéro de téléphone"
-                                    value={phone}
-                                    onChange={(e) => setPhone(e.target.value)}
-                                    className={`w-full pl-14 pr-6 py-4 bg-slate-50 border-2 rounded-2xl outline-none text-sm transition-all font-medium ${errors.phone ? 'border-red-300 focus:border-red-500 focus:ring-red-100' : 'border-transparent focus:bg-white focus:border-[#B48646] focus:ring-[#B48646]/10'} focus:ring-4`}
-                                    autoComplete="tel"
-                                />
-                            </div>
-                            {errors.phone && <p className="text-red-500 text-[10px] mt-1 ml-4 font-bold flex items-center gap-1"><AlertTriangle size={10}/> {errors.phone}</p>}
+                            <input 
+                                type="tel" 
+                                placeholder="Numéro de téléphone"
+                                value={phone}
+                                onChange={(e) => setPhone(e.target.value)}
+                                className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none text-sm font-medium focus:border-[#B48646] focus:ring-4 focus:ring-[#B48646]/10"
+                            />
                         </div>
                     </div>
                 )}
 
+                {/* Email Field (Common) */}
                 <div>
-                    <div className="relative group">
-                        <Mail className="absolute left-5 top-4 text-slate-300 group-focus-within:text-[#B48646] transition-colors" size={20} />
+                    <div className="relative">
+                        <Mail className="absolute left-5 top-4 text-slate-300" size={20} />
                         <input 
                             type="email" 
-                            name="email"
                             placeholder="Adresse Email" 
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className={`w-full pl-12 pr-6 py-4 bg-slate-50 border-2 rounded-2xl outline-none text-sm transition-all font-medium ${errors.email ? 'border-red-300 focus:border-red-500 focus:ring-red-100' : 'border-transparent focus:bg-white focus:border-[#B48646] focus:ring-[#B48646]/10'} focus:ring-4`}
-                            required
-                            autoComplete="email"
+                            className="w-full pl-12 pr-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none text-sm font-medium focus:border-[#B48646] focus:ring-4 focus:ring-[#B48646]/10 transition-all"
                         />
                     </div>
-                    {errors.email && <p className="text-red-500 text-[10px] mt-1 ml-4 font-bold flex items-center gap-1"><AlertTriangle size={10}/> {errors.email}</p>}
+                    {errors.email && <p className="text-red-500 text-[10px] mt-1 ml-2 font-bold">{errors.email}</p>}
                 </div>
 
+                {/* Password Field (Common) */}
+                <div>
+                    <div className="relative">
+                        <Lock className="absolute left-5 top-4 text-slate-300" size={20} />
+                        <input 
+                            type={showPassword ? "text" : "password"}
+                            placeholder={isRegistering ? "Choisissez un mot de passe" : "Votre mot de passe"}
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            className="w-full pl-12 pr-12 py-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none text-sm font-medium focus:border-[#B48646] focus:ring-4 focus:ring-[#B48646]/10 transition-all"
+                        />
+                        <button 
+                            type="button" 
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute right-5 top-4 text-slate-300 hover:text-[#B48646]"
+                        >
+                            {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                        </button>
+                    </div>
+                    {errors.password && <p className="text-red-500 text-[10px] mt-1 ml-2 font-bold">{errors.password}</p>}
+                </div>
+
+                {/* Forgot Password Link */}
                 {!isRegistering && (
-                    <div>
-                        <div className="relative group">
-                            <Lock className="absolute left-5 top-4 text-slate-300 group-focus-within:text-[#B48646] transition-colors" size={20} />
-                            <input 
-                                type={showPassword ? "text" : "password"}
-                                name="password"
-                                placeholder="Votre Code de Sécurité"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                className={`w-full pl-12 pr-12 py-4 bg-slate-50 border-2 rounded-2xl outline-none text-sm transition-all font-medium ${errors.password ? 'border-red-300 focus:border-red-500 focus:ring-red-100' : 'border-transparent focus:bg-white focus:border-[#B48646] focus:ring-[#B48646]/10'} focus:ring-4`}
-                                required
-                                autoComplete="current-password"
-                            />
-                            <button 
-                                type="button" 
-                                onClick={() => setShowPassword(!showPassword)}
-                                className="absolute right-5 top-4 text-slate-300 hover:text-[#B48646] transition-colors"
-                            >
-                                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                            </button>
-                        </div>
-                        {errors.password && <p className="text-red-500 text-[10px] mt-1 ml-4 font-bold flex items-center gap-1"><AlertTriangle size={10}/> {errors.password}</p>}
+                    <div className="flex justify-end">
+                        <button type="button" onClick={handleForgotPassword} className="text-xs font-bold text-[#B48646] hover:underline">
+                            Mot de passe oublié ?
+                        </button>
                     </div>
                 )}
 
-                {!isRegistering && (
-                    <div className="flex items-center justify-end px-2">
-                        <button type="button" onClick={() => {
-                            toast("Veuillez entrer votre email pour récupérer le code.", {icon: 'ℹ️'});
-                        }} className="text-xs font-bold text-[#B48646] hover:underline">Code oublié ?</button>
-                    </div>
-                )}
-
+                {/* Submit Button */}
                 <button 
                     type="submit" 
                     disabled={loading}
-                    className="w-full bg-gradient-to-r from-[#B48646] to-[#E5B066] hover:shadow-xl hover:shadow-[#B48646]/30 text-white font-bold py-5 rounded-[2rem] transition-all active:scale-95 flex items-center justify-center gap-3 text-lg"
+                    className="w-full bg-slate-900 hover:bg-[#B48646] text-white font-bold py-4 rounded-[2rem] shadow-lg transition-all active:scale-95 flex items-center justify-center gap-3 text-lg mt-6"
                 >
                     {loading ? <Loader2 className="animate-spin" /> : (
                         <>
-                            {isRegistering ? "Générer mon code" : "Se connecter"} 
+                            {isRegistering ? "S'inscrire" : "Se connecter"} 
                             <ArrowRight size={20} />
                         </>
                     )}
@@ -383,11 +275,8 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
         </div>
         
         <div className="mt-8 text-center px-6">
-            <div className="flex items-center justify-center gap-2 text-slate-400 text-xs mb-3 font-medium">
-                <Lock size={14} /> Connexion sécurisée SSL
-            </div>
-            <p className="text-[10px] text-slate-300 max-w-xs mx-auto">
-                En vous inscrivant, vous acceptez les conditions générales d'utilisation d'Infini 24 et notre politique de confidentialité.
+            <p className="text-[10px] text-slate-300 max-w-xs mx-auto flex items-center justify-center gap-2">
+               <Lock size={10} /> Sécurité garantie par Google Firebase
             </p>
         </div>
       </div>
