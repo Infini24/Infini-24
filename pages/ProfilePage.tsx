@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { User } from '../types';
-import { FolderOpen, LogIn, Infinity, Download, ExternalLink, CheckCircle, Clock, AlertCircle, Plus, Trash2, Send, Info, Eye, Edit2, FileCheck, Package } from 'lucide-react';
+import { FolderOpen, LogIn, Infinity, Download, ExternalLink, CheckCircle, Clock, AlertCircle, Plus, Trash2, Send, Info, Eye, Edit2, FileCheck, Package, Facebook } from 'lucide-react';
 
 interface ProfilePageProps {
   user?: User | null;
@@ -122,6 +122,48 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
       );
   };
 
+  const renderProjectCard = (project: LocalProject) => (
+    <div key={project.id} className={`rounded-[2rem] p-6 border transition-all duration-300 mb-6 ${project.step === 'delivered' ? 'bg-[#fffcf5] border-[#B48646] shadow-lg shadow-[#B48646]/10' : 'bg-slate-50 border-slate-100'}`}>
+        {/* Header Card */}
+        <div className="flex justify-between items-start mb-4">
+            <div className="flex items-center gap-4">
+                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-sm text-xl ${project.step === 'delivered' ? 'bg-[#B48646] text-white' : 'bg-white text-slate-700'}`}>
+                    {project.type === 'Graphisme' ? '🎨' : '🎬'}
+                </div>
+                <div>
+                    <h3 className="font-bold text-slate-900 text-lg leading-tight">{project.title}</h3>
+                    <p className="text-xs text-slate-500 font-medium">
+                        Commandé le {project.date} 
+                        {isAdmin && <span className="text-[#B48646] font-bold"> • {project.clientName}</span>}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        {/* Timeline VISUELLE */}
+        {renderTimeline(project.step)}
+
+        {/* Action (Téléchargement) */}
+        {project.step === 'delivered' && (
+            <div className="mt-6 animate-in fade-in">
+                <div className="bg-white rounded-2xl p-4 border border-[#B48646]/20 flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div className="text-center md:text-left">
+                        <p className="text-sm font-bold text-slate-800">Vos fichiers sont prêts !</p>
+                        <p className="text-xs text-slate-500">Téléchargez-les avant expiration.</p>
+                    </div>
+                    <button className="w-full md:w-auto bg-[#B48646] hover:bg-[#9a733c] text-white px-6 py-3 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#B48646]/20">
+                        <Download size={18} /> Télécharger
+                    </button>
+                </div>
+            </div>
+        )}
+    </div>
+  );
+
+  // Séparation des projets
+  const pendingProjects = projects.filter(p => p.step === 'request_received');
+  const activeProjects = projects.filter(p => p.step !== 'request_received');
+
 
   // --- RENDU VISUEL ---
 
@@ -156,72 +198,59 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
         {user ? (
              <div className="w-full max-w-3xl animate-in slide-in-from-bottom duration-500">
                 
-                {/* LISTE DES PROJETS (Vue Client & Admin) */}
-                <div className="bg-white p-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 mb-8">
-                    <div className="flex justify-between items-end mb-6">
-                        <h2 className="text-xl font-bold text-slate-900">Vos projets actifs</h2>
-                        <span className="text-xs font-bold text-slate-400 bg-slate-50 px-3 py-1 rounded-full">{projects.length} en cours</span>
+                {/* 1. SECTION: DEMANDES EN ATTENTE */}
+                {pendingProjects.length > 0 && (
+                    <div className="bg-white p-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 mb-8">
+                        <div className="flex justify-between items-end mb-6">
+                            <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
+                                <Clock className="text-orange-500" size={24} /> En attente
+                            </h2>
+                            <span className="text-xs font-bold text-slate-400 bg-slate-50 px-3 py-1 rounded-full">{pendingProjects.length} demande(s)</span>
+                        </div>
+                        <div>
+                            {pendingProjects.map(renderProjectCard)}
+                        </div>
                     </div>
-                    
-                    {projects.length === 0 ? (
-                        <div className="text-center py-10 text-slate-400">
-                            <FolderOpen size={40} className="mx-auto mb-4 opacity-50" />
-                            <p className="text-sm">Aucun projet pour le moment.</p>
+                )}
+
+                {/* 2. SECTION: PROJETS ACTIFS & TERMINÉS */}
+                {activeProjects.length > 0 && (
+                    <div className="bg-white p-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 mb-8">
+                        <div className="flex justify-between items-end mb-6">
+                            <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
+                                <FolderOpen className="text-[#B48646]" size={24} /> Projets actifs
+                            </h2>
+                            <span className="text-xs font-bold text-slate-400 bg-slate-50 px-3 py-1 rounded-full">{activeProjects.length} en cours</span>
                         </div>
-                    ) : (
-                        <div className="space-y-6">
-                            {projects.map((project) => (
-                                <div key={project.id} className={`rounded-[2rem] p-6 border transition-all duration-300 ${project.step === 'delivered' ? 'bg-[#fffcf5] border-[#B48646] shadow-lg shadow-[#B48646]/10' : 'bg-slate-50 border-slate-100'}`}>
-                                    
-                                    {/* Header Card */}
-                                    <div className="flex justify-between items-start mb-4">
-                                        <div className="flex items-center gap-4">
-                                            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-sm text-xl ${project.step === 'delivered' ? 'bg-[#B48646] text-white' : 'bg-white text-slate-700'}`}>
-                                                {project.type === 'Graphisme' ? '🎨' : '🎬'}
-                                            </div>
-                                            <div>
-                                                <h3 className="font-bold text-slate-900 text-lg leading-tight">{project.title}</h3>
-                                                <p className="text-xs text-slate-500 font-medium">
-                                                    Commandé le {project.date} 
-                                                    {isAdmin && <span className="text-[#B48646] font-bold"> • {project.clientName}</span>}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Timeline VISUELLE */}
-                                    {renderTimeline(project.step)}
-
-                                    {/* Action (Téléchargement) */}
-                                    {project.step === 'delivered' && (
-                                        <div className="mt-6 animate-in fade-in">
-                                            <div className="bg-white rounded-2xl p-4 border border-[#B48646]/20 flex flex-col md:flex-row items-center justify-between gap-4">
-                                                <div className="text-center md:text-left">
-                                                    <p className="text-sm font-bold text-slate-800">Vos fichiers sont prêts !</p>
-                                                    <p className="text-xs text-slate-500">Téléchargez-les avant expiration.</p>
-                                                </div>
-                                                <button className="w-full md:w-auto bg-[#B48646] hover:bg-[#9a733c] text-white px-6 py-3 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#B48646]/20">
-                                                    <Download size={18} /> Télécharger
-                                                </button>
-                                            </div>
-                                        </div>
-                                    )}
-
-                                </div>
-                            ))}
+                        <div>
+                            {activeProjects.map(renderProjectCard)}
                         </div>
-                    )}
-                </div>
+                    </div>
+                )}
+
+                {/* EMPTY STATE (Si aucune liste n'a de projet) */}
+                {projects.length === 0 && (
+                    <div className="bg-white p-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 mb-8 text-center py-10 text-slate-400">
+                        <FolderOpen size={40} className="mx-auto mb-4 opacity-50" />
+                        <p className="text-sm">Aucun projet pour le moment.</p>
+                    </div>
+                )}
 
                 {/* Support Card (Visible only for non-admins) */}
                 {!isAdmin && (
                     <div className="bg-[#B48646] text-white p-8 rounded-[2.5rem] shadow-xl shadow-[#B48646]/20 relative overflow-hidden mb-12">
                         <div className="absolute top-0 right-0 w-32 h-32 bg-white blur-[50px] opacity-20 rounded-full"></div>
                         <h3 className="text-lg font-bold mb-2 relative z-10">Une question sur un projet ?</h3>
-                        <p className="text-sm opacity-90 mb-6 relative z-10">Utilisez la messagerie WhatsApp pour une réponse rapide.</p>
-                        <a href="https://wa.me/33663083676" target="_blank" rel="noreferrer" className="inline-flex bg-white text-[#B48646] px-6 py-3 rounded-xl font-bold text-sm hover:bg-slate-50 transition-colors relative z-10 items-center gap-2">
-                            Contacter le support <ExternalLink size={16}/>
-                        </a>
+                        <p className="text-sm opacity-90 mb-6 relative z-10">Utilisez nos messageries pour une réponse rapide.</p>
+                        
+                        <div className="flex flex-col sm:flex-row gap-3 relative z-10">
+                            <a href="https://wa.me/33663083676" target="_blank" rel="noreferrer" className="flex-1 flex justify-center bg-white text-[#B48646] px-6 py-3 rounded-xl font-bold text-sm hover:bg-slate-50 transition-colors items-center gap-2">
+                                <span className="truncate">WhatsApp</span> <ExternalLink size={16}/>
+                            </a>
+                            <a href="https://www.facebook.com/profile.php?id=61584316950503" target="_blank" rel="noreferrer" className="flex-1 flex justify-center bg-white/10 border border-white/20 text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-white/20 transition-colors items-center gap-2">
+                                <Facebook size={18}/> <span className="truncate">Facebook</span>
+                            </a>
+                        </div>
                     </div>
                 )}
 
