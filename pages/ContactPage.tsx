@@ -117,10 +117,24 @@ const ContactPage: React.FC<ContactPageProps> = ({ user, onLoginClick, onLogout 
         if(!validateForm()) return;
 
         setSending(true);
-        // Simulate API call
+        
+        // Préparation du mail réel via l'application de messagerie du client
+        const subject = encodeURIComponent(`Contact Site Internet: ${formData.name}`);
+        const body = encodeURIComponent(`Nom: ${formData.name}
+Email: ${formData.email}
+Téléphone: ${formData.phone}
+
+Message:
+${formData.message}`);
+
+        // Simulation d'attente pour l'effet visuel
         setTimeout(() => {
             setSending(false);
             setSent(true);
+            
+            // Ouverture de l'application mail
+            window.location.href = `mailto:wendy.toussaint@icloud.com?subject=${subject}&body=${body}`;
+            
             setFormData({ name: '', phone: '', email: '', message: '' });
         }, 1500);
     };
@@ -131,13 +145,13 @@ const ContactPage: React.FC<ContactPageProps> = ({ user, onLoginClick, onLogout 
                 <div className="w-28 h-28 bg-[#B48646]/10 text-[#B48646] rounded-full flex items-center justify-center mb-8 shadow-sm animate-bounce">
                     <Send size={48} />
                 </div>
-                <h2 className="text-3xl font-bold text-slate-900 mb-2">Message envoyé !</h2>
-                <p className="text-slate-500 mb-8 max-w-xs mx-auto font-medium">Merci de nous avoir contactés. L'équipe Infini 24 vous répondra sous 24h ouvrées.</p>
+                <h2 className="text-3xl font-bold text-slate-900 mb-2">Message prêt !</h2>
+                <p className="text-slate-500 mb-8 max-w-xs mx-auto font-medium">Votre application mail va s'ouvrir pour confirmer l'envoi à Infini 24.</p>
                 <button 
                     onClick={() => setSent(false)}
                     className="bg-gradient-to-r from-[#B48646] to-[#E5B066] text-white px-10 py-4 rounded-full font-bold shadow-lg hover:shadow-xl hover:shadow-[#B48646]/30 transition-all active:scale-95"
                 >
-                    Envoyer un autre message
+                    Retour au formulaire
                 </button>
             </div>
         )
