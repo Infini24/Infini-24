@@ -201,14 +201,7 @@ ${formData.message}`);
                             </div>
                             <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wide group-hover:text-[#B48646]">WhatsApp</span>
                         </a>
-                        <a href="mailto:wendy.toussaint@icloud.com" className="bg-slate-50 p-5 rounded-[2rem] shadow-sm border border-transparent hover:border-[#B48646] hover:bg-white hover:shadow-md transition-all active:scale-95 flex flex-col items-center justify-center gap-3 group">
-                            <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-slate-800 shadow-sm group-hover:bg-[#B48646] group-hover:text-white transition-colors">
-                                <Mail size={22} />
-                            </div>
-                            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wide group-hover:text-[#B48646]">Email</span>
-                        </a>
-                        {/* Ajout bouton Facebook si souhaité ici aussi, sinon il est déjà dans la liste principale */}
-                        <a href="https://www.facebook.com/profile.php?id=61584316950503" target="_blank" rel="noreferrer" className="bg-slate-50 p-5 rounded-[2rem] shadow-sm border border-transparent hover:border-[#B48646] hover:bg-white hover:shadow-md transition-all active:scale-95 flex flex-col items-center justify-center gap-3 group col-span-3 sm:col-span-1">
+                        <a href="https://www.facebook.com/profile.php?id=61584316950503" target="_blank" rel="noreferrer" className="bg-slate-50 p-5 rounded-[2rem] shadow-sm border border-transparent hover:border-[#B48646] hover:bg-white hover:shadow-md transition-all active:scale-95 flex flex-col items-center justify-center gap-3 group">
                             <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-slate-800 shadow-sm group-hover:bg-[#B48646] group-hover:text-white transition-colors">
                                 <Facebook size={22} />
                             </div>
@@ -333,7 +326,7 @@ ${formData.message}`);
                             disabled={sending}
                             className="w-full bg-gradient-to-r from-[#B48646] to-[#E5B066] hover:shadow-xl hover:shadow-[#B48646]/30 text-white font-bold py-5 rounded-[2rem] transition-all active:scale-95 flex items-center justify-center gap-2 text-lg"
                         >
-                            Envoyer le message <Send size={20} />
+                            Envoyer par mail <Send size={20} />
                         </button>
                      </form>
                 </div>
