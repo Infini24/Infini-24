@@ -116,10 +116,8 @@ const ContactPage: React.FC<ContactPageProps> = ({ user, onLoginClick, onLogout 
         
         if(!validateForm()) return;
 
-        setSending(true);
-        
-        // Préparation du mail réel via l'application de messagerie du client
-        const subject = encodeURIComponent(`Contact Site Internet: ${formData.name}`);
+        // Construction immédiate du lien mailto
+        const subject = encodeURIComponent(`Contact Site: ${formData.name}`);
         const body = encodeURIComponent(`Nom: ${formData.name}
 Email: ${formData.email}
 Téléphone: ${formData.phone}
@@ -127,16 +125,12 @@ Téléphone: ${formData.phone}
 Message:
 ${formData.message}`);
 
-        // Simulation d'attente pour l'effet visuel
-        setTimeout(() => {
-            setSending(false);
-            setSent(true);
-            
-            // Ouverture de l'application mail
-            window.location.href = `mailto:wendy.toussaint@icloud.com?subject=${subject}&body=${body}`;
-            
-            setFormData({ name: '', phone: '', email: '', message: '' });
-        }, 1500);
+        // Ouverture immédiate pour éviter les blocages navigateurs sur mobile
+        window.location.href = `mailto:wendy.toussaint@icloud.com?subject=${subject}&body=${body}`;
+        
+        // Mise à jour de l'interface
+        setSent(true);
+        setFormData({ name: '', phone: '', email: '', message: '' });
     };
 
     if (sent) {
@@ -146,7 +140,7 @@ ${formData.message}`);
                     <Send size={48} />
                 </div>
                 <h2 className="text-3xl font-bold text-slate-900 mb-2">Message prêt !</h2>
-                <p className="text-slate-500 mb-8 max-w-xs mx-auto font-medium">Votre application mail va s'ouvrir pour confirmer l'envoi à Infini 24.</p>
+                <p className="text-slate-500 mb-8 max-w-xs mx-auto font-medium">Votre application mail s'est ouverte avec les informations pré-remplies.</p>
                 <button 
                     onClick={() => setSent(false)}
                     className="bg-gradient-to-r from-[#B48646] to-[#E5B066] text-white px-10 py-4 rounded-full font-bold shadow-lg hover:shadow-xl hover:shadow-[#B48646]/30 transition-all active:scale-95"
@@ -212,6 +206,13 @@ ${formData.message}`);
                                 <Mail size={22} />
                             </div>
                             <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wide group-hover:text-[#B48646]">Email</span>
+                        </a>
+                        {/* Ajout bouton Facebook si souhaité ici aussi, sinon il est déjà dans la liste principale */}
+                        <a href="https://www.facebook.com/profile.php?id=61584316950503" target="_blank" rel="noreferrer" className="bg-slate-50 p-5 rounded-[2rem] shadow-sm border border-transparent hover:border-[#B48646] hover:bg-white hover:shadow-md transition-all active:scale-95 flex flex-col items-center justify-center gap-3 group col-span-3 sm:col-span-1">
+                            <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-slate-800 shadow-sm group-hover:bg-[#B48646] group-hover:text-white transition-colors">
+                                <Facebook size={22} />
+                            </div>
+                            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wide group-hover:text-[#B48646]">Facebook</span>
                         </a>
                     </div>
 
@@ -332,11 +333,7 @@ ${formData.message}`);
                             disabled={sending}
                             className="w-full bg-gradient-to-r from-[#B48646] to-[#E5B066] hover:shadow-xl hover:shadow-[#B48646]/30 text-white font-bold py-5 rounded-[2rem] transition-all active:scale-95 flex items-center justify-center gap-2 text-lg"
                         >
-                            {sending ? <Loader2 className="animate-spin" /> : (
-                                <>
-                                    Envoyer le message <Send size={20} />
-                                </>
-                            )}
+                            Envoyer le message <Send size={20} />
                         </button>
                      </form>
                 </div>
@@ -345,7 +342,7 @@ ${formData.message}`);
             {/* Footer / Socials */}
             <div className="mt-16 pt-10 border-t border-slate-100 flex flex-col items-center">
                  <div className="flex gap-4 mb-6">
-                    <a href="#" className="w-12 h-12 rounded-full bg-slate-50 text-slate-500 flex items-center justify-center hover:bg-[#B48646] hover:text-white transition-all duration-300 hover:scale-110 shadow-sm"><Facebook size={22} /></a>
+                    <a href="https://www.facebook.com/profile.php?id=61584316950503" target="_blank" rel="noreferrer" className="w-12 h-12 rounded-full bg-slate-50 text-slate-500 flex items-center justify-center hover:bg-[#B48646] hover:text-white transition-all duration-300 hover:scale-110 shadow-sm"><Facebook size={22} /></a>
                     <a href="#" className="w-12 h-12 rounded-full bg-slate-50 text-slate-500 flex items-center justify-center hover:bg-[#B48646] hover:text-white transition-all duration-300 hover:scale-110 shadow-sm"><Instagram size={22} /></a>
                     <a href="#" className="w-12 h-12 rounded-full bg-slate-50 text-slate-500 flex items-center justify-center hover:bg-[#B48646] hover:text-white transition-all duration-300 hover:scale-110 shadow-sm"><Linkedin size={22} /></a>
                  </div>
