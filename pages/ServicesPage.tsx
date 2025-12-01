@@ -9,21 +9,29 @@ interface ProjectWorkflowModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
+  user: User | null; // Needed to save project with user details
 }
 
-const ProjectWorkflowModal: React.FC<ProjectWorkflowModalProps> = ({ serviceName, price, isOpen, onClose, onSuccess }) => {
+const ProjectWorkflowModal: React.FC<ProjectWorkflowModalProps> = ({ serviceName, price, isOpen, onClose, onSuccess, user }) => {
   const [step, setStep] = useState<'info' | 'contact' | 'success'>('info');
   const [contactMethod, setContactMethod] = useState<'phone' | 'whatsapp' | 'email'>('whatsapp');
-  const [name, setName] = useState('');
-  const [contactInfo, setContactInfo] = useState('');
+  const [name, setName] = useState(user?.name || '');
+  const [contactInfo, setContactInfo] = useState(user?.email || '');
 
   useEffect(() => {
-    if (isOpen) setStep('info');
-  }, [isOpen]);
+    if (isOpen) {
+        setStep('info');
+        if (user) {
+            setName(user.name);
+            setContactInfo(user.email);
+        }
+    }
+  }, [isOpen, user]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Use MailTo to actually open the mail app with pre-filled data
+    
+    // 1. Send Email (Client Simulation via MailTo)
     const subject = encodeURIComponent(`Nouvelle commande : ${serviceName}`);
     const body = encodeURIComponent(`Bonjour Infini 24,
 
@@ -38,6 +46,26 @@ Info : ${contactInfo}
 Merci de me recontacter.`);
 
     window.location.href = `mailto:wendy.toussaint@icloud.com?subject=${subject}&body=${body}`;
+
+    // 2. SAVE PROJECT TO LOCAL DB (For Admin Dashboard Visibility)
+    // We retrieve the existing list
+    const existingProjects = JSON.parse(localStorage.getItem('infini_projects_v4') || '[]');
+    
+    // Create new project entry
+    const newProject = {
+        id: Date.now(),
+        title: serviceName,
+        type: serviceName.includes('Vidéo') || serviceName.includes('Diaporama') || serviceName.includes('VHS') ? 'Vidéo' : 'Graphisme',
+        step: 'request_received',
+        progress: 10,
+        date: new Date().toLocaleDateString(),
+        clientName: name,
+        clientEmail: user ? user.email : contactInfo, // Crucial for linking to user
+        price: price
+    };
+
+    // Save
+    localStorage.setItem('infini_projects_v4', JSON.stringify([newProject, ...existingProjects]));
 
     setStep('success');
     setTimeout(() => {
@@ -1029,6 +1057,7 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ initialService, onClearInit
             price={currentServicePrice}
             onClose={() => setShowProjectModal(false)}
             onSuccess={handleSuccess}
+            user={user}
         />
 
         {/* Dynamic Content (List or Form) */}

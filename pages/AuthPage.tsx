@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { User, UserType } from '../types';
-import { Mail, Lock, User as UserIcon, Briefcase, ArrowRight, Loader2, CheckCircle, Infinity, AlertTriangle, Send, ShieldCheck } from 'lucide-react';
+import { Mail, Lock, User as UserIcon, Briefcase, ArrowRight, Loader2, CheckCircle, Infinity, AlertTriangle, Send, ShieldCheck, Eye, EyeOff } from 'lucide-react';
 
 interface AuthPageProps {
   onLogin: (user: User) => void;
@@ -14,6 +14,9 @@ interface StoredUser extends User {
 const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
   const [isRegistering, setIsRegistering] = useState(false);
   const [loading, setLoading] = useState(false);
+  
+  // Password Visibility
+  const [showPassword, setShowPassword] = useState(false);
   
   // 2FA / Verification State
   const [showVerification, setShowVerification] = useState(false);
@@ -342,26 +345,29 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
                         <div className="relative group">
                             <Lock className="absolute left-5 top-4 text-slate-300 group-focus-within:text-[#B48646] transition-colors" size={20} />
                             <input 
-                                type="password" 
+                                type={showPassword ? "text" : "password"}
                                 name="password"
                                 placeholder="Votre Code de Sécurité"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className={`w-full pl-12 pr-6 py-4 bg-slate-50 border-2 rounded-2xl outline-none text-sm transition-all font-medium ${errors.password ? 'border-red-300 focus:border-red-500 focus:ring-red-100' : 'border-transparent focus:bg-white focus:border-[#B48646] focus:ring-[#B48646]/10'} focus:ring-4`}
+                                className={`w-full pl-12 pr-12 py-4 bg-slate-50 border-2 rounded-2xl outline-none text-sm transition-all font-medium ${errors.password ? 'border-red-300 focus:border-red-500 focus:ring-red-100' : 'border-transparent focus:bg-white focus:border-[#B48646] focus:ring-[#B48646]/10'} focus:ring-4`}
                                 required
                                 autoComplete="current-password"
                             />
+                            <button 
+                                type="button" 
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute right-5 top-4 text-slate-300 hover:text-[#B48646] transition-colors"
+                            >
+                                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                            </button>
                         </div>
                         {errors.password && <p className="text-red-500 text-[10px] mt-1 ml-4 font-bold flex items-center gap-1"><AlertTriangle size={10}/> {errors.password}</p>}
                     </div>
                 )}
 
                 {!isRegistering && (
-                    <div className="flex items-center justify-between px-2">
-                         <button type="button" className="flex items-center gap-2 px-3 py-2 bg-slate-50 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100 transition-colors border border-slate-100">
-                            <div className="w-6 h-6 bg-white rounded-lg border flex items-center justify-center text-lg">🆔</div>
-                            Face ID
-                         </button>
+                    <div className="flex items-center justify-end px-2">
                         <a href="#" className="text-xs font-bold text-[#B48646] hover:underline">Code oublié ?</a>
                     </div>
                 )}

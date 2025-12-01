@@ -20,6 +20,8 @@ interface LocalProject {
   downloadUrl?: string;
   date: string;
   clientName?: string; // Pour l'admin
+  clientEmail?: string; // Pour filtrage
+  price?: number | string;
 }
 
 const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick }) => {
@@ -30,7 +32,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
   
   // Chargement initial depuis le LocalStorage
   useEffect(() => {
-    const savedProjects = localStorage.getItem('infini_projects_v4'); // Changement de clé pour vider le cache précédent
+    const savedProjects = localStorage.getItem('infini_projects_v4');
     if (savedProjects) {
         setProjects(JSON.parse(savedProjects));
     } else {
@@ -59,7 +61,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
           step: 'request_received',
           progress: 10,
           date: new Date().toLocaleDateString(),
-          clientName: newClientName || "Client Inconnu"
+          clientName: newClientName || "Client Inconnu",
+          clientEmail: "" // Created by admin manually
       };
       setProjects([newProj, ...projects]);
       setNewProjectTitle("");
@@ -160,9 +163,15 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
     </div>
   );
 
-  // Séparation des projets
-  const pendingProjects = projects.filter(p => p.step === 'request_received');
-  const activeProjects = projects.filter(p => p.step !== 'request_received');
+  // --- FILTERING LOGIC ---
+  // Si Admin : Voir TOUS les projets
+  // Si Client : Voir UNIQUEMENT ses projets (filtré par email)
+  const displayedProjects = isAdmin 
+    ? projects 
+    : projects.filter(p => p.clientEmail === user?.email);
+
+  const pendingProjects = displayedProjects.filter(p => p.step === 'request_received');
+  const activeProjects = displayedProjects.filter(p => p.step !== 'request_received');
 
 
   // --- RENDU VISUEL ---
@@ -187,7 +196,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
                 
                 <div className="inline-block px-4 py-1.5 rounded-full bg-[#B48646]/5 border border-[#B48646]/10 backdrop-blur-sm">
                      <p className="text-[#B48646] text-[10px] font-bold tracking-[0.3em] uppercase">
-                        Espace Client
+                        {isAdmin ? 'Espace Administrateur' : 'Espace Client'}
                      </p>
                 </div>
             </div>
@@ -229,10 +238,11 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
                 )}
 
                 {/* EMPTY STATE (Si aucune liste n'a de projet) */}
-                {projects.length === 0 && (
+                {displayedProjects.length === 0 && (
                     <div className="bg-white p-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 mb-8 text-center py-10 text-slate-400">
                         <FolderOpen size={40} className="mx-auto mb-4 opacity-50" />
                         <p className="text-sm">Aucun projet pour le moment.</p>
+                        {isAdmin && <p className="text-xs mt-2 text-red-400">Les projets créés sur d'autres appareils ne sont pas visibles ici (Simulation).</p>}
                     </div>
                 )}
 
@@ -305,7 +315,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
                                             <div key={p.id} className="bg-slate-800 p-3 rounded-xl border border-slate-600">
                                                 <div className="flex justify-between items-center mb-2">
                                                     <span className="font-bold text-xs truncate max-w-[100px]">{p.title}</span>
-                                                    <button onClick={() => handleDeleteProject(p.id)} className="text-red-400 hover:text-red-300"><Trash2 size={12}/></button>
+                                                    <span className="text-[9px] text-slate-400 truncate">{p.clientName}</span>
+                                                    <button onClick={() => handleDeleteProject(p.id)} className="text-red-400 hover:text-red-300 ml-2"><Trash2 size={12}/></button>
                                                 </div>
                                                 <div className="grid grid-cols-4 gap-1">
                                                     <button 
