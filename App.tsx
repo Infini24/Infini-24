@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Home, Calculator, Briefcase, Mail, ArrowRight, Infinity as InfinityIcon, LogIn, LogOut, User as UserIcon, Image as ImageIcon } from 'lucide-react';
+import { Toaster } from 'react-hot-toast';
 import HomePage from './pages/HomePage';
 import ServicesPage from './pages/ServicesPage';
 import ProfilePage from './pages/ProfilePage';
@@ -124,12 +125,23 @@ const App = () => {
   const [showAuth, setShowAuth] = useState(false);
   const [pendingProject, setPendingProject] = useState<{service: ServiceType, name: string, price: number} | null>(null);
 
+  // Persistence de session
+  useEffect(() => {
+      const storedUser = localStorage.getItem('infini_auth_user');
+      if (storedUser) {
+          try {
+              setUser(JSON.parse(storedUser));
+          } catch (e) {
+              console.error("Session invalide");
+          }
+      }
+  }, []);
+
   const handleNavigate = (index: number, serviceType?: ServiceType) => {
     setActiveTab(index);
     if (serviceType) {
       setInitialService(serviceType);
     }
-    // Scroll to top on navigation
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -139,8 +151,8 @@ const App = () => {
 
   const handleLogin = (loggedUser: User) => {
     setUser(loggedUser);
+    localStorage.setItem('infini_auth_user', JSON.stringify(loggedUser));
     setShowAuth(false);
-    // Redirect to Services if there was a pending request
     if (pendingProject) {
         setActiveTab(2);
     }
@@ -148,6 +160,7 @@ const App = () => {
 
   const handleLogout = () => {
     setUser(null);
+    localStorage.removeItem('infini_auth_user');
     setActiveTab(0);
     setPendingProject(null);
   };
@@ -198,6 +211,38 @@ const App = () => {
 
   return (
     <div className="flex bg-[#FDFCF8] h-screen w-screen overflow-hidden text-slate-900 font-['Inter'] selection:bg-[#B48646]/20 selection:text-[#B48646]">
+      {/* Toast Notifications */}
+      <Toaster 
+        position="top-center" 
+        toastOptions={{
+            style: {
+                background: '#333',
+                color: '#fff',
+                borderRadius: '1rem',
+                fontSize: '14px',
+                fontWeight: 'bold',
+            },
+            success: {
+                style: {
+                    background: '#F0FFF4',
+                    color: '#15803d',
+                    border: '1px solid #BBF7D0'
+                },
+                iconTheme: {
+                    primary: '#15803d',
+                    secondary: '#fff',
+                },
+            },
+            error: {
+                style: {
+                    background: '#FEF2F2',
+                    color: '#991B1B',
+                    border: '1px solid #FECACA'
+                },
+            }
+        }}
+      />
+
       {/* Sidebar Desktop */}
       <DesktopSidebar 
         activeTab={showAuth ? -1 : activeTab} 
@@ -210,7 +255,7 @@ const App = () => {
       {/* Main Content Area */}
       <main className="flex-1 h-full relative flex flex-col md:pl-72 transition-all duration-300">
         
-        {/* Back button on Mobile when Auth is open (optional UX improvement) */}
+        {/* Back button on Mobile when Auth is open */}
         {showAuth && (
             <div className="absolute top-6 left-6 z-50 md:hidden">
                 <button 

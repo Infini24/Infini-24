@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { User, UserType } from '../types';
 import { Mail, Lock, User as UserIcon, Briefcase, ArrowRight, Loader2, Infinity, AlertTriangle, ShieldCheck, Eye, EyeOff } from 'lucide-react';
-import { saveUser, getUser } from '../db'; // Import du nouveau gestionnaire
+import { saveUser, getUser } from '../db';
+import toast from 'react-hot-toast'; // Import Toast
 
 interface AuthPageProps {
   onLogin: (user: User) => void;
@@ -67,7 +68,10 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
     e.preventDefault();
     setErrors({});
 
-    if (!validateForm()) return;
+    if (!validateForm()) {
+        toast.error("Veuillez corriger les erreurs.");
+        return;
+    }
 
     setLoading(true);
 
@@ -76,11 +80,11 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
 
         if (isRegistering) {
             // --- REGISTRATION FLOW ---
-            // 1. Check if exists via Cloud/Local DB
             const existingUser = await getUser(cleanEmail);
             
             if (existingUser) {
                 setErrors({ email: "Cet email possède déjà un compte." });
+                toast.error("Un compte existe déjà avec cet email.");
                 setLoading(false);
                 return;
             }
@@ -90,7 +94,9 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
             setGeneratedCode(code);
             setShowVerification(true);
             
-            // Simulation SMS (Alert)
+            // Simulation SMS (Alert via Toast)
+            toast.success(`Code envoyé : ${code}`, { duration: 6000, icon: '📩' });
+            // Fallback alerte système pour être sûr
             alert(`[CODE SÉCURITÉ] Votre code Infini 24 est : ${code}\n\nCe code deviendra votre mot de passe.`);
             setLoading(false);
 
@@ -100,16 +106,19 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
 
             if (!foundUser) {
                 setErrors({ email: "Aucun compte trouvé avec cet email." });
+                toast.error("Email inconnu.");
             } else if (foundUser.password !== password) {
                 setErrors({ password: "Mot de passe (Code) incorrect." });
+                toast.error("Code de sécurité incorrect.");
             } else {
+                toast.success(`Bienvenue, ${foundUser.name} !`);
                 onLogin(foundUser);
             }
             setLoading(false);
         }
     } catch (error) {
         console.error("Auth Error", error);
-        setErrors({ email: "Une erreur est survenue. Réessayez." });
+        toast.error("Erreur de connexion.");
         setLoading(false);
     }
   };
@@ -124,16 +133,15 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
             type: userType,
             companyName: userType === UserType.PME ? companyName.trim() : undefined,
             phone: phone.trim() || "Non renseigné",
-            password: generatedCode // THE CODE BECOMES THE PASSWORD
+            password: generatedCode
           };
           
-          // Save to Cloud/Local DB via db.ts helper
           await saveUser(newUser);
-          
-          // Auto Login
+          toast.success("Compte créé avec succès !");
           onLogin(newUser);
       } else {
-          setVerificationError("Code incorrect. Veuillez réessayer.");
+          setVerificationError("Code incorrect.");
+          toast.error("Le code est incorrect.");
       }
   };
 
@@ -174,7 +182,10 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
                     </button>
                 </form>
                 
-                <button onClick={() => alert(`Rappel : Votre code est ${generatedCode}`)} className="mt-6 text-xs text-slate-400 hover:text-slate-600 underline">
+                <button onClick={() => {
+                    toast.success(`Code renvoyé : ${generatedCode}`, {icon: '🔄'});
+                    alert(`Rappel : Votre code est ${generatedCode}`);
+                }} className="mt-6 text-xs text-slate-400 hover:text-slate-600 underline">
                     Renvoyer le code
                 </button>
             </div>
@@ -349,7 +360,9 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
 
                 {!isRegistering && (
                     <div className="flex items-center justify-end px-2">
-                        <button type="button" onClick={() => alert("Entrez votre email et nous vous renverrons un code (Simulation).")} className="text-xs font-bold text-[#B48646] hover:underline">Code oublié ?</button>
+                        <button type="button" onClick={() => {
+                            toast("Veuillez entrer votre email pour récupérer le code.", {icon: 'ℹ️'});
+                        }} className="text-xs font-bold text-[#B48646] hover:underline">Code oublié ?</button>
                     </div>
                 )}
 
