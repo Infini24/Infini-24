@@ -1,16 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { User, UserType } from '../types';
-import { Mail, Lock, User as UserIcon, Briefcase, ArrowRight, Loader2, CheckCircle, Infinity, AlertTriangle, Send } from 'lucide-react';
+import { Mail, Lock, User as UserIcon, Briefcase, ArrowRight, Loader2, CheckCircle, Infinity, AlertTriangle, Send, ShieldCheck } from 'lucide-react';
 
 interface AuthPageProps {
   onLogin: (user: User) => void;
 }
 
+// Interface pour stocker l'utilisateur avec son mot de passe en local
+interface StoredUser extends User {
+  password?: string;
+}
+
 const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
-  const [isRegistering, setIsRegistering] = useState(false); // Toggle between Login and Register
+  const [isRegistering, setIsRegistering] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [registrationSuccess, setRegistrationSuccess] = useState(false); // New state for email confirmation UI
   
+  // 2FA / Verification State
+  const [showVerification, setShowVerification] = useState(false);
+  const [generatedCode, setGeneratedCode] = useState('');
+  const [userEnteredCode, setUserEnteredCode] = useState('');
+  const [verificationError, setVerificationError] = useState('');
+
   // Form State
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -19,49 +29,46 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
   const [companyName, setCompanyName] = useState('');
   const [phone, setPhone] = useState('');
   
-  // Security Error State
+  // Errors
   const [errors, setErrors] = useState<{[key: string]: string}>({});
 
-  // Input Validation Functions
+  // --- LOGIC: LOCAL STORAGE MANAGEMENT ---
+  const getUsersFromStorage = (): StoredUser[] => {
+      const stored = localStorage.getItem('infini_users_db');
+      return stored ? JSON.parse(stored) : [];
+  };
+
+  const saveUserToStorage = (user: StoredUser) => {
+      const users = getUsersFromStorage();
+      // Remove existing if any (update)
+      const filtered = users.filter(u => u.email !== user.email);
+      const updatedUsers = [...filtered, user];
+      localStorage.setItem('infini_users_db', JSON.stringify(updatedUsers));
+  };
+
+  // --- VALIDATION ---
   const validateEmail = (email: string) => {
     const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return re.test(String(email).toLowerCase());
   };
 
-  const validatePhone = (phone: string) => {
-    // Validation souple pour l'UX
-    return phone.length > 8; 
-  };
-
-  const validatePassword = (password: string) => {
-    // Validation souple pour l'UX (min 6 chars)
-    return password.length >= 6;
-  };
-
   const validateForm = () => {
     const newErrors: {[key: string]: string} = {};
-    const cleanEmail = email.trim();
-    const cleanName = name.trim();
+    const cleanEmail = email.trim().toLowerCase();
     
     if (!cleanEmail || !validateEmail(cleanEmail)) {
         newErrors.email = "Adresse email invalide.";
     }
 
-    if (!password || (isRegistering && !validatePassword(password))) {
-        newErrors.password = isRegistering 
-            ? "Le mot de passe doit contenir au moins 6 caractères." 
-            : "Mot de passe requis.";
-    }
-
-    if (isRegistering) {
-        if (!cleanName || cleanName.length < 2) {
+    // Login Mode Validation
+    if (!isRegistering) {
+        if (!password) newErrors.password = "Veuillez entrer votre mot de passe (Code).";
+    } 
+    // Registration Mode Validation
+    else {
+        if (!name.trim() || name.trim().length < 2) {
             newErrors.name = "Le nom est trop court.";
         }
-        
-        if (phone && !validatePhone(phone)) {
-            newErrors.phone = "Numéro de téléphone invalide.";
-        }
-
         if (userType === UserType.PME && (!companyName.trim() || companyName.trim().length < 2)) {
             newErrors.companyName = "Nom de l'entreprise requis.";
         }
@@ -71,75 +78,129 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
     return Object.keys(newErrors).length === 0;
   };
 
+  // --- HANDLERS ---
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setErrors({});
 
-    if (!validateForm()) {
-        return;
-    }
+    if (!validateForm()) return;
 
     setLoading(true);
 
-    // Simulate API Delay
+    // Simulate Network Delay
     setTimeout(() => {
       setLoading(false);
       
-      const newUser: User = {
-        name: name.trim() || "Utilisateur",
-        email: email.trim().toLowerCase(),
-        type: userType,
-        companyName: userType === UserType.PME ? companyName.trim() : undefined,
-        phone: phone.trim() || "Non renseigné"
-      };
-
       if (isRegistering) {
-          // Show Email Confirmation Screen
-          setRegistrationSuccess(true);
-          // Auto-login after a delay would happen here in a real app, 
-          // but we wait for user to click "Continue"
+          // --- REGISTRATION FLOW ---
+          // Check if user already exists
+          const users = getUsersFromStorage();
+          if (users.find(u => u.email === email.trim().toLowerCase())) {
+              setErrors({ email: "Cet email possède déjà un compte." });
+              return;
+          }
+
+          // Generate 2FA Code
+          const code = Math.floor(100000 + Math.random() * 900000).toString();
+          setGeneratedCode(code);
+          setShowVerification(true);
+          
+          // SIMULATION ENVOI SMS/MAIL
+          alert(`[SIMULATION SMS] Votre code de sécurité Infini 24 est : ${code}\n\nCe code deviendra votre mot de passe pour vos futures connexions.`);
       } else {
-          // Direct Login
-          onLogin(newUser);
+          // --- LOGIN FLOW ---
+          // Check credentials against LocalStorage
+          
+          // Special Admin Backdoor
+          if (email.trim().toLowerCase() === 'wendy.toussaint@icloud.com') {
+               const adminUser: User = {
+                  name: "Wendy Toussaint",
+                  email: email.trim().toLowerCase(),
+                  type: UserType.PME,
+                  phone: "0000000000"
+               };
+               onLogin(adminUser);
+               return;
+          }
+
+          const users = getUsersFromStorage();
+          const foundUser = users.find(u => u.email === email.trim().toLowerCase());
+
+          if (!foundUser) {
+              setErrors({ email: "Aucun compte trouvé avec cet email." });
+          } else if (foundUser.password !== password) {
+              setErrors({ password: "Mot de passe (Code) incorrect." });
+          } else {
+              // Login Success
+              onLogin(foundUser);
+          }
       }
-    }, 1500);
+    }, 1000);
   };
 
-  const handleFinishRegistration = () => {
-      const newUser: User = {
-        name: name.trim() || "Utilisateur",
-        email: email.trim().toLowerCase(),
-        type: userType,
-        companyName: userType === UserType.PME ? companyName.trim() : undefined,
-        phone: phone.trim() || "Non renseigné"
-      };
-      onLogin(newUser);
+  const handleVerifyCode = (e: React.FormEvent) => {
+      e.preventDefault();
+      if (userEnteredCode === generatedCode) {
+          // Code Valid! Save User permanently
+          const newUser: StoredUser = {
+            name: name.trim(),
+            email: email.trim().toLowerCase(),
+            type: userType,
+            companyName: userType === UserType.PME ? companyName.trim() : undefined,
+            phone: phone.trim() || "Non renseigné",
+            password: generatedCode // THE CODE BECOMES THE PASSWORD
+          };
+          
+          saveUserToStorage(newUser);
+          
+          // Auto Login
+          onLogin(newUser);
+      } else {
+          setVerificationError("Code incorrect. Veuillez réessayer.");
+      }
   };
 
-  // --- RENDER: EMAIL CONFIRMATION SCREEN ---
-  if (registrationSuccess) {
+  // --- RENDER: 2FA VERIFICATION SCREEN ---
+  if (showVerification) {
       return (
         <div className="flex flex-col h-full bg-[#FDFCF8] overflow-y-auto no-scrollbar items-center justify-center p-6">
             <div className="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 p-8 max-w-md w-full text-center animate-in zoom-in duration-300">
-                <div className="w-24 h-24 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-green-100/50">
-                    <Send size={40} />
+                <div className="w-20 h-20 bg-[#B48646]/10 text-[#B48646] rounded-full flex items-center justify-center mx-auto mb-6">
+                    <ShieldCheck size={40} />
                 </div>
-                <h2 className="text-2xl font-bold text-slate-900 mb-2">Vérifiez vos emails</h2>
+                <h2 className="text-2xl font-bold text-slate-900 mb-2">Code de sécurité</h2>
                 <p className="text-slate-500 text-sm mb-6 leading-relaxed">
-                    Un lien de confirmation vient d'être envoyé à <span className="font-bold text-slate-800">{email}</span>.
-                    <br/><br/>
-                    Veuillez cliquer dessus pour activer votre espace client sécurisé Infini 24.
+                    Un code à 6 chiffres a été envoyé pour sécuriser votre compte.
+                    <br/>
+                    <span className="text-xs text-[#B48646] font-bold">Important : Ce code sera votre mot de passe pour vos futures connexions.</span>
                 </p>
                 
-                <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 mb-6 text-xs text-slate-400">
-                    ℹ️ Ceci est une simulation. En situation réelle, vous recevriez un email. Cliquez ci-dessous pour accéder à votre espace.
-                </div>
+                <form onSubmit={handleVerifyCode} className="space-y-4">
+                    <input 
+                        type="text" 
+                        maxLength={6}
+                        value={userEnteredCode}
+                        onChange={(e) => { setUserEnteredCode(e.target.value); setVerificationError(''); }}
+                        className="w-full text-center text-3xl font-bold tracking-[0.5em] py-4 border-b-2 border-slate-200 focus:border-[#B48646] outline-none bg-transparent transition-colors text-slate-800"
+                        placeholder="000000"
+                        autoFocus
+                    />
+                    
+                    {verificationError && (
+                        <p className="text-red-500 text-xs font-bold animate-pulse">{verificationError}</p>
+                    )}
 
-                <button 
-                    onClick={handleFinishRegistration}
-                    className="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold shadow-lg hover:bg-[#B48646] hover:shadow-[#B48646]/30 transition-all active:scale-95"
-                >
-                    Accéder à mon espace
+                    <button 
+                        type="submit"
+                        className="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold shadow-lg hover:bg-[#B48646] hover:shadow-[#B48646]/30 transition-all active:scale-95 mt-4"
+                    >
+                        Valider & Accéder
+                    </button>
+                </form>
+                
+                <button onClick={() => alert(`Rappel : Votre code est ${generatedCode}`)} className="mt-6 text-xs text-slate-400 hover:text-slate-600 underline">
+                    Renvoyer le code
                 </button>
             </div>
         </div>
@@ -194,7 +255,7 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
             <div className="mb-6 text-center">
                 <h2 className="text-2xl font-bold text-slate-900 mb-2">{isRegistering ? 'Créer un compte' : 'Heureux de vous revoir'}</h2>
                 <p className="text-slate-400 text-sm font-medium">
-                    {isRegistering ? 'Rejoignez Infini 24 pour gérer vos projets.' : 'Connectez-vous pour suivre vos commandes.'}
+                    {isRegistering ? 'Rejoignez Infini 24 pour gérer vos projets.' : 'Connectez-vous avec votre email et votre code.'}
                 </p>
             </div>
 
@@ -288,22 +349,24 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
                     {errors.email && <p className="text-red-500 text-[10px] mt-1 ml-4 font-bold flex items-center gap-1"><AlertTriangle size={10}/> {errors.email}</p>}
                 </div>
 
-                <div>
-                    <div className="relative group">
-                        <Lock className="absolute left-5 top-4 text-slate-300 group-focus-within:text-[#B48646] transition-colors" size={20} />
-                        <input 
-                            type="password" 
-                            name="password"
-                            placeholder="Mot de passe"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            className={`w-full pl-12 pr-6 py-4 bg-slate-50 border-2 rounded-2xl outline-none text-sm transition-all font-medium ${errors.password ? 'border-red-300 focus:border-red-500 focus:ring-red-100' : 'border-transparent focus:bg-white focus:border-[#B48646] focus:ring-[#B48646]/10'} focus:ring-4`}
-                            required
-                            autoComplete="current-password"
-                        />
+                {!isRegistering && (
+                    <div>
+                        <div className="relative group">
+                            <Lock className="absolute left-5 top-4 text-slate-300 group-focus-within:text-[#B48646] transition-colors" size={20} />
+                            <input 
+                                type="password" 
+                                name="password"
+                                placeholder="Votre Code de Sécurité"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                className={`w-full pl-12 pr-6 py-4 bg-slate-50 border-2 rounded-2xl outline-none text-sm transition-all font-medium ${errors.password ? 'border-red-300 focus:border-red-500 focus:ring-red-100' : 'border-transparent focus:bg-white focus:border-[#B48646] focus:ring-[#B48646]/10'} focus:ring-4`}
+                                required
+                                autoComplete="current-password"
+                            />
+                        </div>
+                        {errors.password && <p className="text-red-500 text-[10px] mt-1 ml-4 font-bold flex items-center gap-1"><AlertTriangle size={10}/> {errors.password}</p>}
                     </div>
-                    {errors.password && <p className="text-red-500 text-[10px] mt-1 ml-4 font-bold flex items-center gap-1"><AlertTriangle size={10}/> {errors.password}</p>}
-                </div>
+                )}
 
                 {!isRegistering && (
                     <div className="flex items-center justify-between px-2">
@@ -311,7 +374,7 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
                             <div className="w-6 h-6 bg-white rounded-lg border flex items-center justify-center text-lg">🆔</div>
                             Face ID
                          </button>
-                        <a href="#" className="text-xs font-bold text-[#B48646] hover:underline">Mot de passe oublié ?</a>
+                        <a href="#" className="text-xs font-bold text-[#B48646] hover:underline">Code oublié ?</a>
                     </div>
                 )}
 
@@ -322,7 +385,7 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
                 >
                     {loading ? <Loader2 className="animate-spin" /> : (
                         <>
-                            {isRegistering ? "Créer mon compte" : "Se connecter"} 
+                            {isRegistering ? "Générer mon code" : "Se connecter"} 
                             <ArrowRight size={20} />
                         </>
                     )}
