@@ -130,17 +130,15 @@ const App = () => {
   const [showAuth, setShowAuth] = useState(false);
   const [pendingProject, setPendingProject] = useState<{service: ServiceType, name: string, price: number} | null>(null);
 
-  // Persistence de session via Firebase Auth
   useEffect(() => {
+      console.log("Infini 24 App v1.5 - Firebase Active");
       if (!auth) return;
       const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
           if (currentUser) {
-              // Récupérer les infos détaillées depuis Firestore
               const userDoc = await getDoc(doc(db, "users", currentUser.uid));
               if (userDoc.exists()) {
                   setUser({ uid: currentUser.uid, ...userDoc.data() } as User);
               } else {
-                  // Fallback
                   setUser({ name: currentUser.displayName || 'Utilisateur', email: currentUser.email || '', type: UserType.PARTICULIER, phone: '' });
               }
           } else {
