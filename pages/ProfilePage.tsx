@@ -113,12 +113,17 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
       const toastId = toast.loading("Envoi du fichier...");
 
       try {
-          await uploadProjectFile(selectedProjectId, file);
+          // Trouver le projet pour récupérer l'email du client
+          const currentProject = projects.find(p => p.id === selectedProjectId);
+          const clientEmail = currentProject?.clientEmail || user?.email || "anonyme";
+
+          await uploadProjectFile(selectedProjectId, file, clientEmail);
+          
           toast.success("Fichier envoyé avec succès !", { id: toastId });
           await loadProjects();
       } catch (error) {
           console.error(error);
-          toast.error("Erreur lors de l'envoi", { id: toastId });
+          toast.error("Erreur d'envoi. Vérifiez votre connexion.", { id: toastId });
       } finally {
           setUploadingId(null);
           setSelectedProjectId(null);

@@ -104,13 +104,15 @@ export const deleteProject = async (id: string | number) => {
 
 // --- GESTION FICHIERS (STORAGE) ---
 
-export const uploadProjectFile = async (projectId: string, file: File) => {
+export const uploadProjectFile = async (projectId: string, file: File, clientEmail: string = "inconnu") => {
     if (!storage) throw new Error("Storage non configuré");
     
     try {
-        // 1. Créer une référence (Dossier Projet > Nom du fichier)
-        // On ajoute un timestamp pour éviter d'écraser les fichiers du même nom
-        const fileRef = ref(storage, `projects/${projectId}/${Date.now()}_${file.name}`);
+        // 1. Créer une référence propre : Clients > Email > ProjetID > Fichier
+        // On nettoie l'email pour éviter les caractères interdits dans les dossiers
+        const safeEmail = clientEmail.replace(/[^a-z0-9@._-]/gi, '_');
+        
+        const fileRef = ref(storage, `clients/${safeEmail}/${projectId}/${Date.now()}_${file.name}`);
         
         // 2. Envoyer le fichier
         const snapshot = await uploadBytes(fileRef, file);
