@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { User } from '../types';
 import { FolderOpen, LogIn, Infinity, Download, ExternalLink, CheckCircle, Clock, AlertCircle, Plus, Trash2, Send, Info, Eye, Edit2, FileCheck, Package, Facebook } from 'lucide-react';
+import { getProjects, updateProjectStatus, deleteProject, saveProject } from '../db'; // Import du gestionnaire
 
 interface ProfilePageProps {
   user?: User | null;
@@ -12,7 +13,7 @@ interface ProfilePageProps {
 type ProjectStep = 'request_received' | 'in_creation' | 'validation' | 'delivered';
 
 interface LocalProject {
-  id: number;
+  id: string | number;
   title: string;
   type: string;
   step: ProjectStep;
@@ -26,65 +27,61 @@ interface LocalProject {
 
 const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick }) => {
   
-  // --- STATE DE SIMULATION (Persistant via LocalStorage) ---
   const [projects, setProjects] = useState<LocalProject[]>([]);
   const isAdmin = user?.email === 'wendy.toussaint@icloud.com';
   
-  // Chargement initial depuis le LocalStorage
+  // Chargement des données (Async via db.ts)
+  const loadProjects = async () => {
+      const data = await getProjects();
+      setProjects(data);
+  };
+
   useEffect(() => {
-    const savedProjects = localStorage.getItem('infini_projects_v4');
-    if (savedProjects) {
-        setProjects(JSON.parse(savedProjects));
-    } else {
-        // Données par défaut : Aucune (Liste vide)
-        setProjects([]);
-    }
+    loadProjects();
+    // Optionnel: Un petit polling pour rafraîchir en temps réel si pas de Websockets
+    const interval = setInterval(loadProjects, 5000); 
+    return () => clearInterval(interval);
   }, []);
 
-  // Sauvegarde automatique dans le LocalStorage à chaque changement
-  useEffect(() => {
-    localStorage.setItem('infini_projects_v4', JSON.stringify(projects));
-  }, [projects]);
-
   // --- STATE ADMIN ---
-  const [showAdminPanel, setShowAdminPanel] = useState(false);
   const [newProjectTitle, setNewProjectTitle] = useState("");
   const [newClientName, setNewClientName] = useState("");
   const [newProjectType, setNewProjectType] = useState("Graphisme");
 
   // --- ACTIONS ADMIN ---
-  const handleAddProject = () => {
-      const newProj: LocalProject = {
-          id: Date.now(),
+  const handleAddProject = async () => {
+      const newProj = {
           title: newProjectTitle || "Nouveau Projet",
           type: newProjectType,
           step: 'request_received',
           progress: 10,
           date: new Date().toLocaleDateString(),
           clientName: newClientName || "Client Inconnu",
-          clientEmail: "" // Created by admin manually
+          clientEmail: "", // Created manually
+          id: Date.now() // Temp ID
       };
-      setProjects([newProj, ...projects]);
+      
+      await saveProject(newProj);
+      await loadProjects(); // Refresh UI
+
       setNewProjectTitle("");
       setNewClientName("");
   };
 
-  const handleUpdateStatus = (id: number, step: ProjectStep) => {
+  const handleUpdateStatus = async (id: string | number, step: ProjectStep) => {
       let progress = 10;
       if (step === 'in_creation') progress = 50;
       if (step === 'validation') progress = 80;
       if (step === 'delivered') progress = 100;
 
-      setProjects(projects.map(p => 
-          p.id === id 
-          ? { ...p, step: step, progress: progress, downloadUrl: step === 'delivered' ? '#' : undefined } 
-          : p
-      ));
+      await updateProjectStatus(id, step, progress);
+      await loadProjects();
   };
 
-  const handleDeleteProject = (id: number) => {
+  const handleDeleteProject = async (id: string | number) => {
       if(window.confirm("Supprimer ce projet de la liste ?")) {
-          setProjects(projects.filter(p => p.id !== id));
+          await deleteProject(id);
+          await loadProjects();
       }
   };
 
@@ -144,7 +141,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
         </div>
 
         {/* Timeline VISUELLE */}
-        {renderTimeline(project.step)}
+        {renderTimeline(project.step as ProjectStep)}
 
         {/* Action (Téléchargement) */}
         {project.step === 'delivered' && (
@@ -164,8 +161,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
   );
 
   // --- FILTERING LOGIC ---
-  // Si Admin : Voir TOUS les projets
-  // Si Client : Voir UNIQUEMENT ses projets (filtré par email)
   const displayedProjects = isAdmin 
     ? projects 
     : projects.filter(p => p.clientEmail === user?.email);
@@ -242,7 +237,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
                     <div className="bg-white p-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 mb-8 text-center py-10 text-slate-400">
                         <FolderOpen size={40} className="mx-auto mb-4 opacity-50" />
                         <p className="text-sm">Aucun projet pour le moment.</p>
-                        {isAdmin && <p className="text-xs mt-2 text-red-400">Les projets créés sur d'autres appareils ne sont pas visibles ici (Simulation).</p>}
+                        {isAdmin && <p className="text-xs mt-2 text-red-400">Le mode Cloud n'est actif que si configuré.</p>}
                     </div>
                 )}
 

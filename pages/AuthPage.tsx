@@ -1,14 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { User, UserType } from '../types';
-import { Mail, Lock, User as UserIcon, Briefcase, ArrowRight, Loader2, CheckCircle, Infinity, AlertTriangle, Send, ShieldCheck, Eye, EyeOff } from 'lucide-react';
+import { Mail, Lock, User as UserIcon, Briefcase, ArrowRight, Loader2, Infinity, AlertTriangle, ShieldCheck, Eye, EyeOff } from 'lucide-react';
+import { saveUser, getUser } from '../db'; // Import du nouveau gestionnaire
 
 interface AuthPageProps {
   onLogin: (user: User) => void;
-}
-
-// Interface pour stocker l'utilisateur avec son mot de passe en local
-interface StoredUser extends User {
-  password?: string;
 }
 
 const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
@@ -35,20 +31,6 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
   // Errors
   const [errors, setErrors] = useState<{[key: string]: string}>({});
 
-  // --- LOGIC: LOCAL STORAGE MANAGEMENT ---
-  const getUsersFromStorage = (): StoredUser[] => {
-      const stored = localStorage.getItem('infini_users_db');
-      return stored ? JSON.parse(stored) : [];
-  };
-
-  const saveUserToStorage = (user: StoredUser) => {
-      const users = getUsersFromStorage();
-      // Remove existing if any (update)
-      const filtered = users.filter(u => u.email !== user.email);
-      const updatedUsers = [...filtered, user];
-      localStorage.setItem('infini_users_db', JSON.stringify(updatedUsers));
-  };
-
   // --- VALIDATION ---
   const validateEmail = (email: string) => {
     const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -63,11 +45,9 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
         newErrors.email = "Adresse email invalide.";
     }
 
-    // Login Mode Validation
     if (!isRegistering) {
         if (!password) newErrors.password = "Veuillez entrer votre mot de passe (Code).";
     } 
-    // Registration Mode Validation
     else {
         if (!name.trim() || name.trim().length < 2) {
             newErrors.name = "Le nom est trop court.";
@@ -83,7 +63,7 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
 
   // --- HANDLERS ---
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors({});
 
@@ -91,50 +71,54 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
 
     setLoading(true);
 
-    // Simulate Network Delay
-    setTimeout(() => {
-      setLoading(false);
-      
-      if (isRegistering) {
-          // --- REGISTRATION FLOW ---
-          // Check if user already exists
-          const users = getUsersFromStorage();
-          if (users.find(u => u.email === email.trim().toLowerCase())) {
-              setErrors({ email: "Cet email possède déjà un compte." });
-              return;
-          }
+    try {
+        const cleanEmail = email.trim().toLowerCase();
 
-          // Generate 2FA Code
-          const code = Math.floor(100000 + Math.random() * 900000).toString();
-          setGeneratedCode(code);
-          setShowVerification(true);
-          
-          // SIMULATION ENVOI SMS/MAIL
-          alert(`[SIMULATION SMS] Votre code de sécurité Infini 24 est : ${code}\n\nCe code deviendra votre mot de passe pour vos futures connexions.`);
-      } else {
-          // --- LOGIN FLOW ---
-          // Check credentials against LocalStorage
-          
-          const users = getUsersFromStorage();
-          const foundUser = users.find(u => u.email === email.trim().toLowerCase());
+        if (isRegistering) {
+            // --- REGISTRATION FLOW ---
+            // 1. Check if exists via Cloud/Local DB
+            const existingUser = await getUser(cleanEmail);
+            
+            if (existingUser) {
+                setErrors({ email: "Cet email possède déjà un compte." });
+                setLoading(false);
+                return;
+            }
 
-          if (!foundUser) {
-              setErrors({ email: "Aucun compte trouvé avec cet email." });
-          } else if (foundUser.password !== password) {
-              setErrors({ password: "Mot de passe (Code) incorrect." });
-          } else {
-              // Login Success
-              onLogin(foundUser);
-          }
-      }
-    }, 1000);
+            // 2. Generate Code
+            const code = Math.floor(100000 + Math.random() * 900000).toString();
+            setGeneratedCode(code);
+            setShowVerification(true);
+            
+            // Simulation SMS (Alert)
+            alert(`[CODE SÉCURITÉ] Votre code Infini 24 est : ${code}\n\nCe code deviendra votre mot de passe.`);
+            setLoading(false);
+
+        } else {
+            // --- LOGIN FLOW ---
+            const foundUser = await getUser(cleanEmail);
+
+            if (!foundUser) {
+                setErrors({ email: "Aucun compte trouvé avec cet email." });
+            } else if (foundUser.password !== password) {
+                setErrors({ password: "Mot de passe (Code) incorrect." });
+            } else {
+                onLogin(foundUser);
+            }
+            setLoading(false);
+        }
+    } catch (error) {
+        console.error("Auth Error", error);
+        setErrors({ email: "Une erreur est survenue. Réessayez." });
+        setLoading(false);
+    }
   };
 
-  const handleVerifyCode = (e: React.FormEvent) => {
+  const handleVerifyCode = async (e: React.FormEvent) => {
       e.preventDefault();
       if (userEnteredCode === generatedCode) {
-          // Code Valid! Save User permanently
-          const newUser: StoredUser = {
+          
+          const newUser = {
             name: name.trim(),
             email: email.trim().toLowerCase(),
             type: userType,
@@ -143,7 +127,8 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
             password: generatedCode // THE CODE BECOMES THE PASSWORD
           };
           
-          saveUserToStorage(newUser);
+          // Save to Cloud/Local DB via db.ts helper
+          await saveUser(newUser);
           
           // Auto Login
           onLogin(newUser);
@@ -152,7 +137,6 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
       }
   };
 
-  // --- RENDER: 2FA VERIFICATION SCREEN ---
   if (showVerification) {
       return (
         <div className="flex flex-col h-full bg-[#FDFCF8] overflow-y-auto no-scrollbar items-center justify-center p-6">
@@ -198,7 +182,6 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
       );
   }
 
-  // --- RENDER: LOGIN/REGISTER FORM ---
   return (
     <div className="flex flex-col h-full bg-[#FDFCF8] overflow-y-auto no-scrollbar">
       
@@ -227,7 +210,6 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
       <div className="flex-1 px-4 md:px-6 relative z-20 pb-8">
         <div className="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 p-8 max-w-lg mx-auto w-full transition-all">
             
-            {/* Tabs */}
             <div className="flex bg-slate-50 p-1.5 rounded-[1.5rem] mb-8 border border-slate-100">
                 <button 
                     onClick={() => { setIsRegistering(false); setErrors({}); }}
@@ -254,7 +236,6 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
                 
                 {isRegistering && (
                     <div className="space-y-5 animate-in slide-in-from-top-2 duration-300">
-                        {/* User Type Selector */}
                         <div>
                             <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 text-center">Vous êtes ?</label>
                             <div className="grid grid-cols-2 gap-4">
@@ -368,7 +349,7 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
 
                 {!isRegistering && (
                     <div className="flex items-center justify-end px-2">
-                        <a href="#" className="text-xs font-bold text-[#B48646] hover:underline">Code oublié ?</a>
+                        <button type="button" onClick={() => alert("Entrez votre email et nous vous renverrons un code (Simulation).")} className="text-xs font-bold text-[#B48646] hover:underline">Code oublié ?</button>
                     </div>
                 )}
 
