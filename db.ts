@@ -69,6 +69,24 @@ export const resetUserPassword = async (email: string) => {
     if (auth) await sendPasswordResetEmail(auth, email);
 };
 
+// Récupérer tous les utilisateurs (Pour l'Admin)
+export const getUsers = async () => {
+    try {
+        const querySnapshot = await getDocs(collection(db, "users"));
+        // On récupère les données et on trie par date (le plus récent en premier)
+        const users = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        // Tri manuel JS car Firestore demande un index pour le tri serveur
+        return users.sort((a: any, b: any) => {
+            const dateA = new Date(a.createdAt || 0).getTime();
+            const dateB = new Date(b.createdAt || 0).getTime();
+            return dateB - dateA;
+        });
+    } catch (e) {
+        console.error("Erreur récupération utilisateurs:", e);
+        return [];
+    }
+};
+
 
 // --- GESTION PROJETS (FIRESTORE) ---
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { User } from '../types';
-import { FolderOpen, LogIn, Infinity, Download, ExternalLink, CheckCircle, Clock, AlertCircle, Plus, Trash2, Send, Info, Eye, Edit2, FileCheck, Package, Facebook, UploadCloud, FileText, Loader2 } from 'lucide-react';
-import { getProjects, updateProjectStatus, deleteProject, saveProject, uploadProjectFile } from '../db'; // Import du gestionnaire
+import { FolderOpen, LogIn, Infinity, Download, ExternalLink, CheckCircle, Clock, AlertCircle, Plus, Trash2, Send, Info, Eye, Edit2, FileCheck, Package, Facebook, UploadCloud, FileText, Loader2, Users, Phone as PhoneIcon, Calendar } from 'lucide-react';
+import { getProjects, updateProjectStatus, deleteProject, saveProject, uploadProjectFile, getUsers } from '../db'; // Import du gestionnaire
 import toast from 'react-hot-toast';
 
 interface ProfilePageProps {
@@ -36,6 +36,7 @@ interface LocalProject {
 const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick }) => {
   
   const [projects, setProjects] = useState<LocalProject[]>([]);
+  const [allUsers, setAllUsers] = useState<any[]>([]); // Liste des clients pour l'admin
   const isAdmin = user?.email === 'wendy.toussaint@icloud.com';
   
   // Upload State
@@ -44,17 +45,24 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
 
   // Chargement des données (Async via db.ts)
-  const loadProjects = async () => {
-      const data = await getProjects();
-      setProjects(data as LocalProject[]);
+  const loadData = async () => {
+      // 1. Charger les projets
+      const projectsData = await getProjects();
+      setProjects(projectsData as LocalProject[]);
+
+      // 2. Charger les utilisateurs (Seulement si Admin)
+      if (isAdmin) {
+          const usersData = await getUsers();
+          setAllUsers(usersData);
+      }
   };
 
   useEffect(() => {
-    loadProjects();
-    // Optionnel: Un petit polling pour rafraîchir en temps réel si pas de Websockets
-    const interval = setInterval(loadProjects, 5000); 
+    loadData();
+    // Optionnel: Un petit polling pour rafraîchir en temps réel
+    const interval = setInterval(loadData, 10000); 
     return () => clearInterval(interval);
-  }, []);
+  }, [isAdmin]); // Reload when admin status changes
 
   // --- STATE ADMIN ---
   const [newProjectTitle, setNewProjectTitle] = useState("");
@@ -74,7 +82,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
       };
       
       await saveProject(newProj);
-      await loadProjects(); // Refresh UI
+      await loadData(); // Refresh UI
 
       setNewProjectTitle("");
       setNewClientName("");
@@ -87,13 +95,13 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
       if (step === 'delivered') progress = 100;
 
       await updateProjectStatus(id, step, progress);
-      await loadProjects();
+      await loadData();
   };
 
   const handleDeleteProject = async (id: string | number) => {
       if(window.confirm("Supprimer ce projet de la liste ?")) {
           await deleteProject(id);
-          await loadProjects();
+          await loadData();
       }
   };
 
@@ -120,7 +128,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
           await uploadProjectFile(selectedProjectId, file, clientEmail);
           
           toast.success("Fichier envoyé avec succès !", { id: toastId });
-          await loadProjects();
+          await loadData();
       } catch (error) {
           console.error(error);
           toast.error("Erreur d'envoi. Vérifiez votre connexion.", { id: toastId });
@@ -367,78 +375,110 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
                             </h3>
                             <p className="text-xs text-slate-400 mb-6">Gérez les demandes reçues par Email / WhatsApp ici.</p>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                {/* Ajouter un projet */}
-                                <div className="bg-slate-700/50 p-4 rounded-2xl border border-slate-600">
-                                    <h4 className="font-bold text-sm mb-3 flex items-center gap-2"><Plus size={14} /> Nouvelle Demande Reçue</h4>
-                                    <div className="space-y-3">
-                                        <input 
-                                            type="text" 
-                                            placeholder="Nom du projet (ex: Logo)" 
-                                            value={newProjectTitle}
-                                            onChange={(e) => setNewProjectTitle(e.target.value)}
-                                            className="w-full bg-slate-900 border border-slate-600 rounded-xl px-3 py-2 text-sm outline-none focus:border-[#B48646]"
-                                        />
-                                        <input 
-                                            type="text" 
-                                            placeholder="Nom du client" 
-                                            value={newClientName}
-                                            onChange={(e) => setNewClientName(e.target.value)}
-                                            className="w-full bg-slate-900 border border-slate-600 rounded-xl px-3 py-2 text-sm outline-none focus:border-[#B48646]"
-                                        />
-                                        <select 
-                                            value={newProjectType}
-                                            onChange={(e) => setNewProjectType(e.target.value)}
-                                            className="w-full bg-slate-900 border border-slate-600 rounded-xl px-3 py-2 text-sm outline-none focus:border-[#B48646]"
-                                        >
-                                            <option value="Graphisme">Graphisme</option>
-                                            <option value="Vidéo">Vidéo</option>
-                                        </select>
-                                        <button onClick={handleAddProject} className="w-full bg-green-600 hover:bg-green-500 text-white py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-colors">
-                                            Créer le dossier
-                                        </button>
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                {/* Colonne 1 : Création & Statuts */}
+                                <div className="space-y-6">
+                                    {/* Ajouter un projet */}
+                                    <div className="bg-slate-700/50 p-4 rounded-2xl border border-slate-600">
+                                        <h4 className="font-bold text-sm mb-3 flex items-center gap-2"><Plus size={14} /> Nouvelle Demande Reçue</h4>
+                                        <div className="space-y-3">
+                                            <input 
+                                                type="text" 
+                                                placeholder="Nom du projet (ex: Logo)" 
+                                                value={newProjectTitle}
+                                                onChange={(e) => setNewProjectTitle(e.target.value)}
+                                                className="w-full bg-slate-900 border border-slate-600 rounded-xl px-3 py-2 text-sm outline-none focus:border-[#B48646]"
+                                            />
+                                            <input 
+                                                type="text" 
+                                                placeholder="Nom du client" 
+                                                value={newClientName}
+                                                onChange={(e) => setNewClientName(e.target.value)}
+                                                className="w-full bg-slate-900 border border-slate-600 rounded-xl px-3 py-2 text-sm outline-none focus:border-[#B48646]"
+                                            />
+                                            <select 
+                                                value={newProjectType}
+                                                onChange={(e) => setNewProjectType(e.target.value)}
+                                                className="w-full bg-slate-900 border border-slate-600 rounded-xl px-3 py-2 text-sm outline-none focus:border-[#B48646]"
+                                            >
+                                                <option value="Graphisme">Graphisme</option>
+                                                <option value="Vidéo">Vidéo</option>
+                                            </select>
+                                            <button onClick={handleAddProject} className="w-full bg-green-600 hover:bg-green-500 text-white py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-colors">
+                                                Créer le dossier
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    {/* Gérer les statuts */}
+                                    <div className="bg-slate-700/50 p-4 rounded-2xl border border-slate-600">
+                                        <h4 className="font-bold text-sm mb-3">Mise à jour des statuts</h4>
+                                        <div className="space-y-2 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
+                                            {projects.map(p => (
+                                                <div key={p.id} className="bg-slate-800 p-3 rounded-xl border border-slate-600">
+                                                    <div className="flex justify-between items-center mb-2">
+                                                        <span className="font-bold text-xs truncate max-w-[100px]">{p.title}</span>
+                                                        <span className="text-[9px] text-slate-400 truncate">{p.clientName}</span>
+                                                        <button onClick={() => handleDeleteProject(p.id)} className="text-red-400 hover:text-red-300 ml-2"><Trash2 size={12}/></button>
+                                                    </div>
+                                                    <div className="grid grid-cols-4 gap-1">
+                                                        <button 
+                                                            onClick={() => handleUpdateStatus(p.id, 'request_received')} 
+                                                            className={`h-1.5 rounded-full ${p.step === 'request_received' ? 'bg-blue-500' : 'bg-slate-600'}`}
+                                                            title="Reçu"
+                                                        />
+                                                        <button 
+                                                            onClick={() => handleUpdateStatus(p.id, 'in_creation')} 
+                                                            className={`h-1.5 rounded-full ${p.step === 'in_creation' ? 'bg-orange-500' : 'bg-slate-600'}`}
+                                                            title="Création"
+                                                        />
+                                                        <button 
+                                                            onClick={() => handleUpdateStatus(p.id, 'validation')} 
+                                                            className={`h-1.5 rounded-full ${p.step === 'validation' ? 'bg-purple-500' : 'bg-slate-600'}`}
+                                                            title="Validation"
+                                                        />
+                                                        <button 
+                                                            onClick={() => handleUpdateStatus(p.id, 'delivered')} 
+                                                            className={`h-1.5 rounded-full ${p.step === 'delivered' ? 'bg-green-500' : 'bg-slate-600'}`}
+                                                            title="Livré"
+                                                        />
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
                                     </div>
                                 </div>
 
-                                {/* Gérer les statuts */}
-                                <div className="bg-slate-700/50 p-4 rounded-2xl border border-slate-600">
-                                    <h4 className="font-bold text-sm mb-3">Mise à jour des statuts</h4>
-                                    <div className="space-y-2 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
-                                        {projects.map(p => (
-                                            <div key={p.id} className="bg-slate-800 p-3 rounded-xl border border-slate-600">
-                                                <div className="flex justify-between items-center mb-2">
-                                                    <span className="font-bold text-xs truncate max-w-[100px]">{p.title}</span>
-                                                    <span className="text-[9px] text-slate-400 truncate">{p.clientName}</span>
-                                                    <button onClick={() => handleDeleteProject(p.id)} className="text-red-400 hover:text-red-300 ml-2"><Trash2 size={12}/></button>
+                                {/* Colonne 2 : Clients Inscrits */}
+                                <div className="bg-slate-700/50 p-4 rounded-2xl border border-slate-600 flex flex-col">
+                                    <h4 className="font-bold text-sm mb-3 flex items-center gap-2"><Users size={14} /> Derniers Clients Inscrits</h4>
+                                    <div className="space-y-2 flex-1 overflow-y-auto max-h-[300px] pr-2 custom-scrollbar">
+                                        {allUsers.length === 0 && <p className="text-xs text-slate-500 italic">Aucun client pour le moment.</p>}
+                                        {allUsers.map((client, idx) => (
+                                            <div key={client.uid || idx} className="bg-slate-800 p-3 rounded-xl border border-slate-600">
+                                                <div className="flex justify-between items-start">
+                                                    <div>
+                                                        <p className="font-bold text-xs text-white">{client.name}</p>
+                                                        <p className="text-[10px] text-slate-400">{client.email}</p>
+                                                    </div>
+                                                    {/* Badge Nouveau */}
+                                                    {idx < 3 && <span className="text-[9px] bg-red-500/20 text-red-400 px-1.5 rounded font-bold">New</span>}
                                                 </div>
-                                                <div className="grid grid-cols-4 gap-1">
-                                                    <button 
-                                                        onClick={() => handleUpdateStatus(p.id, 'request_received')} 
-                                                        className={`h-1.5 rounded-full ${p.step === 'request_received' ? 'bg-blue-500' : 'bg-slate-600'}`}
-                                                        title="Reçu"
-                                                    />
-                                                    <button 
-                                                        onClick={() => handleUpdateStatus(p.id, 'in_creation')} 
-                                                        className={`h-1.5 rounded-full ${p.step === 'in_creation' ? 'bg-orange-500' : 'bg-slate-600'}`}
-                                                        title="Création"
-                                                    />
-                                                    <button 
-                                                        onClick={() => handleUpdateStatus(p.id, 'validation')} 
-                                                        className={`h-1.5 rounded-full ${p.step === 'validation' ? 'bg-purple-500' : 'bg-slate-600'}`}
-                                                        title="Validation"
-                                                    />
-                                                    <button 
-                                                        onClick={() => handleUpdateStatus(p.id, 'delivered')} 
-                                                        className={`h-1.5 rounded-full ${p.step === 'delivered' ? 'bg-green-500' : 'bg-slate-600'}`}
-                                                        title="Livré"
-                                                    />
+                                                <div className="mt-2 pt-2 border-t border-slate-700/50 flex flex-col gap-1">
+                                                    {client.phone && (
+                                                        <div className="flex items-center gap-1.5 text-[10px] text-slate-300">
+                                                            <PhoneIcon size={10} className="text-[#B48646]" /> {client.phone}
+                                                        </div>
+                                                    )}
+                                                    {client.companyName && (
+                                                        <div className="flex items-center gap-1.5 text-[10px] text-slate-300">
+                                                            <FolderOpen size={10} className="text-[#B48646]" /> {client.companyName}
+                                                        </div>
+                                                    )}
+                                                    <div className="flex items-center gap-1.5 text-[9px] text-slate-500 mt-1">
+                                                        <Calendar size={9} /> Inscrit le {new Date(client.createdAt).toLocaleDateString()}
+                                                    </div>
                                                 </div>
-                                                <p className="text-[10px] text-slate-400 mt-1 text-center">
-                                                    {p.step === 'request_received' && 'Reçu'}
-                                                    {p.step === 'in_creation' && 'Création'}
-                                                    {p.step === 'validation' && 'Valid.'}
-                                                    {p.step === 'delivered' && 'Livré'}
-                                                </p>
                                             </div>
                                         ))}
                                     </div>
