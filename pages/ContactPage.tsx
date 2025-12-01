@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Mail, Phone, MapPin, Send, Facebook, Instagram, Linkedin, Loader2, MessageCircle, ChevronDown, ChevronUp, CircleHelp, Infinity, AlertTriangle } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, Facebook, Instagram, Linkedin, Loader2, MessageCircle, ChevronDown, ChevronUp, HelpCircle, Infinity, AlertTriangle } from 'lucide-react';
 import { User } from '../types';
 
 interface ContactPageProps {
@@ -204,7 +204,7 @@ const ContactPage: React.FC<ContactPageProps> = ({ user, onLoginClick, onLogout 
                     {/* FAQ Accordion */}
                     <div className="bg-slate-50 rounded-[2rem] p-8 border border-slate-100 mb-10">
                         <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2 mb-6">
-                            <CircleHelp size={14} className="text-[#B48646]"/> Questions Fréquentes
+                            <HelpCircle size={14} className="text-[#B48646]"/> Questions Fréquentes
                         </h3>
                         <div className="space-y-3">
                             {faqData.map((item, index) => (
