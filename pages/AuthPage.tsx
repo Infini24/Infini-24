@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { User, UserType } from '../types';
-import { Mail, Lock, User as UserIcon, Briefcase, ArrowRight, Loader2, CheckCircle, Infinity, AlertTriangle } from 'lucide-react';
+import { Mail, Lock, User as UserIcon, Briefcase, ArrowRight, Loader2, CheckCircle, Infinity, AlertTriangle, Send } from 'lucide-react';
 
 interface AuthPageProps {
   onLogin: (user: User) => void;
@@ -9,6 +9,7 @@ interface AuthPageProps {
 const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
   const [isRegistering, setIsRegistering] = useState(false); // Toggle between Login and Register
   const [loading, setLoading] = useState(false);
+  const [registrationSuccess, setRegistrationSuccess] = useState(false); // New state for email confirmation UI
   
   // Form State
   const [name, setName] = useState('');
@@ -23,26 +24,22 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
 
   // Input Validation Functions
   const validateEmail = (email: string) => {
-    // Regex stricte pour email
     const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return re.test(String(email).toLowerCase());
   };
 
   const validatePhone = (phone: string) => {
-    // Regex pour téléphone (formats français/internationaux acceptés)
-    const re = /^(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}$/;
-    return re.test(phone.replace(/\s/g, ''));
+    // Validation souple pour l'UX
+    return phone.length > 8; 
   };
 
   const validatePassword = (password: string) => {
-    // Minimum 8 caractères, au moins un chiffre
-    return password.length >= 8 && /\d/.test(password);
+    // Validation souple pour l'UX (min 6 chars)
+    return password.length >= 6;
   };
 
   const validateForm = () => {
     const newErrors: {[key: string]: string} = {};
-    
-    // Sanitize inputs (trim)
     const cleanEmail = email.trim();
     const cleanName = name.trim();
     
@@ -52,13 +49,13 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
 
     if (!password || (isRegistering && !validatePassword(password))) {
         newErrors.password = isRegistering 
-            ? "Le mot de passe doit contenir au moins 8 caractères et 1 chiffre." 
+            ? "Le mot de passe doit contenir au moins 6 caractères." 
             : "Mot de passe requis.";
     }
 
     if (isRegistering) {
         if (!cleanName || cleanName.length < 2) {
-            newErrors.name = "Le nom doit contenir au moins 2 caractères.";
+            newErrors.name = "Le nom est trop court.";
         }
         
         if (phone && !validatePhone(phone)) {
@@ -79,7 +76,7 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
     setErrors({});
 
     if (!validateForm()) {
-        return; // Stop if validation fails
+        return;
     }
 
     setLoading(true);
@@ -88,41 +85,85 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
     setTimeout(() => {
       setLoading(false);
       
-      // Create user object based on form data (Sanitized)
       const newUser: User = {
-        name: name.trim() || "Utilisateur Test",
+        name: name.trim() || "Utilisateur",
         email: email.trim().toLowerCase(),
         type: userType,
         companyName: userType === UserType.PME ? companyName.trim() : undefined,
-        phone: phone.trim() || "06 00 00 00 00"
+        phone: phone.trim() || "Non renseigné"
       };
 
-      onLogin(newUser);
+      if (isRegistering) {
+          // Show Email Confirmation Screen
+          setRegistrationSuccess(true);
+          // Auto-login after a delay would happen here in a real app, 
+          // but we wait for user to click "Continue"
+      } else {
+          // Direct Login
+          onLogin(newUser);
+      }
     }, 1500);
   };
 
+  const handleFinishRegistration = () => {
+      const newUser: User = {
+        name: name.trim() || "Utilisateur",
+        email: email.trim().toLowerCase(),
+        type: userType,
+        companyName: userType === UserType.PME ? companyName.trim() : undefined,
+        phone: phone.trim() || "Non renseigné"
+      };
+      onLogin(newUser);
+  };
+
+  // --- RENDER: EMAIL CONFIRMATION SCREEN ---
+  if (registrationSuccess) {
+      return (
+        <div className="flex flex-col h-full bg-[#FDFCF8] overflow-y-auto no-scrollbar items-center justify-center p-6">
+            <div className="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 p-8 max-w-md w-full text-center animate-in zoom-in duration-300">
+                <div className="w-24 h-24 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-green-100/50">
+                    <Send size={40} />
+                </div>
+                <h2 className="text-2xl font-bold text-slate-900 mb-2">Vérifiez vos emails</h2>
+                <p className="text-slate-500 text-sm mb-6 leading-relaxed">
+                    Un lien de confirmation vient d'être envoyé à <span className="font-bold text-slate-800">{email}</span>.
+                    <br/><br/>
+                    Veuillez cliquer dessus pour activer votre espace client sécurisé Infini 24.
+                </p>
+                
+                <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 mb-6 text-xs text-slate-400">
+                    ℹ️ Ceci est une simulation. En situation réelle, vous recevriez un email. Cliquez ci-dessous pour accéder à votre espace.
+                </div>
+
+                <button 
+                    onClick={handleFinishRegistration}
+                    className="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold shadow-lg hover:bg-[#B48646] hover:shadow-[#B48646]/30 transition-all active:scale-95"
+                >
+                    Accéder à mon espace
+                </button>
+            </div>
+        </div>
+      );
+  }
+
+  // --- RENDER: LOGIN/REGISTER FORM ---
   return (
     <div className="flex flex-col h-full bg-[#FDFCF8] overflow-y-auto no-scrollbar">
       
-      {/* New White Header with Infinity Logo - Standardized */}
       <header className="pt-14 pb-10 px-6 bg-white border-b border-slate-50 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] relative overflow-hidden rounded-b-[3.5rem] mb-2 z-10">
-            {/* Background Blurs */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-[#B48646] to-[#F3C06B] rounded-full blur-[80px] opacity-15 -mr-16 -mt-16 animate-pulse"></div>
             <div className="absolute bottom-0 left-0 w-48 h-48 bg-slate-900 rounded-full blur-[60px] opacity-5 -ml-10 -mb-10"></div>
 
             <div className="relative z-10 flex flex-col items-center justify-center text-center mt-2">
-                {/* Infinity Logo */}
                 <div className="flex items-center justify-center mb-4 relative group cursor-pointer transition-transform duration-500 hover:scale-110">
                      <div className="absolute inset-0 bg-[#B48646] blur-3xl opacity-20 rounded-full group-hover:opacity-40 transition-opacity duration-500"></div>
                      <Infinity size={48} strokeWidth={1.5} className="text-[#B48646] relative z-10 drop-shadow-sm transition-transform duration-700 group-hover:rotate-180" />
                 </div>
                 
-                {/* Title */}
                 <h1 className="text-4xl tracking-tighter mb-2 font-['Poppins'] font-bold text-slate-900">
                     Mon Espace
                 </h1>
                 
-                {/* Subtitle Badge */}
                 <div className="inline-block px-4 py-1.5 rounded-full bg-[#B48646]/5 border border-[#B48646]/10 backdrop-blur-sm">
                      <p className="text-[#B48646] text-[10px] font-bold tracking-[0.3em] uppercase">
                         Connexion / Inscription
@@ -262,7 +303,6 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
                         />
                     </div>
                     {errors.password && <p className="text-red-500 text-[10px] mt-1 ml-4 font-bold flex items-center gap-1"><AlertTriangle size={10}/> {errors.password}</p>}
-                    {isRegistering && !errors.password && <p className="text-slate-400 text-[10px] mt-1 ml-4">Min. 8 caractères, 1 chiffre.</p>}
                 </div>
 
                 {!isRegistering && (
