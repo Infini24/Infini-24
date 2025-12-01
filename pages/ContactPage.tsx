@@ -336,7 +336,7 @@ ${formData.message}`);
             <div className="mt-16 pt-10 border-t border-slate-100 flex flex-col items-center">
                  <div className="flex gap-4 mb-6">
                     <a href="https://www.facebook.com/profile.php?id=61584316950503" target="_blank" rel="noreferrer" className="w-12 h-12 rounded-full bg-slate-50 text-slate-500 flex items-center justify-center hover:bg-[#B48646] hover:text-white transition-all duration-300 hover:scale-110 shadow-sm"><Facebook size={22} /></a>
-                    <a href="#" className="w-12 h-12 rounded-full bg-slate-50 text-slate-500 flex items-center justify-center hover:bg-[#B48646] hover:text-white transition-all duration-300 hover:scale-110 shadow-sm"><Instagram size={22} /></a>
+                    <a href="https://www.instagram.com/infini2.4/" target="_blank" rel="noreferrer" className="w-12 h-12 rounded-full bg-slate-50 text-slate-500 flex items-center justify-center hover:bg-[#B48646] hover:text-white transition-all duration-300 hover:scale-110 shadow-sm"><Instagram size={22} /></a>
                     <a href="#" className="w-12 h-12 rounded-full bg-slate-50 text-slate-500 flex items-center justify-center hover:bg-[#B48646] hover:text-white transition-all duration-300 hover:scale-110 shadow-sm"><Linkedin size={22} /></a>
                  </div>
                  
