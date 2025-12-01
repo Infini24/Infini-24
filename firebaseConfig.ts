@@ -2,34 +2,20 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
 // --- CONFIGURATION FIREBASE ---
-// 1. Allez sur https://console.firebase.google.com/
-// 2. Créez un projet "Infini24"
-// 3. Ajoutez une application Web (</>)
-// 4. Copiez les informations qu'ils vous donnent et remplacez les valeurs ci-dessous :
-
 const firebaseConfig = {
-  apiKey: "REMPLACER_PAR_VOTRE_API_KEY",
-  authDomain: "REMPLACER_PAR_VOTRE_PROJECT_ID.firebaseapp.com",
-  projectId: "REMPLACER_PAR_VOTRE_PROJECT_ID",
-  storageBucket: "REMPLACER_PAR_VOTRE_PROJECT_ID.firebasestorage.app",
-  messagingSenderId: "REMPLACER_PAR_VOTRE_SENDER_ID",
-  appId: "REMPLACER_PAR_VOTRE_APP_ID"
+  apiKey: "AIzaSyBiwTXp93DP2l3OQByG_6kUSzqHTj1fLdU",
+  authDomain: "infini24-c7001.firebaseapp.com",
+  projectId: "infini24-c7001",
+  storageBucket: "infini24-c7001.firebasestorage.app",
+  messagingSenderId: "830926158316",
+  appId: "1:830926158316:web:7222d16d0fd2e26910a8c9",
+  measurementId: "G-BPMZEGQ55D"
 };
 
-// Initialisation conditionnelle pour éviter les crashs si non configuré
-let db: any = null;
+// Initialisation de Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-try {
-    // On vérifie si l'utilisateur a bien remplacé la valeur par défaut
-    if (firebaseConfig.apiKey !== "REMPLACER_PAR_VOTRE_API_KEY") {
-        const app = initializeApp(firebaseConfig);
-        db = getFirestore(app);
-        console.log("🔥 Firebase connecté avec succès !");
-    } else {
-        console.warn("⚠️ Firebase non configuré. Mode LocalStorage actif.");
-    }
-} catch (error) {
-    console.error("Erreur init Firebase:", error);
-}
+console.log("🔥 Firebase connecté (Cloud Mode Actif)");
 
 export { db };
