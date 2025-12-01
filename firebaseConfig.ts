@@ -1,7 +1,8 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
+import { getAnalytics } from "firebase/analytics";
 
-// --- CONFIGURATION FIREBASE ---
+// --- CONFIGURATION FIREBASE (Vos clés officielles) ---
 const firebaseConfig = {
   apiKey: "AIzaSyBiwTXp93DP2l3OQByG_6kUSzqHTj1fLdU",
   authDomain: "infini24-c7001.firebaseapp.com",
@@ -12,10 +13,15 @@ const firebaseConfig = {
   measurementId: "G-BPMZEGQ55D"
 };
 
-// Initialisation de Firebase
+// Initialisation de l'application Firebase
 const app = initializeApp(firebaseConfig);
+
+// Activation de la Base de Données (Vital pour le suivi projets)
 const db = getFirestore(app);
 
-console.log("🔥 Firebase connecté (Cloud Mode Actif)");
+// Activation des Statistiques (Optionnel mais inclus dans vos clés)
+const analytics = getAnalytics(app);
 
-export { db };
+console.log("🔥 Firebase connecté avec succès (Mode Cloud)");
+
+export { db, app, analytics };
