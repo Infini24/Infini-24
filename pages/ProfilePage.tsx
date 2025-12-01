@@ -30,28 +30,18 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
   
   // Chargement initial depuis le LocalStorage
   useEffect(() => {
-    const savedProjects = localStorage.getItem('infini_projects_v3'); // Changed key to reset for new structure
+    const savedProjects = localStorage.getItem('infini_projects_v4'); // Changement de clé pour vider le cache précédent
     if (savedProjects) {
         setProjects(JSON.parse(savedProjects));
     } else {
-        // Données par défaut (exemple)
-        setProjects([
-            {
-                id: 1,
-                title: "Exemple: Logo Boulangerie",
-                type: "Graphisme",
-                step: 'in_creation',
-                progress: 40,
-                date: new Date().toLocaleDateString(),
-                clientName: "Client Test"
-            }
-        ]);
+        // Données par défaut : Aucune (Liste vide)
+        setProjects([]);
     }
   }, []);
 
   // Sauvegarde automatique dans le LocalStorage à chaque changement
   useEffect(() => {
-    localStorage.setItem('infini_projects_v3', JSON.stringify(projects));
+    localStorage.setItem('infini_projects_v4', JSON.stringify(projects));
   }, [projects]);
 
   // --- STATE ADMIN ---
