@@ -104,7 +104,7 @@ Téléphone: ${formData.phone}
 Message:
 ${formData.message}`);
 
-        window.location.href = `mailto:wendy.toussaint@icloud.com?subject=${subject}&body=${body}`;
+        window.location.href = `mailto:infinivingtquatre@gmail.com?subject=${subject}&body=${body}`;
         toast.success("Ouverture de votre messagerie...");
         setFormData({ ...formData, message: '' });
     };
@@ -175,7 +175,7 @@ ${formData.message}`);
                 </a>
 
                 {/* 5. EMAIL DIRECT (NOUVEAU) */}
-                <a href="mailto:wendy.toussaint@icloud.com" className="bg-slate-50 p-4 rounded-[2rem] border border-transparent hover:border-[#B48646] hover:bg-white hover:shadow-lg transition-all active:scale-95 flex flex-col items-center justify-center gap-3 group md:col-span-1 col-span-2">
+                <a href="mailto:infinivingtquatre@gmail.com" className="bg-slate-50 p-4 rounded-[2rem] border border-transparent hover:border-[#B48646] hover:bg-white hover:shadow-lg transition-all active:scale-95 flex flex-col items-center justify-center gap-3 group md:col-span-1 col-span-2">
                     <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-slate-800 shadow-sm group-hover:bg-[#B48646] group-hover:text-white transition-colors">
                         <Mail size={22} />
                     </div>

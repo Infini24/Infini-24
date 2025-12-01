@@ -11,7 +11,7 @@ import ProfilePage from './pages/ProfilePage';
 import RealizationsPage from './pages/RealizationsPage';
 import ContactPage from './pages/ContactPage';
 import AuthPage from './pages/AuthPage';
-import { User, ServiceType } from './types';
+import { User, ServiceType, UserType } from './types';
 import { logoutUser } from './db';
 
 // --- SIDEBAR COMPONENT (DESKTOP) ---
@@ -141,7 +141,7 @@ const App = () => {
                   setUser({ uid: currentUser.uid, ...userDoc.data() } as User);
               } else {
                   // Fallback
-                  setUser({ name: currentUser.displayName || 'Utilisateur', email: currentUser.email || '', type: 'Particulier', phone: '' });
+                  setUser({ name: currentUser.displayName || 'Utilisateur', email: currentUser.email || '', type: UserType.PARTICULIER, phone: '' });
               }
           } else {
               setUser(null);

@@ -37,7 +37,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
   
   const [projects, setProjects] = useState<LocalProject[]>([]);
   const [allUsers, setAllUsers] = useState<any[]>([]); // Liste des clients pour l'admin
-  const isAdmin = user?.email === 'wendy.toussaint@icloud.com';
+  // Mise à jour de l'email admin officiel
+  const isAdmin = user?.email === 'infinivingtquatre@gmail.com';
   
   // Upload State
   const [uploadingId, setUploadingId] = useState<string | null>(null);
