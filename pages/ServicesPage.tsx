@@ -527,8 +527,8 @@ const VideoForm = ({ onBack, onRequest, initialValues }: FormProps) => {
         if (subService === 'wedding') {
             basePrice = 60;
         } else if (subService === 'grading') {
-            basePrice = 30; // Cheaper base
-            pricePerMin = 10; // Per minute of video
+            basePrice = 20; // Forfait de base (inclut 10 min)
+            pricePerMin = 1; // Per minute supplement
             pricePerPhoto = 0; // Not applicable
             musicCost = 0; // Usually no music editing
         } else if (subService === 'funeral') {
@@ -543,11 +543,12 @@ const VideoForm = ({ onBack, onRequest, initialValues }: FormProps) => {
         if (subService === 'digitization') {
             // NEW VHS FORMULA: (Cassettes * 5) + (Ceil(Minutes/10) * 5)
             calculated = (tapes * tapePrice) + (Math.ceil(duration / 10) * 5);
-        } else if (subService !== 'grading') {
-            calculated += (photos * pricePerPhoto);
-            calculated += (duration * pricePerMin);
+        } else if (subService === 'grading') {
+             // Grading Logic: 20€ base + 1€/min beyond 10 min
+             let extraMinutes = Math.max(0, duration - 10);
+             calculated = basePrice + (extraMinutes * pricePerMin);
         } else {
-             // Grading
+             calculated += (photos * pricePerPhoto);
              calculated += (duration * pricePerMin);
         }
 
@@ -657,8 +658,7 @@ const VideoForm = ({ onBack, onRequest, initialValues }: FormProps) => {
                                                 {type === 'digitization' && [
                                                     "Transfert VHS vers Numérique",
                                                     "Amélioration Qualité",
-                                                    "Livraison Clé USB / Cloud",
-                                                    "Tarification à 5€ par cassette + 5€ par tranche de 10 minutes numérisées, voir simulateur ci-contre."
+                                                    "Livraison Clé USB / Cloud"
                                                 ].map((item, i) => (
                                                     <div key={i} className="flex items-center gap-2 text-[10px] text-slate-500">
                                                         <Check size={10} className="text-[#B48646]" /> {item}
@@ -731,6 +731,7 @@ const VideoForm = ({ onBack, onRequest, initialValues }: FormProps) => {
                                         </label>
                                         <input type="range" min="1" max="180" step="1" value={duration} onChange={(e) => setDuration(parseInt(e.target.value))} className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#B48646]" />
                                         {subService === 'digitization' && <p className="text-[10px] text-slate-400 mt-1">5€ par tranche de 10 min</p>}
+                                        {subService === 'grading' && <p className="text-[10px] text-slate-400 mt-1">Forfait 20€ (10 min inclus) + 1€/min sup.</p>}
                                     </div>
                                 )}
 
