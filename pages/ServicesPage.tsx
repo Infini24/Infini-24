@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { ChevronLeft, Sliders, CheckCircle, Video, PenTool, LifeBuoy, Crown, Palette, Film, Lock, X, Check, ArrowRight, Infinity, Phone, Mail, MessageCircle, ShieldCheck, Eye, UploadCloud, FileText } from 'lucide-react';
 import { ServiceType, User } from '../types';
@@ -43,11 +42,9 @@ const ProjectWorkflowModal: React.FC<ProjectWorkflowModalProps> = ({ serviceName
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Feedback immédiat pour l'utilisateur
     const toastId = toast.loading("Création du projet et envoi du fichier...");
 
     try {
-        // 1. SAVE PROJECT TO DB (Prioritaire pour l'affichage)
         const newProject = {
             title: serviceName,
             type: serviceName.includes('Vidéo') || serviceName.includes('Diaporama') || serviceName.includes('VHS') ? 'Vidéo' : 'Graphisme',
@@ -55,19 +52,15 @@ const ProjectWorkflowModal: React.FC<ProjectWorkflowModalProps> = ({ serviceName
             progress: 10,
             date: new Date().toLocaleDateString(),
             clientName: name,
-            clientEmail: user ? user.email.toLowerCase().trim() : contactInfo.toLowerCase().trim(), // Force minuscule
+            clientEmail: user ? user.email.toLowerCase().trim() : contactInfo.toLowerCase().trim(),
             price: price,
         };
 
-        // On passe le fichier à saveProject qui gèrera l'upload vers Firebase Storage
         await saveProject(newProject, fileToUpload || undefined);
         
         toast.success("Projet créé avec succès !", { id: toastId });
-
-        // 2. UI FEEDBACK - On change l'état d'abord pour débloquer l'interface
         setStep('success');
 
-        // 3. OPEN EMAIL (Secondaire) - On met un léger délai pour ne pas bloquer l'UI
         setTimeout(() => {
             const subject = encodeURIComponent(`Nouvelle commande : ${serviceName}`);
             const body = encodeURIComponent(`Bonjour Infini 24,
@@ -85,13 +78,12 @@ ${fileToUpload ? "(J'ai joint un fichier via l'interface)" : ""}
 Merci de me recontacter.`);
 
             window.location.href = `mailto:infinivingtquatre@gmail.com?subject=${subject}&body=${body}`;
-        }, 1000);
+        }, 1500);
 
-        // 4. CLOSE AUTO
         setTimeout(() => {
             onSuccess();
             onClose();
-        }, 4000);
+        }, 5000);
 
     } catch (error) {
         console.error(error);
@@ -134,7 +126,6 @@ Merci de me recontacter.`);
 
               {/* Timeline Steps */}
               <div className="relative space-y-6 pl-4 before:absolute before:left-[19px] before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-100">
-                  
                   <div className="relative flex items-center gap-4">
                       <div className="w-10 h-10 rounded-full bg-[#B48646] text-white flex items-center justify-center z-10 shadow-lg shadow-[#B48646]/30 shrink-0">
                           <span className="font-bold text-sm">1</span>
@@ -144,7 +135,6 @@ Merci de me recontacter.`);
                           <p className="text-xs text-slate-500 mt-1">Vous validez ce formulaire. Nous vous contactons pour affiner le besoin.</p>
                       </div>
                   </div>
-
                   <div className="relative flex items-center gap-4">
                       <div className="w-10 h-10 rounded-full bg-white border-2 border-[#B48646] text-[#B48646] flex items-center justify-center z-10 shrink-0">
                           <span className="font-bold text-sm">2</span>
@@ -154,7 +144,6 @@ Merci de me recontacter.`);
                           <p className="text-xs text-slate-500 mt-1">Nous créons votre design. Vous recevez un aperçu avec <span className="font-bold">filigrane de protection</span>.</p>
                       </div>
                   </div>
-
                    <div className="relative flex items-center gap-4">
                       <div className="w-10 h-10 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center z-10 shrink-0">
                           <span className="font-bold text-sm">3</span>
@@ -164,7 +153,6 @@ Merci de me recontacter.`);
                           <p className="text-xs text-slate-500 mt-1">Si le résultat vous plaît, vous réglez les <span className="text-[#B48646] font-bold">{price}€</span> et recevez les fichiers finaux.</p>
                       </div>
                   </div>
-
               </div>
 
               <button onClick={() => setStep('contact')} className="w-full mt-4 bg-gradient-to-r from-[#B48646] to-[#E5B066] hover:shadow-xl hover:shadow-[#B48646]/30 text-white font-bold py-5 rounded-[1.5rem] transition-all active:scale-95 text-lg flex items-center justify-center gap-2 group">
@@ -192,7 +180,6 @@ Merci de me recontacter.`);
                             placeholder="Prénom Nom"
                         />
                     </div>
-                    
                     <div>
                         <label className="block text-xs font-bold text-slate-500 ml-3 mb-1">
                             {contactMethod === 'email' ? 'Adresse Email' : 'Numéro de téléphone'}
@@ -206,7 +193,6 @@ Merci de me recontacter.`);
                             placeholder={contactMethod === 'email' ? 'exemple@mail.com' : '06 00 00 00 00'}
                         />
                     </div>
-
                     {/* FILE UPLOAD INPUT */}
                     <div>
                         <label className="block text-xs font-bold text-slate-500 ml-3 mb-1">Joindre un fichier (Optionnel)</label>
@@ -251,10 +237,8 @@ Merci de me recontacter.`);
               </div>
             </div>
           )}
-
         </div>
         
-        {/* Footer */}
         <div className="bg-slate-50 p-4 text-center border-t border-slate-100">
           <p className="text-[10px] text-slate-400 flex items-center justify-center gap-1 font-medium">
             <Lock size={10} /> Vos données restent confidentielles
@@ -276,9 +260,9 @@ interface FormProps {
 // 1. Graphic Design Form
 const GraphicDesignForm = ({ onBack, onRequest, initialValues }: FormProps) => {
     const [subService, setSubService] = useState<string>('identity_complete'); 
-    const [price, setPrice] = useState<number>(240); // 240 instead of 300 (-20%)
+    const [price, setPrice] = useState<number>(240); 
 
-    // Try to restore state if initialValues provided
+    // Restore state
     useEffect(() => {
         if (initialValues) {
              if (initialValues.includes("Création")) setSubService('logo_creation');
@@ -290,9 +274,9 @@ const GraphicDesignForm = ({ onBack, onRequest, initialValues }: FormProps) => {
 
     useEffect(() => {
         switch(subService) {
-            case 'identity_complete': setPrice(240); break; // Discounted Price
+            case 'identity_complete': setPrice(240); break; 
             case 'logo_creation': setPrice(200); break;
-            case 'print': setPrice(50); break; // UPDATED to 50
+            case 'print': setPrice(50); break; 
             case 'social_kit': setPrice(120); break;
             default: setPrice(0);
         }
@@ -300,7 +284,6 @@ const GraphicDesignForm = ({ onBack, onRequest, initialValues }: FormProps) => {
 
     const handleFormSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        // Determine service name for the modal
         let serviceName = "Design Graphique";
         if(subService === 'identity_complete') serviceName = "Pack Identité Complète";
         if(subService === 'logo_creation') serviceName = "Création & Refonte Logo";
@@ -312,7 +295,6 @@ const GraphicDesignForm = ({ onBack, onRequest, initialValues }: FormProps) => {
 
     return (
         <div className="animate-in slide-in-from-right duration-300">
-            {/* Header Uniforme - Added flex-none */}
             <header className="flex-none pt-14 pb-10 px-6 bg-white border-b border-slate-50 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] relative overflow-hidden rounded-b-[3.5rem] mb-6">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-[#B48646] to-[#F3C06B] rounded-full blur-[80px] opacity-15 -mr-16 -mt-16 animate-pulse"></div>
                 <div className="absolute bottom-0 left-0 w-48 h-48 bg-slate-900 rounded-full blur-[60px] opacity-5 -ml-10 -mb-10"></div>
@@ -339,12 +321,10 @@ const GraphicDesignForm = ({ onBack, onRequest, initialValues }: FormProps) => {
                 
                 <form className="space-y-6" onSubmit={handleFormSubmit}>
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        {/* Left Col: Selector */}
                         <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm">
                             <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-6">Choisissez votre formule</label>
                             <div className="grid gap-5">
                                 
-                                {/* Option 1: Pack Identité Complète */}
                                 <label className={`relative border-2 p-6 rounded-[2rem] cursor-pointer transition-all duration-300 hover:scale-[1.02] ${subService === 'identity_complete' ? 'bg-[#fffcf5] border-[#B48646] shadow-xl shadow-[#B48646]/10' : 'bg-slate-50 hover:bg-white border-transparent shadow-sm'}`}>
                                     {subService === 'identity_complete' && (
                                         <div className="absolute -top-3 right-6 bg-red-500 text-white text-[10px] font-bold px-3 py-1.5 rounded-full flex items-center gap-1 shadow-lg">
@@ -378,7 +358,6 @@ const GraphicDesignForm = ({ onBack, onRequest, initialValues }: FormProps) => {
                                     </div>
                                 </label>
 
-                                {/* Option 2: Création / Refonte */}
                                 <label className={`border-2 p-5 rounded-[2rem] cursor-pointer transition-all duration-300 hover:scale-[1.02] ${subService === 'logo_creation' ? 'bg-[#fffcf5] border-[#B48646] shadow-lg' : 'bg-slate-50 hover:bg-white border-transparent shadow-sm'}`}>
                                     <div className="flex items-start gap-4">
                                         <div className={`mt-1 w-5 h-5 rounded-full border-2 flex items-center justify-center ${subService === 'logo_creation' ? 'border-[#B48646]' : 'border-slate-200'}`}>
@@ -405,7 +384,6 @@ const GraphicDesignForm = ({ onBack, onRequest, initialValues }: FormProps) => {
                                     </div>
                                 </label>
 
-                                {/* Option 3: Cartes & Flyers */}
                                 <label className={`border-2 p-5 rounded-[2rem] cursor-pointer transition-all duration-300 hover:scale-[1.02] ${subService === 'print' ? 'bg-[#fffcf5] border-[#B48646] shadow-lg' : 'bg-slate-50 hover:bg-white border-transparent shadow-sm'}`}>
                                     <div className="flex items-start gap-4">
                                         <div className={`mt-1 w-5 h-5 rounded-full border-2 flex items-center justify-center ${subService === 'print' ? 'border-[#B48646]' : 'border-slate-200'}`}>
@@ -433,7 +411,6 @@ const GraphicDesignForm = ({ onBack, onRequest, initialValues }: FormProps) => {
                                     </div>
                                 </label>
 
-                                {/* Option 4: Kit Social */}
                                 <label className={`border-2 p-5 rounded-[2rem] cursor-pointer transition-all duration-300 hover:scale-[1.02] ${subService === 'social_kit' ? 'bg-[#fffcf5] border-[#B48646] shadow-lg' : 'bg-slate-50 hover:bg-white border-transparent shadow-sm'}`}>
                                     <div className="flex items-start gap-4">
                                         <div className={`mt-1 w-5 h-5 rounded-full border-2 flex items-center justify-center ${subService === 'social_kit' ? 'border-[#B48646]' : 'border-slate-200'}`}>
@@ -463,7 +440,6 @@ const GraphicDesignForm = ({ onBack, onRequest, initialValues }: FormProps) => {
                             </div>
                         </div>
 
-                        {/* Right Col: Details */}
                         <div className="space-y-6">
                             <div className="bg-white p-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 space-y-6">
                                 <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2 mb-4">
@@ -493,7 +469,6 @@ const GraphicDesignForm = ({ onBack, onRequest, initialValues }: FormProps) => {
                                 </div>
                             </div>
 
-                            {/* Price Estimate Box */}
                             <div className="bg-slate-900 p-8 rounded-[2.5rem] border border-slate-800 text-center relative overflow-hidden text-white shadow-2xl">
                                 <div className="absolute top-0 left-0 w-32 h-32 bg-[#B48646] blur-[60px] opacity-30 rounded-full pointer-events-none animate-pulse"></div>
                                 <div className="absolute bottom-0 right-0 w-32 h-32 bg-[#F3C06B] blur-[60px] opacity-20 rounded-full pointer-events-none"></div>
@@ -520,8 +495,7 @@ const GraphicDesignForm = ({ onBack, onRequest, initialValues }: FormProps) => {
     );
 };
 
-// 2. Video Form (Same content, kept for structure but not re-pasted for brevity unless requested to change)
-// ... (The VideoForm content is identical to previous version, ensuring it works as is)
+// 2. Video Form 
 const VideoForm = ({ onBack, onRequest, initialValues }: FormProps) => {
     const [subService, setSubService] = useState<string>('birthday'); 
     const [photos, setPhotos] = useState<number>(50);
@@ -530,7 +504,6 @@ const VideoForm = ({ onBack, onRequest, initialValues }: FormProps) => {
     const [musicOption, setMusicOption] = useState<boolean>(true);
     const [price, setPrice] = useState<number>(0);
 
-    // Try to restore state if initialValues provided
     useEffect(() => {
         if (initialValues) {
             if (initialValues.includes("Mariage")) setSubService('wedding');
@@ -543,7 +516,6 @@ const VideoForm = ({ onBack, onRequest, initialValues }: FormProps) => {
     }, [initialValues]);
 
     useEffect(() => {
-        // Pricing Logic
         let basePrice = 40;
         let pricePerPhoto = 0.5;
         let pricePerMin = 10;
@@ -595,7 +567,6 @@ const VideoForm = ({ onBack, onRequest, initialValues }: FormProps) => {
 
     return (
         <div className="animate-in slide-in-from-right duration-300">
-            {/* Header Uniforme - Added flex-none */}
             <header className="flex-none pt-14 pb-10 px-6 bg-white border-b border-slate-50 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] relative overflow-hidden rounded-b-[3.5rem] mb-6">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-[#B48646] to-[#F3C06B] rounded-full blur-[80px] opacity-15 -mr-16 -mt-16 animate-pulse"></div>
                 <div className="absolute bottom-0 left-0 w-48 h-48 bg-slate-900 rounded-full blur-[60px] opacity-5 -ml-10 -mb-10"></div>
@@ -630,7 +601,6 @@ const VideoForm = ({ onBack, onRequest, initialValues }: FormProps) => {
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    {/* Left: Types */}
                     <div>
                         <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm mb-6">
                             <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-6">Type de projet</label>
@@ -715,7 +685,6 @@ const VideoForm = ({ onBack, onRequest, initialValues }: FormProps) => {
                         </div>
                     </div>
 
-                    {/* Right: Simulator or Form */}
                     <div>
                         {(subService === 'birthday' || subService === 'wedding' || subService === 'grading' || subService === 'funeral' || subService === 'digitization') && (
                             <div className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-slate-100 space-y-8 animate-in fade-in duration-300">
@@ -733,7 +702,6 @@ const VideoForm = ({ onBack, onRequest, initialValues }: FormProps) => {
                                     </div>
                                 )}
 
-                                {/* VHS Simulator Input: Cassettes */}
                                 {subService === 'digitization' && (
                                     <div>
                                         <label className="flex justify-between text-sm font-bold text-slate-700 mb-3">
@@ -745,7 +713,6 @@ const VideoForm = ({ onBack, onRequest, initialValues }: FormProps) => {
                                     </div>
                                 )}
 
-                                {/* Duration Slider (Visible for standard video AND digitization now) */}
                                 {(subService !== 'digitization' || subService === 'digitization') && (
                                     <div>
                                         <label className="flex justify-between text-sm font-bold text-slate-700 mb-3">
@@ -851,7 +818,6 @@ const AssistanceForm = ({ onBack, onRequest, initialValues }: FormProps) => {
 
     return (
         <div className="animate-in slide-in-from-right duration-300">
-            {/* Header Uniforme - Added flex-none */}
             <header className="flex-none pt-14 pb-10 px-6 bg-white border-b border-slate-50 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] relative overflow-hidden rounded-b-[3.5rem] mb-6">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-[#B48646] to-[#F3C06B] rounded-full blur-[80px] opacity-15 -mr-16 -mt-16 animate-pulse"></div>
                 <div className="absolute bottom-0 left-0 w-48 h-48 bg-slate-900 rounded-full blur-[60px] opacity-5 -ml-10 -mb-10"></div>
@@ -878,7 +844,6 @@ const AssistanceForm = ({ onBack, onRequest, initialValues }: FormProps) => {
                 
                 <form className="space-y-6" onSubmit={handleFormSubmit}>
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        {/* Left: Types */}
                         <div className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100">
                             <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-6">Type de demande</label>
                             <div className="grid gap-4">
@@ -905,7 +870,6 @@ const AssistanceForm = ({ onBack, onRequest, initialValues }: FormProps) => {
                             </div>
                         </div>
                         
-                        {/* Right: Details & Price */}
                         <div className="space-y-6">
                             <div className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-slate-100">
                                 {isFixedPrice && (
@@ -923,7 +887,6 @@ const AssistanceForm = ({ onBack, onRequest, initialValues }: FormProps) => {
                                 <textarea className="w-full px-6 py-4 border-2 border-slate-100 rounded-2xl outline-none text-sm focus:border-[#B48646] focus:ring-4 focus:ring-[#B48646]/10 bg-slate-50 focus:bg-white transition-all resize-none" rows={5} placeholder="Expliquez ce que nous devons modifier..." required></textarea>
                             </div>
                             
-                            {/* Price Box */}
                             <div className="bg-slate-900 p-8 rounded-[2.5rem] border border-slate-800 text-center relative overflow-hidden text-white shadow-2xl">
                                  <div className="absolute -top-10 -right-10 w-40 h-40 bg-[#B48646] blur-[60px] opacity-30 rounded-full pointer-events-none"></div>
                                 <span className="block text-xs text-slate-400 uppercase tracking-widest font-bold mb-2 relative z-10">Estimation</span>

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { User } from '../types';
 import { FolderOpen, LogIn, Infinity, Download, ExternalLink, Clock, Plus, Trash2, Send, FileCheck, Package, Facebook, UploadCloud, FileText, Loader2, Users, Phone as PhoneIcon, Calendar, Gift, Edit2 } from 'lucide-react';
@@ -487,4 +486,38 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
                                                         <p className="font-bold text-xs text-white">{client.name}</p>
                                                         <p className="text-[10px] text-slate-400">{client.email}</p>
                                                     </div>
-                                                    {idx < 3 && <span className="text-[9px] bg-red-500/20 text-red-400 px-1.5
+                                                    {idx < 3 && <span className="text-[9px] bg-red-500/20 text-red-400 px-1.5 py-0.5 rounded-md font-bold">Nouveau</span>}
+                                                </div>
+                                                <div className="mt-2 flex items-center gap-2 text-[10px] text-slate-500">
+                                                    <PhoneIcon size={10} /> {client.phone || 'N/A'}
+                                                    {client.companyName && <span className="text-slate-400">• {client.companyName}</span>}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+             </div>
+        ) : (
+             <div className="flex flex-col items-center justify-center h-full text-center max-w-md animate-in zoom-in duration-500">
+                 <div className="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center mb-6 relative group">
+                     <div className="absolute inset-0 bg-[#B48646] rounded-full blur-xl opacity-0 group-hover:opacity-20 transition-opacity"></div>
+                     <LogIn size={40} className="text-slate-300 group-hover:text-[#B48646] transition-colors" />
+                 </div>
+                 <h2 className="text-2xl font-bold text-slate-900 mb-2">Connectez-vous</h2>
+                 <p className="text-slate-500 text-sm mb-8">Pour suivre l'avancement de vos projets et échanger avec nous.</p>
+                 <button onClick={onLoginClick} className="bg-slate-900 text-white px-8 py-4 rounded-[1.5rem] font-bold shadow-xl hover:bg-[#B48646] hover:shadow-[#B48646]/30 transition-all flex items-center gap-2">
+                     <LogIn size={20} /> Se connecter
+                 </button>
+             </div>
+        )}
+
+      </div>
+    </div>
+  );
+};
+
+export default ProfilePage;
