@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { User } from '../types';
-import { FolderOpen, LogIn, Infinity, Download, ExternalLink, CheckCircle, Clock, AlertCircle, Plus, Trash2, Send, Info, Eye, Edit2, FileCheck, Package, Facebook, UploadCloud, FileText, Loader2, Users, Phone as PhoneIcon, Calendar, Gift } from 'lucide-react';
-import { getProjects, updateProjectStatus, deleteProject, saveProject, uploadProjectFile, getUsers, uploadFinalDelivery } from '../db'; // Import du gestionnaire
+import { FolderOpen, LogIn, Infinity, Download, ExternalLink, Clock, Plus, Trash2, Send, FileCheck, Package, Facebook, UploadCloud, FileText, Loader2, Users, Phone as PhoneIcon, Calendar, Gift, Edit2 } from 'lucide-react';
+import { getProjects, updateProjectStatus, deleteProject, saveProject, uploadProjectFile, getUsers, uploadFinalDelivery } from '../db';
 import toast from 'react-hot-toast';
 
 interface ProfilePageProps {
@@ -10,7 +10,6 @@ interface ProfilePageProps {
   onLoginClick?: () => void;
 }
 
-// Étapes possibles d'un projet
 type ProjectStep = 'request_received' | 'in_creation' | 'validation' | 'delivered';
 
 interface ProjectFile {
@@ -24,38 +23,32 @@ interface LocalProject {
   title: string;
   type: string;
   step: ProjectStep;
-  progress: number; // 0 to 100
-  downloadUrl?: string; // URL du livrable final
+  progress: number;
+  downloadUrl?: string;
   date: string;
-  clientName?: string; // Pour l'admin
-  clientEmail?: string; // Pour filtrage
+  clientName?: string;
+  clientEmail?: string;
   price?: number | string;
-  files?: ProjectFile[]; // Liste des fichiers envoyés par le client
+  files?: ProjectFile[];
 }
 
 const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick }) => {
   
   const [projects, setProjects] = useState<LocalProject[]>([]);
-  const [allUsers, setAllUsers] = useState<any[]>([]); // Liste des clients pour l'admin
-  // Mise à jour de l'email admin officiel
+  const [allUsers, setAllUsers] = useState<any[]>([]);
   const isAdmin = user?.email === 'infinivingtquatre@gmail.com';
   
-  // Upload State Client
   const [uploadingId, setUploadingId] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
 
-  // Upload State Admin (Livraison)
   const deliveryInputRef = useRef<HTMLInputElement>(null);
   const [deliveringId, setDeliveringId] = useState<string | null>(null);
 
-  // Chargement des données (Async via db.ts)
   const loadData = async () => {
-      // 1. Charger les projets
       const projectsData = await getProjects();
       setProjects(projectsData as LocalProject[]);
 
-      // 2. Charger les utilisateurs (Seulement si Admin)
       if (isAdmin) {
           const usersData = await getUsers();
           setAllUsers(usersData);
@@ -64,17 +57,14 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
 
   useEffect(() => {
     loadData();
-    // Optionnel: Un petit polling pour rafraîchir en temps réel
     const interval = setInterval(loadData, 10000); 
     return () => clearInterval(interval);
-  }, [isAdmin]); // Reload when admin status changes
+  }, [isAdmin]);
 
-  // --- STATE ADMIN ---
   const [newProjectTitle, setNewProjectTitle] = useState("");
   const [newClientName, setNewClientName] = useState("");
   const [newProjectType, setNewProjectType] = useState("Graphisme");
 
-  // --- ACTIONS ADMIN ---
   const handleAddProject = async () => {
       const newProj = {
           title: newProjectTitle || "Nouveau Projet",
@@ -87,7 +77,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
       };
       
       await saveProject(newProj);
-      await loadData(); // Refresh UI
+      await loadData();
 
       setNewProjectTitle("");
       setNewClientName("");
@@ -110,7 +100,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
       }
   };
 
-  // Admin : Livraison de fichier final
   const handleDeliveryClick = (projectId: string) => {
       setDeliveringId(projectId);
       if (deliveryInputRef.current) {
@@ -141,8 +130,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
       }
   };
 
-
-  // --- ACTIONS CLIENT (UPLOAD) ---
   const handleUploadClick = (projectId: string) => {
       setSelectedProjectId(projectId);
       if (fileInputRef.current) {
@@ -158,7 +145,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
       const toastId = toast.loading("Envoi du fichier...");
 
       try {
-          // Trouver le projet pour récupérer l'email du client
           const currentProject = projects.find(p => p.id === selectedProjectId);
           const clientEmail = currentProject?.clientEmail || user?.email || "anonyme";
 
@@ -172,12 +158,10 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
       } finally {
           setUploadingId(null);
           setSelectedProjectId(null);
-          // Reset input
           if (fileInputRef.current) fileInputRef.current.value = "";
       }
   };
 
-  // --- HELPER: RENDER TIMELINE (Vue Client) ---
   const renderTimeline = (step: ProjectStep) => {
       const steps = [
           { key: 'request_received', label: 'Demande reçue', icon: Send },
@@ -190,7 +174,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
 
       return (
           <div className="relative flex justify-between items-center mt-6 mb-2 px-2">
-              {/* Progress Line */}
               <div className="absolute top-4 left-0 right-0 h-1 bg-slate-100 -z-10 rounded-full">
                   <div 
                     className="h-full bg-[#B48646] transition-all duration-1000 rounded-full"
@@ -216,7 +199,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
 
   const renderProjectCard = (project: LocalProject) => (
     <div key={project.id} className={`rounded-[2rem] p-6 border transition-all duration-300 mb-6 ${project.step === 'delivered' ? 'bg-[#fffcf5] border-[#B48646] shadow-lg shadow-[#B48646]/10' : 'bg-slate-50 border-slate-100'}`}>
-        {/* Header Card */}
         <div className="flex justify-between items-start mb-4">
             <div className="flex items-center gap-4">
                 <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-sm text-xl ${project.step === 'delivered' ? 'bg-[#B48646] text-white' : 'bg-white text-slate-700'}`}>
@@ -232,13 +214,10 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
             </div>
         </div>
 
-        {/* Timeline VISUELLE */}
         {renderTimeline(project.step as ProjectStep)}
 
-        {/* --- ZONE FICHIERS (UPLOAD & VIEW) --- */}
         <div className="mt-6 pt-4 border-t border-slate-100/50">
             
-            {/* Liste des fichiers envoyés */}
             {project.files && project.files.length > 0 && (
                 <div className="mb-4">
                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-1">
@@ -262,7 +241,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
             )}
 
             <div className="flex flex-col gap-3">
-                {/* Bouton Upload (Visible pour le client si projet non livré) */}
                 {project.step !== 'delivered' && project.step !== 'request_received' && !isAdmin && (
                     <button 
                         onClick={() => handleUploadClick(project.id)}
@@ -277,7 +255,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
                     </button>
                 )}
 
-                {/* Bouton Téléchargement Final (Si livré) */}
                 {project.step === 'delivered' && (
                     <div className="bg-white rounded-2xl p-4 border border-[#B48646]/20 flex flex-col md:flex-row items-center justify-between gap-4">
                         <div className="text-center md:text-left">
@@ -303,7 +280,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
     </div>
   );
 
-  // --- FILTERING LOGIC ---
   const displayedProjects = isAdmin 
     ? projects 
     : projects.filter(p => p.clientEmail === user?.email);
@@ -311,13 +287,9 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
   const pendingProjects = displayedProjects.filter(p => p.step === 'request_received');
   const activeProjects = displayedProjects.filter(p => p.step !== 'request_received');
 
-
-  // --- RENDU VISUEL ---
-
   return (
     <div className="flex flex-col h-full bg-[#FDFCF8] overflow-y-auto no-scrollbar">
       
-      {/* Hidden File Input pour Client */}
       <input 
         type="file" 
         ref={fileInputRef} 
@@ -326,7 +298,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
         accept="image/*,.pdf,.zip,.rar" 
       />
 
-      {/* Hidden File Input pour Admin (Livraison) */}
       <input 
         type="file" 
         ref={deliveryInputRef} 
@@ -335,7 +306,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
         accept="*/*" 
       />
 
-      {/* Header */}
       <header className="flex-none pt-14 pb-10 px-6 bg-white border-b border-slate-50 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] relative overflow-hidden rounded-b-[3.5rem] mb-6 z-10">
             <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-[#B48646] to-[#F3C06B] rounded-full blur-[80px] opacity-15 -mr-16 -mt-16 animate-pulse"></div>
             <div className="absolute bottom-0 left-0 w-48 h-48 bg-slate-900 rounded-full blur-[60px] opacity-5 -ml-10 -mb-10"></div>
@@ -363,7 +333,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
         {user ? (
              <div className="w-full max-w-3xl animate-in slide-in-from-bottom duration-500">
                 
-                {/* 1. SECTION: DEMANDES EN ATTENTE */}
                 {pendingProjects.length > 0 && (
                     <div className="bg-white p-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 mb-8">
                         <div className="flex justify-between items-end mb-6">
@@ -378,7 +347,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
                     </div>
                 )}
 
-                {/* 2. SECTION: PROJETS ACTIFS & TERMINÉS */}
                 {activeProjects.length > 0 && (
                     <div className="bg-white p-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 mb-8">
                         <div className="flex justify-between items-end mb-6">
@@ -393,7 +361,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
                     </div>
                 )}
 
-                {/* EMPTY STATE (Si aucune liste n'a de projet) */}
                 {displayedProjects.length === 0 && (
                     <div className="bg-white p-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 mb-8 text-center py-10 text-slate-400">
                         <FolderOpen size={40} className="mx-auto mb-4 opacity-50" />
@@ -401,7 +368,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
                     </div>
                 )}
 
-                {/* Support Card (Visible only for non-admins) */}
                 {!isAdmin && (
                     <div className="bg-[#B48646] text-white p-8 rounded-[2.5rem] shadow-xl shadow-[#B48646]/20 relative overflow-hidden mb-12">
                         <div className="absolute top-0 right-0 w-32 h-32 bg-white blur-[50px] opacity-20 rounded-full"></div>
@@ -419,7 +385,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
                     </div>
                 )}
 
-                {/* --- ZONE ADMIN (VISIBLE UNIQUEMENT PAR L'ADMINISTRATEUR) --- */}
                 {isAdmin && (
                     <div className="border-t-2 border-dashed border-slate-200 pt-8 mt-8">
                         <div className="bg-slate-800 text-white p-6 rounded-[2rem] shadow-2xl">
@@ -430,9 +395,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
                             <p className="text-xs text-slate-400 mb-6">Gérez les demandes reçues par Email / WhatsApp ici.</p>
 
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                                {/* Colonne 1 : Création & Statuts */}
                                 <div className="space-y-6">
-                                    {/* Ajouter un projet */}
                                     <div className="bg-slate-700/50 p-4 rounded-2xl border border-slate-600">
                                         <h4 className="font-bold text-sm mb-3 flex items-center gap-2"><Plus size={14} /> Nouvelle Demande Reçue</h4>
                                         <div className="space-y-3">
@@ -464,7 +427,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
                                         </div>
                                     </div>
 
-                                    {/* Gérer les statuts */}
                                     <div className="bg-slate-700/50 p-4 rounded-2xl border border-slate-600">
                                         <h4 className="font-bold text-sm mb-3">Mise à jour des statuts</h4>
                                         <div className="space-y-2 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
@@ -497,7 +459,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
                                                             title="Livré"
                                                         />
                                                     </div>
-                                                    {/* BOUTON LIVRAISON ADMIN */}
                                                     <button 
                                                         onClick={() => handleDeliveryClick(p.id)}
                                                         className="w-full text-[10px] bg-slate-700 hover:bg-slate-600 py-1.5 rounded-lg flex items-center justify-center gap-1 text-slate-300 transition-colors"
@@ -511,7 +472,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
                                     </div>
                                 </div>
 
-                                {/* Colonne 2 : Clients Inscrits */}
                                 <div className="bg-slate-700/50 p-4 rounded-2xl border border-slate-600 flex flex-col">
                                     <h4 className="font-bold text-sm mb-3 flex items-center gap-2"><Users size={14} /> Derniers Clients Inscrits</h4>
                                     <div className="space-y-2 flex-1 overflow-y-auto max-h-[300px] pr-2 custom-scrollbar">
@@ -523,7 +483,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
                                                         <p className="font-bold text-xs text-white">{client.name}</p>
                                                         <p className="text-[10px] text-slate-400">{client.email}</p>
                                                     </div>
-                                                    {/* Badge Nouveau */}
                                                     {idx < 3 && <span className="text-[9px] bg-red-500/20 text-red-400 px-1.5 rounded font-bold">New</span>}
                                                 </div>
                                                 <div className="mt-2 pt-2 border-t border-slate-700/50 flex flex-col gap-1">
@@ -552,7 +511,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
 
              </div>
         ) : (
-             /* Empty State - Not Logged In */
             <div className="w-full max-w-md bg-white rounded-[3rem] p-10 shadow-2xl shadow-slate-200/50 border border-slate-50 text-center relative overflow-hidden group mt-10">
                  <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mb-6 shadow-inner mx-auto">
                     <FolderOpen size={36} className="text-slate-300" />

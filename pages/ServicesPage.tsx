@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronLeft, Sliders, CheckCircle, Video, PenTool, LifeBuoy, Crown, Palette, Film, CreditCard, Lock, X, Check, Sparkles, ArrowRight, Infinity, Phone, Mail, MessageCircle, ShieldCheck, Eye, LogIn, LogOut } from 'lucide-react';
+import { ChevronLeft, Sliders, CheckCircle, Video, PenTool, LifeBuoy, Crown, Palette, Film, Lock, X, Check, ArrowRight, Infinity, Phone, Mail, MessageCircle, ShieldCheck, Eye } from 'lucide-react';
 import { ServiceType, User } from '../types';
 import { saveProject } from '../db'; // Import du nouveau gestionnaire
 
