@@ -69,8 +69,9 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate, user, onLoginClick, onL
                     {/* Offer Details */}
                     <div className="bg-black/10 p-3 rounded-xl mt-3 backdrop-blur-sm border border-white/10 w-fit">
                          <p className="text-[11px] text-white/90 font-medium leading-relaxed">
-                            • 2 Logos (Vectoriels + Transparence)<br/>
-                            • Bannières Réseaux Sociaux (FB, LinkedIn...)
+                            • Création Logo Unique sur mesure<br/>
+                            • Bannière Réseaux Sociaux<br/>
+                            • Cartes de visite & flyers
                         </p>
                     </div>
 
@@ -144,7 +145,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate, user, onLoginClick, onL
                         "Refonte & Modernisation",
                         "Cartes de Visite & Flyers",
                         "Bannières Réseaux Sociaux",
-                        "Chartes Graphiques"
+                        "Impression en option"
                     ].map((item, i) => (
                         <li key={i} className="flex items-center gap-3 text-sm text-slate-600 font-medium">
                             <div className="w-5 h-5 rounded-full bg-[#B48646]/10 flex items-center justify-center shrink-0">
@@ -156,7 +157,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate, user, onLoginClick, onL
                 </ul>
 
                 <div className="mt-auto flex items-center justify-between pt-4 border-t border-slate-50">
-                    <span className="text-xs font-bold text-slate-400">À partir de 80€</span>
+                    <span className="text-xs font-bold text-slate-400">À partir de 50€</span>
                     <div className="flex items-center gap-2 text-sm font-bold text-[#B48646] group-hover:translate-x-1 transition-transform">
                         Configurer <ArrowRight size={16} />
                     </div>

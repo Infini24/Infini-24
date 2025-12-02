@@ -267,7 +267,7 @@ const GraphicDesignForm = ({ onBack, onRequest, initialValues }: FormProps) => {
         switch(subService) {
             case 'identity_complete': setPrice(240); break; // Discounted Price
             case 'logo_creation': setPrice(200); break;
-            case 'print': setPrice(80); break;
+            case 'print': setPrice(50); break; // UPDATED to 50
             case 'social_kit': setPrice(120); break;
             default: setPrice(0);
         }
@@ -335,10 +335,10 @@ const GraphicDesignForm = ({ onBack, onRequest, initialValues }: FormProps) => {
                                             <span className="font-bold block text-lg text-slate-900">Pack Identité Complète</span>
                                             <div className="mt-3 space-y-1.5">
                                                 {[
-                                                    "2 Logos Vectoriels",
-                                                    "Cartes de Visite & Flyers",
-                                                    "Bannières Réseaux Sociaux",
-                                                    "Chartes Graphiques"
+                                                    "1 Création Logo sur mesure",
+                                                    "1 Bannière réseaux sociaux",
+                                                    "Cartes de visite & flyers",
+                                                    "Impression en option"
                                                 ].map((item, i) => (
                                                     <div key={i} className="flex items-center gap-2 text-xs text-slate-600">
                                                         <Check size={10} className="text-[#B48646] stroke-[3]" /> {item}
@@ -369,7 +369,7 @@ const GraphicDesignForm = ({ onBack, onRequest, initialValues }: FormProps) => {
                                                 {[
                                                     "Création de Logo Unique",
                                                     "Refonte & Modernisation",
-                                                    "Fichiers Vectoriels"
+                                                    "Design sur mesure"
                                                 ].map((item, i) => (
                                                     <div key={i} className="flex items-center gap-2 text-[10px] text-slate-500">
                                                         <Check size={10} className="text-[#B48646]" /> {item}
@@ -390,13 +390,14 @@ const GraphicDesignForm = ({ onBack, onRequest, initialValues }: FormProps) => {
                                         <div className="flex-1">
                                             <div className="flex justify-between items-center mb-2">
                                                 <span className="font-bold text-slate-900 block text-base">Cartes de Visite & Flyers</span>
-                                                <span className="font-bold text-sm text-[#B48646]">80€</span>
+                                                <span className="font-bold text-sm text-[#B48646]">50€</span>
                                             </div>
                                             <div className="space-y-1">
                                                  {[
                                                     "Design sur mesure",
                                                     "Fichiers pour l'imprimeur",
-                                                    "Recto / Verso"
+                                                    "Recto / Verso",
+                                                    "Impression en option"
                                                 ].map((item, i) => (
                                                     <div key={i} className="flex items-center gap-2 text-[10px] text-slate-500">
                                                         <Check size={10} className="text-[#B48646]" /> {item}
@@ -421,9 +422,9 @@ const GraphicDesignForm = ({ onBack, onRequest, initialValues }: FormProps) => {
                                             </div>
                                             <div className="space-y-1">
                                                  {[
-                                                    "Bannières FB/LinkedIn",
+                                                    "Bannière réseaux sociaux",
                                                     "Photo de Profil",
-                                                    "Adaptation Charte"
+                                                    "Design sur mesure"
                                                 ].map((item, i) => (
                                                     <div key={i} className="flex items-center gap-2 text-[10px] text-slate-500">
                                                         <Check size={10} className="text-[#B48646]" /> {item}
@@ -498,7 +499,7 @@ const GraphicDesignForm = ({ onBack, onRequest, initialValues }: FormProps) => {
 const VideoForm = ({ onBack, onRequest, initialValues }: FormProps) => {
     const [subService, setSubService] = useState<string>('birthday'); // birthday, wedding, promo, grading, funeral, digitization
     const [photos, setPhotos] = useState<number>(50);
-    const [duration, setDuration] = useState<number>(3);
+    const [duration, setDuration] = useState<number>(10);
     const [tapes, setTapes] = useState<number>(1);
     const [musicOption, setMusicOption] = useState<boolean>(true);
     const [price, setPrice] = useState<number>(0);
@@ -521,7 +522,7 @@ const VideoForm = ({ onBack, onRequest, initialValues }: FormProps) => {
         let pricePerPhoto = 0.5;
         let pricePerMin = 10;
         let musicCost = musicOption ? 15 : 0;
-        let tapePrice = 20;
+        let tapePrice = 5; // NEW: 5€ per tape
 
         if (subService === 'wedding') {
             basePrice = 60;
@@ -540,7 +541,8 @@ const VideoForm = ({ onBack, onRequest, initialValues }: FormProps) => {
         // Calculate
         let calculated = basePrice;
         if (subService === 'digitization') {
-            calculated = tapes * tapePrice;
+            // NEW VHS FORMULA: (Cassettes * 5) + (Ceil(Minutes/10) * 5)
+            calculated = (tapes * tapePrice) + (Math.ceil(duration / 10) * 5);
         } else if (subService !== 'grading') {
             calculated += (photos * pricePerPhoto);
             calculated += (duration * pricePerMin);
@@ -655,7 +657,8 @@ const VideoForm = ({ onBack, onRequest, initialValues }: FormProps) => {
                                                 {type === 'digitization' && [
                                                     "Transfert VHS vers Numérique",
                                                     "Amélioration Qualité",
-                                                    "Livraison Clé USB / Cloud"
+                                                    "Livraison Clé USB / Cloud",
+                                                    "Tarification à 5€ par cassette + 5€ par tranche de 10 minutes numérisées, voir simulateur ci-contre."
                                                 ].map((item, i) => (
                                                     <div key={i} className="flex items-center gap-2 text-[10px] text-slate-500">
                                                         <Check size={10} className="text-[#B48646]" /> {item}
@@ -707,6 +710,7 @@ const VideoForm = ({ onBack, onRequest, initialValues }: FormProps) => {
                                     </div>
                                 )}
 
+                                {/* VHS Simulator Input: Cassettes */}
                                 {subService === 'digitization' && (
                                     <div>
                                         <label className="flex justify-between text-sm font-bold text-slate-700 mb-3">
@@ -714,16 +718,19 @@ const VideoForm = ({ onBack, onRequest, initialValues }: FormProps) => {
                                             <span className="text-[#B48646] bg-[#B48646]/10 px-3 py-1 rounded-xl font-bold text-xs">{tapes} cassette{tapes > 1 ? 's' : ''}</span>
                                         </label>
                                         <input type="range" min="1" max="20" step="1" value={tapes} onChange={(e) => setTapes(parseInt(e.target.value))} className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#B48646]" />
+                                        <p className="text-[10px] text-slate-400 mt-1">5€ par cassette</p>
                                     </div>
                                 )}
 
-                                {subService !== 'digitization' && (
+                                {/* Duration Slider (Visible for standard video AND digitization now) */}
+                                {(subService !== 'digitization' || subService === 'digitization') && (
                                     <div>
                                         <label className="flex justify-between text-sm font-bold text-slate-700 mb-3">
-                                            <span>Durée estimée (minutes)</span>
+                                            <span>{subService === 'digitization' ? 'Durée totale en minutes (estimée)' : 'Durée estimée (minutes)'}</span>
                                             <span className="text-[#B48646] bg-[#B48646]/10 px-3 py-1 rounded-xl font-bold text-xs">{duration} min</span>
                                         </label>
-                                        <input type="range" min="1" max="20" step="1" value={duration} onChange={(e) => setDuration(parseInt(e.target.value))} className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#B48646]" />
+                                        <input type="range" min="1" max="180" step="1" value={duration} onChange={(e) => setDuration(parseInt(e.target.value))} className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#B48646]" />
+                                        {subService === 'digitization' && <p className="text-[10px] text-slate-400 mt-1">5€ par tranche de 10 min</p>}
                                     </div>
                                 )}
 
