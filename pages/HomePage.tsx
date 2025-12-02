@@ -13,20 +13,17 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate, user, onLoginClick, onL
   
   return (
     <div className="flex flex-col h-full overflow-y-auto no-scrollbar bg-[#FDFCF8]">
-      {/* Header / Branding - Added flex-none to prevent shrinking */}
+      {/* Header / Branding */}
       <header className="flex-none pt-14 pb-10 px-6 bg-white border-b border-slate-50 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] relative overflow-hidden rounded-b-[3.5rem] mb-6 z-10">
-        {/* Decorative background elements */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-[#B48646] to-[#F3C06B] rounded-full blur-[80px] opacity-15 -mr-16 -mt-16 animate-pulse"></div>
         <div className="absolute bottom-0 left-0 w-48 h-48 bg-slate-900 rounded-full blur-[60px] opacity-5 -ml-10 -mb-10"></div>
 
         <div className="relative z-10 flex flex-col items-center justify-center text-center mt-2">
-           {/* Logo Representation */}
            <div className="flex items-center justify-center mb-4 relative group cursor-pointer transition-transform duration-500 hover:scale-110">
              <div className="absolute inset-0 bg-[#B48646] blur-3xl opacity-20 rounded-full group-hover:opacity-40 transition-opacity duration-500"></div>
              <Infinity size={48} strokeWidth={1.5} className="text-[#B48646] relative z-10 drop-shadow-sm transition-transform duration-700 group-hover:rotate-180" />
            </div>
            
-           {/* Title */}
            <h1 className="text-4xl tracking-tighter mb-2 font-['Poppins']">
              <span className="font-bold text-slate-900">INFINI</span>
              <span className="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#B48646] to-[#F3C06B]">24</span>
@@ -55,7 +52,6 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate, user, onLoginClick, onL
                 className="bg-gradient-to-br from-[#B48646] via-[#D49E52] to-[#F3C06B] rounded-[2.5rem] p-8 flex flex-col md:flex-row items-center justify-between shadow-2xl shadow-[#B48646]/20 relative overflow-hidden group cursor-pointer hover:scale-[1.02] active:scale-[0.98] transition-all duration-500 max-w-4xl mx-auto" 
                 onClick={() => onNavigate(2, ServiceType.GRAPHIC_DESIGN)}
             >
-                {/* Glossy overlay */}
                 <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 mix-blend-overlay"></div>
                 <div className="absolute -right-10 -top-10 w-48 h-48 bg-white/20 rounded-full blur-3xl group-hover:bg-white/30 transition-colors"></div>
                 <div className="absolute -left-10 bottom-0 w-32 h-32 bg-black/5 rounded-full blur-2xl"></div>
@@ -66,7 +62,6 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate, user, onLoginClick, onL
                     </span>
                     <h3 className="font-extrabold text-3xl mb-1 leading-none tracking-tight">Pack Identité<br/>Complète</h3>
                     
-                    {/* Offer Details */}
                     <div className="bg-black/10 p-3 rounded-xl mt-3 backdrop-blur-sm border border-white/10 w-fit">
                          <p className="text-[11px] text-white/90 font-medium leading-relaxed">
                             • Création Logo Unique sur mesure<br/>
@@ -89,7 +84,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate, user, onLoginClick, onL
             </div>
         </section>
 
-        {/* Quick Navigation Buttons - Below Special Offer */}
+        {/* Quick Navigation Buttons */}
         <section className="mt-6 px-4 grid grid-cols-2 gap-4 max-w-4xl mx-auto w-full">
             <button
                 onClick={() => onNavigate(1)}
@@ -112,7 +107,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate, user, onLoginClick, onL
             </button>
         </section>
 
-        {/* Services Blocks (Detailed View) */}
+        {/* Services Blocks */}
         <section className="mt-12 px-4 max-w-6xl mx-auto">
             <div className="flex items-center gap-4 mb-8">
                  <div className="w-1.5 h-8 bg-gradient-to-b from-[#B48646] to-[#F3C06B] rounded-full"></div>
@@ -124,7 +119,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate, user, onLoginClick, onL
            
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             
-            {/* Service 1: Graphic Design - DETAILED */}
+            {/* Service 1: Graphic Design */}
             <div 
                 onClick={() => onNavigate(2, ServiceType.GRAPHIC_DESIGN)}
                 className="group bg-white p-6 rounded-[2.5rem] shadow-[0_10px_40px_-15px_rgba(0,0,0,0.03)] border border-slate-50 hover:border-[#B48646]/20 hover:shadow-[0_20px_40px_-10px_rgba(180,134,70,0.1)] hover:-translate-y-1 transition-all duration-500 cursor-pointer flex flex-col"
@@ -164,7 +159,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate, user, onLoginClick, onL
                 </div>
             </div>
 
-            {/* Service 2: Video & Photo - DETAILED */}
+            {/* Service 2: Video & Photo */}
             <div 
                 onClick={() => onNavigate(2, ServiceType.VIDEO)}
                 className="group bg-white p-6 rounded-[2.5rem] shadow-[0_10px_40px_-15px_rgba(0,0,0,0.03)] border border-slate-50 hover:border-[#B48646]/20 hover:shadow-[0_20px_40px_-10px_rgba(180,134,70,0.1)] hover:-translate-y-1 transition-all duration-500 cursor-pointer flex flex-col"
@@ -198,14 +193,14 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate, user, onLoginClick, onL
                 </ul>
 
                 <div className="mt-auto flex items-center justify-between pt-4 border-t border-slate-50">
-                    <span className="text-xs font-bold text-slate-400">Sur mesure</span>
+                    <span className="text-xs font-bold text-slate-400">À partir de 20€</span>
                     <div className="flex items-center gap-2 text-sm font-bold text-[#B48646] group-hover:translate-x-1 transition-transform">
                         Créer <ArrowRight size={16} />
                     </div>
                 </div>
             </div>
 
-            {/* Service 3: Assistance - DETAILED */}
+            {/* Service 3: Assistance */}
             <div 
                 onClick={() => onNavigate(2, ServiceType.ASSISTANCE)}
                 className="group bg-white p-6 rounded-[2.5rem] shadow-[0_10px_40px_-15px_rgba(0,0,0,0.03)] border border-slate-50 hover:border-[#B48646]/20 hover:shadow-[0_20px_40px_-10px_rgba(180,134,70,0.1)] hover:-translate-y-1 transition-all duration-500 cursor-pointer flex flex-col"
@@ -222,10 +217,10 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate, user, onLoginClick, onL
 
                 <ul className="space-y-3 mb-6 flex-1">
                     {[
-                        "Retouches Photos Express",
+                        "Retouches Photo (5€/photo)",
+                        "Modification / Montage (5€/photo)",
                         "Détourage d'images",
                         "Modifications de Textes",
-                        "Aide Mise en Page",
                         "Conversion de fichiers"
                     ].map((item, i) => (
                         <li key={i} className="flex items-center gap-3 text-sm text-slate-600 font-medium">
@@ -238,7 +233,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate, user, onLoginClick, onL
                 </ul>
 
                 <div className="mt-auto flex items-center justify-between pt-4 border-t border-slate-50">
-                    <span className="text-xs font-bold text-slate-400">Dès 50€</span>
+                    <span className="text-xs font-bold text-slate-400">Dès 5€</span>
                     <div className="flex items-center gap-2 text-sm font-bold text-[#B48646] group-hover:translate-x-1 transition-transform">
                         Demander <ArrowRight size={16} />
                     </div>
