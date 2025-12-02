@@ -36,7 +36,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
   
   const [projects, setProjects] = useState<LocalProject[]>([]);
   const [allUsers, setAllUsers] = useState<any[]>([]);
-  const isAdmin = user?.email === 'infinivingtquatre@gmail.com';
+  const isAdmin = user?.email.toLowerCase() === 'infinivingtquatre@gmail.com';
   
   const [uploadingId, setUploadingId] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -57,7 +57,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
 
   useEffect(() => {
     loadData();
-    const interval = setInterval(loadData, 10000); 
+    const interval = setInterval(loadData, 5000); // Refresh plus rapide
     return () => clearInterval(interval);
   }, [isAdmin]);
 
@@ -241,7 +241,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
             )}
 
             <div className="flex flex-col gap-3">
-                {project.step !== 'delivered' && project.step !== 'request_received' && !isAdmin && (
+                {/* ALLOW UPLOADS AT ANY STEP FOR CLIENTS */}
+                {project.step !== 'delivered' && !isAdmin && (
                     <button 
                         onClick={() => handleUploadClick(project.id)}
                         disabled={uploadingId === project.id}
@@ -282,7 +283,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
 
   const displayedProjects = isAdmin 
     ? projects 
-    : projects.filter(p => p.clientEmail === user?.email);
+    : projects.filter(p => (p.clientEmail || "").toLowerCase() === (user?.email || "").toLowerCase());
 
   const pendingProjects = displayedProjects.filter(p => p.step === 'request_received');
   const activeProjects = displayedProjects.filter(p => p.step !== 'request_received');

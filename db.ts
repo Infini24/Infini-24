@@ -10,8 +10,10 @@ import { User } from './types';
 export const registerUser = async (user: User & { password?: string }) => {
     if (!auth) return false;
     try {
+        const cleanEmail = user.email.toLowerCase().trim(); // Sécurité Email
+
         // 1. Créer le compte Auth (Email/Pass)
-        const userCredential = await createUserWithEmailAndPassword(auth, user.email, user.password || "123456");
+        const userCredential = await createUserWithEmailAndPassword(auth, cleanEmail, user.password || "123456");
         
         // 2. Mettre à jour le profil Auth (Nom)
         await updateProfile(userCredential.user, { displayName: user.name });
@@ -19,7 +21,7 @@ export const registerUser = async (user: User & { password?: string }) => {
         // 3. Stocker les infos supplémentaires (Tel, Entreprise) dans Firestore
         await setDoc(doc(db, "users", userCredential.user.uid), {
             name: user.name,
-            email: user.email,
+            email: cleanEmail,
             type: user.type,
             companyName: user.companyName || "",
             phone: user.phone,
@@ -29,7 +31,7 @@ export const registerUser = async (user: User & { password?: string }) => {
         return userCredential.user;
     } catch (error: any) {
         console.error("Erreur Inscription:", error.code, error.message);
-        throw error; // On renvoie l'erreur pour l'afficher (ex: email déjà pris)
+        throw error; 
     }
 };
 
@@ -37,18 +39,18 @@ export const registerUser = async (user: User & { password?: string }) => {
 export const loginUser = async (email: string, password: string) => {
     if (!auth) return null;
     try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        // Récupérer les infos supplémentaires depuis Firestore
+        const cleanEmail = email.toLowerCase().trim();
+        const userCredential = await signInWithEmailAndPassword(auth, cleanEmail, password);
+        
         const docRef = doc(db, "users", userCredential.user.uid);
         const docSnap = await getDoc(docRef);
         
         if (docSnap.exists()) {
             return { uid: userCredential.user.uid, ...docSnap.data() } as User;
         } else {
-            // Fallback si pas de données Firestore (cas rare)
             return { 
                 name: userCredential.user.displayName || "Utilisateur", 
-                email: userCredential.user.email || "", 
+                email: cleanEmail, 
                 type: 'Particulier', 
                 phone: "" 
             } as User;
@@ -64,18 +66,16 @@ export const logoutUser = async () => {
     if (auth) await signOut(auth);
 };
 
-// Mot de passe oublié (Vrai email envoyé par Google)
+// Mot de passe oublié
 export const resetUserPassword = async (email: string) => {
-    if (auth) await sendPasswordResetEmail(auth, email);
+    if (auth) await sendPasswordResetEmail(auth, email.toLowerCase().trim());
 };
 
 // Récupérer tous les utilisateurs (Pour l'Admin)
 export const getUsers = async () => {
     try {
         const querySnapshot = await getDocs(collection(db, "users"));
-        // On récupère les données et on trie par date (le plus récent en premier)
         const users = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        // Tri manuel JS car Firestore demande un index pour le tri serveur
         return users.sort((a: any, b: any) => {
             const dateA = new Date(a.createdAt || 0).getTime();
             const dateB = new Date(b.createdAt || 0).getTime();
@@ -92,8 +92,12 @@ export const getUsers = async () => {
 
 export const saveProject = async (project: any) => {
     try {
-        // Ajout dans Firestore
-        await addDoc(collection(db, "projects"), project);
+        // Force l'email en minuscule pour éviter les bugs de visibilité
+        const cleanProject = {
+            ...project,
+            clientEmail: project.clientEmail ? project.clientEmail.toLowerCase().trim() : ""
+        };
+        await addDoc(collection(db, "projects"), cleanProject);
     } catch (e) { console.error(e); }
 };
 
@@ -127,8 +131,7 @@ export const uploadProjectFile = async (projectId: string, file: File, clientEma
     if (!storage) throw new Error("Storage non configuré");
     
     try {
-        // Nettoyage email
-        const safeEmail = clientEmail.replace(/[^a-z0-9@._-]/gi, '_');
+        const safeEmail = clientEmail.toLowerCase().trim().replace(/[^a-z0-9@._-]/gi, '_');
         
         const fileRef = ref(storage, `clients/${safeEmail}/${projectId}/sources/${Date.now()}_${file.name}`);
         
@@ -156,19 +159,17 @@ export const uploadFinalDelivery = async (projectId: string, file: File, clientE
     if (!storage) throw new Error("Storage non configuré");
     
     try {
-        const safeEmail = clientEmail.replace(/[^a-z0-9@._-]/gi, '_');
+        const safeEmail = clientEmail.toLowerCase().trim().replace(/[^a-z0-9@._-]/gi, '_');
         
-        // Dossier "livrables" distinct
         const fileRef = ref(storage, `clients/${safeEmail}/${projectId}/LIVRABLE_FINAL/${file.name}`);
         
         const snapshot = await uploadBytes(fileRef, file);
         const downloadURL = await getDownloadURL(snapshot.ref);
 
-        // On met à jour le champ spécifique "downloadUrl" du projet
         const projectRef = doc(db, "projects", projectId);
         await updateDoc(projectRef, {
-            downloadUrl: downloadURL, // Le lien principal de téléchargement
-            step: 'delivered', // On passe automatiquement en livré
+            downloadUrl: downloadURL,
+            step: 'delivered',
             progress: 100
         });
 
