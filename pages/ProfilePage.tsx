@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { User } from '../types';
 import { FolderOpen, LogIn, Infinity, Download, ExternalLink, Clock, Plus, Trash2, Send, FileCheck, Package, Facebook, UploadCloud, FileText, Loader2, Users, Phone as PhoneIcon, Calendar, Gift, Edit2 } from 'lucide-react';
@@ -241,7 +242,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
             )}
 
             <div className="flex flex-col gap-3">
-                {/* ALLOW UPLOADS AT ANY STEP FOR CLIENTS */}
+                {/* ALLOW UPLOADS AT ANY STEP FOR CLIENTS - Even request_received */}
                 {project.step !== 'delivered' && !isAdmin && (
                     <button 
                         onClick={() => handleUploadClick(project.id)}
@@ -283,7 +284,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
 
   const displayedProjects = isAdmin 
     ? projects 
-    : projects.filter(p => (p.clientEmail || "").toLowerCase() === (user?.email || "").toLowerCase());
+    : projects.filter(p => (p.clientEmail || "").trim().toLowerCase() === (user?.email || "").trim().toLowerCase()); // Strict Lowercase Check
 
   const pendingProjects = displayedProjects.filter(p => p.step === 'request_received');
   const activeProjects = displayedProjects.filter(p => p.step !== 'request_received');
@@ -296,7 +297,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
         ref={fileInputRef} 
         onChange={handleFileChange} 
         className="hidden" 
-        accept="image/*,.pdf,.zip,.rar" 
+        accept="image/*,video/*,.pdf,.zip,.rar" 
       />
 
       <input 

@@ -96,14 +96,36 @@ export const getUsers = async () => {
 
 // --- GESTION PROJETS (FIRESTORE) ---
 
-export const saveProject = async (project: any) => {
+export const saveProject = async (project: any, fileToUpload?: File) => {
     try {
         // Force l'email en minuscule pour éviter les bugs de visibilité
         const cleanProject = {
             ...project,
             clientEmail: project.clientEmail ? project.clientEmail.toLowerCase().trim() : ""
         };
-        await db.collection("projects").add(cleanProject);
+
+        // 1. Créer le document projet pour avoir un ID
+        const docRef = await db.collection("projects").add(cleanProject);
+        
+        // 2. Si un fichier est fourni à la création, on l'upload immédiatement
+        if (fileToUpload && storage) {
+            const safeEmail = cleanProject.clientEmail.replace(/[^a-z0-9@._-]/gi, '_');
+            const fileRef = storage.ref(`clients/${safeEmail}/${docRef.id}/sources/${Date.now()}_${fileToUpload.name}`);
+            
+            const snapshot = await fileRef.put(fileToUpload);
+            const downloadURL = await snapshot.ref.getDownloadURL();
+
+            // Mise à jour du projet avec le fichier
+            await docRef.update({
+                files: firebase.firestore.FieldValue.arrayUnion({
+                    name: fileToUpload.name,
+                    url: downloadURL,
+                    date: new Date().toLocaleDateString()
+                })
+            });
+        }
+
+        return docRef.id;
     } catch (e) { console.error(e); }
 };
 
