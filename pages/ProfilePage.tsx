@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { User } from '../types';
 import { FolderOpen, LogIn, Infinity, Download, ExternalLink, Clock, Plus, Trash2, Send, FileCheck, Package, Facebook, UploadCloud, FileText, Loader2, Users, Phone as PhoneIcon, Calendar, Gift, Edit2 } from 'lucide-react';
-import { getProjects, updateProjectStatus, deleteProject, saveProject, uploadProjectFile, getUsers, uploadFinalDelivery } from '../db';
+import { updateProjectStatus, deleteProject, saveProject, uploadProjectFile, uploadFinalDelivery, subscribeToProjects, subscribeToUsers } from '../db';
 import toast from 'react-hot-toast';
 
 interface ProfilePageProps {
@@ -46,20 +46,27 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
   const deliveryInputRef = useRef<HTMLInputElement>(null);
   const [deliveringId, setDeliveringId] = useState<string | null>(null);
 
-  const loadData = async () => {
-      const projectsData = await getProjects();
-      setProjects(projectsData as LocalProject[]);
-
-      if (isAdmin) {
-          const usersData = await getUsers();
-          setAllUsers(usersData);
-      }
-  };
-
+  // --- REAL-TIME UPDATES (FIRESTORE) ---
   useEffect(() => {
-    loadData();
-    const interval = setInterval(loadData, 5000); // Refresh plus rapide
-    return () => clearInterval(interval);
+    // 1. Abonnement aux Projets (Mise à jour instantanée)
+    const unsubscribeProjects = subscribeToProjects((data) => {
+        setProjects(data as LocalProject[]);
+    });
+
+    let unsubscribeUsers = () => {};
+
+    // 2. Abonnement aux Utilisateurs (Seulement pour l'admin)
+    if (isAdmin) {
+        unsubscribeUsers = subscribeToUsers((data) => {
+            setAllUsers(data);
+        });
+    }
+
+    // Nettoyage à la fermeture de la page
+    return () => {
+        unsubscribeProjects();
+        if (unsubscribeUsers) unsubscribeUsers();
+    };
   }, [isAdmin]);
 
   const [newProjectTitle, setNewProjectTitle] = useState("");
@@ -78,8 +85,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
       };
       
       await saveProject(newProj);
-      await loadData();
-
+      // Pas besoin de reload manuel, le listener s'en charge !
       setNewProjectTitle("");
       setNewClientName("");
   };
@@ -91,13 +97,11 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
       if (step === 'delivered') progress = 100;
 
       await updateProjectStatus(id, step, progress);
-      await loadData();
   };
 
   const handleDeleteProject = async (id: string | number) => {
       if(window.confirm("Supprimer ce projet de la liste ?")) {
           await deleteProject(id);
-          await loadData();
       }
   };
 
@@ -121,7 +125,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
           await uploadFinalDelivery(deliveringId, file, clientEmail);
           
           toast.success("Projet livré avec succès !", { id: toastId });
-          await loadData();
       } catch (error) {
           console.error(error);
           toast.error("Erreur lors de la livraison.", { id: toastId });
@@ -152,7 +155,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
           await uploadProjectFile(selectedProjectId, file, clientEmail);
           
           toast.success("Fichier envoyé avec succès !", { id: toastId });
-          await loadData();
       } catch (error) {
           console.error(error);
           toast.error("Erreur d'envoi. Vérifiez votre connexion.", { id: toastId });
@@ -485,58 +487,4 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
                                                         <p className="font-bold text-xs text-white">{client.name}</p>
                                                         <p className="text-[10px] text-slate-400">{client.email}</p>
                                                     </div>
-                                                    {idx < 3 && <span className="text-[9px] bg-red-500/20 text-red-400 px-1.5 rounded font-bold">New</span>}
-                                                </div>
-                                                <div className="mt-2 pt-2 border-t border-slate-700/50 flex flex-col gap-1">
-                                                    {client.phone && (
-                                                        <div className="flex items-center gap-1.5 text-[10px] text-slate-300">
-                                                            <PhoneIcon size={10} className="text-[#B48646]" /> {client.phone}
-                                                        </div>
-                                                    )}
-                                                    {client.companyName && (
-                                                        <div className="flex items-center gap-1.5 text-[10px] text-slate-300">
-                                                            <FolderOpen size={10} className="text-[#B48646]" /> {client.companyName}
-                                                        </div>
-                                                    )}
-                                                    <div className="flex items-center gap-1.5 text-[9px] text-slate-500 mt-1">
-                                                        <Calendar size={9} /> Inscrit le {new Date(client.createdAt).toLocaleDateString()}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-             </div>
-        ) : (
-            <div className="w-full max-w-md bg-white rounded-[3rem] p-10 shadow-2xl shadow-slate-200/50 border border-slate-50 text-center relative overflow-hidden group mt-10">
-                 <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mb-6 shadow-inner mx-auto">
-                    <FolderOpen size={36} className="text-slate-300" />
-                </div>
-                
-                <h2 className="text-xl font-bold text-slate-900 mb-2">Espace Client Sécurisé</h2>
-                <p className="text-slate-500 text-sm leading-relaxed mb-8">
-                    Connectez-vous pour suivre l'avancement de vos commandes, valider les maquettes et télécharger vos fichiers finaux.
-                </p>
-
-                {onLoginClick && (
-                    <button 
-                        onClick={onLoginClick}
-                        className="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold shadow-lg hover:bg-[#B48646] hover:shadow-[#B48646]/30 transition-all flex items-center justify-center gap-2 group-hover:-translate-y-1"
-                    >
-                        <LogIn size={18} /> Se connecter
-                    </button>
-                )}
-            </div>
-        )}
-
-      </div>
-    </div>
-  );
-};
-
-export default ProfilePage;
+                                                    {idx < 3 && <span className="text-[9px] bg-red-500/20 text-red-400 px-1.5

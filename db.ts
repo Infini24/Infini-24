@@ -77,7 +77,20 @@ export const resetUserPassword = async (email: string) => {
     if (auth) await auth.sendPasswordResetEmail(email.toLowerCase().trim());
 };
 
-// Récupérer tous les utilisateurs (Pour l'Admin)
+// Récupérer tous les utilisateurs (Pour l'Admin) - TEMPS RÉEL
+export const subscribeToUsers = (onUpdate: (users: any[]) => void) => {
+    return db.collection("users").onSnapshot((snapshot) => {
+        const users = snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() }));
+        const sortedUsers = users.sort((a: any, b: any) => {
+            const dateA = new Date(a.createdAt || 0).getTime();
+            const dateB = new Date(b.createdAt || 0).getTime();
+            return dateB - dateA;
+        });
+        onUpdate(sortedUsers);
+    }, (error) => console.error("Erreur abonnement utilisateurs:", error));
+};
+
+// Legacy one-time fetch (gardé pour compatibilité si besoin)
 export const getUsers = async () => {
     try {
         const querySnapshot = await db.collection("users").get();
@@ -129,6 +142,15 @@ export const saveProject = async (project: any, fileToUpload?: File) => {
     } catch (e) { console.error(e); }
 };
 
+// Récupérer les projets en TEMPS RÉEL
+export const subscribeToProjects = (onUpdate: (projects: any[]) => void) => {
+    return db.collection("projects").onSnapshot((snapshot) => {
+        const projects = snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() }));
+        onUpdate(projects);
+    }, (error) => console.error("Erreur abonnement projets:", error));
+};
+
+// Legacy one-time fetch
 export const getProjects = async (): Promise<any[]> => {
     try {
         const querySnapshot = await db.collection("projects").get();
