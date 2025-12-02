@@ -485,7 +485,7 @@ const GraphicDesignForm = ({ onBack, onRequest, initialValues }: FormProps) => {
                             </div>
 
                             <button type="submit" className="w-full bg-gradient-to-r from-[#B48646] to-[#E5B066] text-white font-bold text-lg py-5 rounded-[2rem] shadow-xl shadow-[#B48646]/30 hover:shadow-2xl hover:shadow-[#B48646]/40 hover:-translate-y-1 transition-all active:scale-95 flex items-center justify-center gap-3 group">
-                                 <Eye size={22} className="group-hover:scale-110 transition-transform" /> Lancer le projet
+                                 <Eye size={22} className="group-hover:scale-100 transition-transform" /> Lancer le projet
                             </button>
                         </div>
                     </div>
@@ -792,19 +792,28 @@ const VideoForm = ({ onBack, onRequest, initialValues }: FormProps) => {
 // 3. Assistance Form
 const AssistanceForm = ({ onBack, onRequest, initialValues }: FormProps) => {
     const [missionType, setMissionType] = useState<string>('retouche');
+    const [photoCount, setPhotoCount] = useState<number>(1);
+    const [price, setPrice] = useState<number>(5);
     
     // Try to restore state if initialValues provided
     useEffect(() => {
         if (initialValues) {
             if (initialValues.includes("modif_photo")) setMissionType('modif_photo');
-            else if (initialValues.includes("mise_en_page")) setMissionType('mise_en_page');
             else if (initialValues.includes("autre")) setMissionType('autre');
             else setMissionType('retouche');
         }
     }, [initialValues]);
 
-    const getPrice = () => {
-        if (missionType === 'retouche' || missionType === 'modif_photo') return '50€';
+    useEffect(() => {
+        if (missionType === 'retouche' || missionType === 'modif_photo') {
+            setPrice(photoCount * 5);
+        } else {
+            setPrice(0);
+        }
+    }, [missionType, photoCount]);
+
+    const getPriceDisplay = () => {
+        if (missionType === 'retouche' || missionType === 'modif_photo') return `${price}€`;
         return 'Sur devis';
     };
 
@@ -812,9 +821,9 @@ const AssistanceForm = ({ onBack, onRequest, initialValues }: FormProps) => {
 
     const handleFormSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        const price = isFixedPrice ? 50 : 0;
+        const finalPrice = isFixedPrice ? price : 0;
         const name = "Assistance - " + missionType;
-        onRequest(name, price);
+        onRequest(name, finalPrice);
     };
 
     return (
@@ -851,9 +860,8 @@ const AssistanceForm = ({ onBack, onRequest, initialValues }: FormProps) => {
                             <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-6">Type de demande</label>
                             <div className="grid gap-4">
                                 {[
-                                    {id: 'retouche', label: 'Retouche Photo Simple', desc: 'Amélioration, colorimétrie', details: ["Retouche Colorimétrique", "Amélioration Netteté"]},
-                                    {id: 'modif_photo', label: 'Modification / Montage', desc: 'Suppression, détourage', details: ["Détourage d'images", "Suppression d'éléments"]},
-                                    {id: 'mise_en_page', label: 'Mise en page', desc: 'Flyer, brochure', details: ["Mise en Page", "Modifications Textes"]},
+                                    {id: 'retouche', label: 'Retouche Photo Simple', desc: '5€ / photo', details: ["Retouche Colorimétrique", "Amélioration Netteté"]},
+                                    {id: 'modif_photo', label: 'Modification / Montage', desc: '5€ / photo', details: ["Détourage d'images", "Suppression d'éléments"]},
                                     {id: 'autre', label: 'Autre demande', desc: 'Besoin spécifique', details: ["Conversion de fichiers", "Autre demande"]}
                                 ].map((item) => (
                                     <label key={item.id} className={`bg-slate-50 border-2 p-5 rounded-[2rem] flex items-start gap-4 cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-md ${missionType === item.id ? 'border-[#B48646] ring-1 ring-[#B48646]/20 bg-white' : 'hover:bg-white border-transparent'}`}>
@@ -877,6 +885,16 @@ const AssistanceForm = ({ onBack, onRequest, initialValues }: FormProps) => {
                         {/* Right: Details & Price */}
                         <div className="space-y-6">
                             <div className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-slate-100">
+                                {isFixedPrice && (
+                                    <div className="mb-6">
+                                        <label className="flex justify-between text-sm font-bold text-slate-700 mb-3">
+                                            <span>Nombre de photos</span>
+                                            <span className="text-[#B48646] bg-[#B48646]/10 px-3 py-1 rounded-xl font-bold text-xs">{photoCount} photo{photoCount > 1 ? 's' : ''}</span>
+                                        </label>
+                                        <input type="range" min="1" max="50" step="1" value={photoCount} onChange={(e) => setPhotoCount(parseInt(e.target.value))} className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#B48646]" />
+                                    </div>
+                                )}
+
                                 <label className="block text-sm font-bold text-slate-700 mb-3">Détails de la mission</label>
                                 <p className="text-xs text-slate-500 mb-4 font-medium">Soyez le plus précis possible pour un traitement rapide.</p>
                                 <textarea className="w-full px-6 py-4 border-2 border-slate-100 rounded-2xl outline-none text-sm focus:border-[#B48646] focus:ring-4 focus:ring-[#B48646]/10 bg-slate-50 focus:bg-white transition-all resize-none" rows={5} placeholder="Expliquez ce que nous devons modifier..." required></textarea>
@@ -887,7 +905,7 @@ const AssistanceForm = ({ onBack, onRequest, initialValues }: FormProps) => {
                                  <div className="absolute -top-10 -right-10 w-40 h-40 bg-[#B48646] blur-[60px] opacity-30 rounded-full pointer-events-none"></div>
                                 <span className="block text-xs text-slate-400 uppercase tracking-widest font-bold mb-2 relative z-10">Estimation</span>
                                 <div className="flex items-center justify-center gap-2 text-transparent bg-clip-text bg-gradient-to-r from-[#B48646] to-[#F3C06B] relative z-10">
-                                    <span className="text-5xl font-extrabold tracking-tight">{getPrice()}</span>
+                                    <span className="text-5xl font-extrabold tracking-tight">{getPriceDisplay()}</span>
                                 </div>
                             </div>
 
