@@ -1,8 +1,9 @@
-import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
-import { getAnalytics } from "firebase/analytics";
-import { getAuth } from "firebase/auth"; // Ajout du module Auth
-import { getStorage } from "firebase/storage"; // Ajout du module Storage
+
+import firebase from "firebase/compat/app";
+import "firebase/compat/firestore";
+import "firebase/compat/auth";
+import "firebase/compat/storage";
+import "firebase/compat/analytics";
 
 // --- CONFIGURATION FIREBASE (Vos clés officielles) ---
 const firebaseConfig = {
@@ -16,14 +17,15 @@ const firebaseConfig = {
 };
 
 // Initialisation de l'application Firebase
-const app = initializeApp(firebaseConfig);
+const app = !firebase.apps.length ? firebase.initializeApp(firebaseConfig) : firebase.app();
 
 // Activation des services
-const db = getFirestore(app);
-const auth = getAuth(app); // Service d'Authentification
-const storage = getStorage(app); // Service de Stockage Fichiers
-const analytics = getAnalytics(app);
+const db = app.firestore();
+const auth = app.auth();
+const storage = app.storage();
+const analytics = typeof window !== 'undefined' ? app.analytics() : null;
 
-console.log("🔥 Firebase connecté (Auth + Database + Storage)");
+console.log("🔥 Firebase connecté (v8 Compat)");
 
 export { db, auth, storage, app, analytics };
+export default firebase;

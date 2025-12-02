@@ -1,3 +1,4 @@
+
 export enum UserType {
   PARTICULIER = 'Particulier',
   PME = 'PME'
@@ -27,6 +28,7 @@ export interface Project {
 }
 
 export interface User {
+  uid?: string;
   name: string;
   email: string;
   type: UserType;

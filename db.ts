@@ -1,7 +1,6 @@
+
 import { db, auth, storage } from './firebaseConfig';
-import { collection, addDoc, getDocs, updateDoc, doc, deleteDoc, query, where, setDoc, getDoc, arrayUnion } from "firebase/firestore";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, updateProfile } from "firebase/auth";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import firebase from './firebaseConfig';
 import { User } from './types';
 
 // --- GESTION UTILISATEURS (FIREBASE AUTH) ---
@@ -13,20 +12,24 @@ export const registerUser = async (user: User & { password?: string }) => {
         const cleanEmail = user.email.toLowerCase().trim(); // Sécurité Email
 
         // 1. Créer le compte Auth (Email/Pass)
-        const userCredential = await createUserWithEmailAndPassword(auth, cleanEmail, user.password || "123456");
+        const userCredential = await auth.createUserWithEmailAndPassword(cleanEmail, user.password || "123456");
         
         // 2. Mettre à jour le profil Auth (Nom)
-        await updateProfile(userCredential.user, { displayName: user.name });
+        if (userCredential.user) {
+            await userCredential.user.updateProfile({ displayName: user.name });
+        }
 
         // 3. Stocker les infos supplémentaires (Tel, Entreprise) dans Firestore
-        await setDoc(doc(db, "users", userCredential.user.uid), {
-            name: user.name,
-            email: cleanEmail,
-            type: user.type,
-            companyName: user.companyName || "",
-            phone: user.phone,
-            createdAt: new Date().toISOString()
-        });
+        if (userCredential.user) {
+            await db.collection("users").doc(userCredential.user.uid).set({
+                name: user.name,
+                email: cleanEmail,
+                type: user.type,
+                companyName: user.companyName || "",
+                phone: user.phone,
+                createdAt: new Date().toISOString()
+            });
+        }
 
         return userCredential.user;
     } catch (error: any) {
@@ -40,21 +43,24 @@ export const loginUser = async (email: string, password: string) => {
     if (!auth) return null;
     try {
         const cleanEmail = email.toLowerCase().trim();
-        const userCredential = await signInWithEmailAndPassword(auth, cleanEmail, password);
+        const userCredential = await auth.signInWithEmailAndPassword(cleanEmail, password);
         
-        const docRef = doc(db, "users", userCredential.user.uid);
-        const docSnap = await getDoc(docRef);
-        
-        if (docSnap.exists()) {
-            return { uid: userCredential.user.uid, ...docSnap.data() } as User;
-        } else {
-            return { 
-                name: userCredential.user.displayName || "Utilisateur", 
-                email: cleanEmail, 
-                type: 'Particulier', 
-                phone: "" 
-            } as User;
+        if (userCredential.user) {
+            const docSnap = await db.collection("users").doc(userCredential.user.uid).get();
+            
+            if (docSnap.exists) {
+                return { uid: userCredential.user.uid, ...docSnap.data() } as User;
+            } else {
+                return { 
+                    uid: userCredential.user.uid,
+                    name: userCredential.user.displayName || "Utilisateur", 
+                    email: cleanEmail, 
+                    type: 'Particulier', 
+                    phone: "" 
+                } as User;
+            }
         }
+        return null;
     } catch (error: any) {
         console.error("Erreur Connexion:", error.code);
         throw error;
@@ -63,19 +69,19 @@ export const loginUser = async (email: string, password: string) => {
 
 // Déconnexion
 export const logoutUser = async () => {
-    if (auth) await signOut(auth);
+    if (auth) await auth.signOut();
 };
 
 // Mot de passe oublié
 export const resetUserPassword = async (email: string) => {
-    if (auth) await sendPasswordResetEmail(auth, email.toLowerCase().trim());
+    if (auth) await auth.sendPasswordResetEmail(email.toLowerCase().trim());
 };
 
 // Récupérer tous les utilisateurs (Pour l'Admin)
 export const getUsers = async () => {
     try {
-        const querySnapshot = await getDocs(collection(db, "users"));
-        const users = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const querySnapshot = await db.collection("users").get();
+        const users = querySnapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() }));
         return users.sort((a: any, b: any) => {
             const dateA = new Date(a.createdAt || 0).getTime();
             const dateB = new Date(b.createdAt || 0).getTime();
@@ -97,14 +103,14 @@ export const saveProject = async (project: any) => {
             ...project,
             clientEmail: project.clientEmail ? project.clientEmail.toLowerCase().trim() : ""
         };
-        await addDoc(collection(db, "projects"), cleanProject);
+        await db.collection("projects").add(cleanProject);
     } catch (e) { console.error(e); }
 };
 
 export const getProjects = async (): Promise<any[]> => {
     try {
-        const querySnapshot = await getDocs(collection(db, "projects"));
-        return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })); 
+        const querySnapshot = await db.collection("projects").get();
+        return querySnapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() })); 
     } catch (e) {
         console.error(e);
         return [];
@@ -113,14 +119,13 @@ export const getProjects = async (): Promise<any[]> => {
 
 export const updateProjectStatus = async (id: string | number, step: string, progress: number) => {
     try {
-        const projectRef = doc(db, "projects", String(id));
-        await updateDoc(projectRef, { step, progress });
+        await db.collection("projects").doc(String(id)).update({ step, progress });
     } catch (e) { console.error(e); }
 };
 
 export const deleteProject = async (id: string | number) => {
     try {
-        await deleteDoc(doc(db, "projects", String(id)));
+        await db.collection("projects").doc(String(id)).delete();
     } catch (e) { console.error(e); }
 };
 
@@ -133,14 +138,13 @@ export const uploadProjectFile = async (projectId: string, file: File, clientEma
     try {
         const safeEmail = clientEmail.toLowerCase().trim().replace(/[^a-z0-9@._-]/gi, '_');
         
-        const fileRef = ref(storage, `clients/${safeEmail}/${projectId}/sources/${Date.now()}_${file.name}`);
+        const fileRef = storage.ref(`clients/${safeEmail}/${projectId}/sources/${Date.now()}_${file.name}`);
         
-        const snapshot = await uploadBytes(fileRef, file);
-        const downloadURL = await getDownloadURL(snapshot.ref);
+        const snapshot = await fileRef.put(file);
+        const downloadURL = await snapshot.ref.getDownloadURL();
 
-        const projectRef = doc(db, "projects", projectId);
-        await updateDoc(projectRef, {
-            files: arrayUnion({
+        await db.collection("projects").doc(projectId).update({
+            files: firebase.firestore.FieldValue.arrayUnion({
                 name: file.name,
                 url: downloadURL,
                 date: new Date().toLocaleDateString()
@@ -161,13 +165,12 @@ export const uploadFinalDelivery = async (projectId: string, file: File, clientE
     try {
         const safeEmail = clientEmail.toLowerCase().trim().replace(/[^a-z0-9@._-]/gi, '_');
         
-        const fileRef = ref(storage, `clients/${safeEmail}/${projectId}/LIVRABLE_FINAL/${file.name}`);
+        const fileRef = storage.ref(`clients/${safeEmail}/${projectId}/LIVRABLE_FINAL/${file.name}`);
         
-        const snapshot = await uploadBytes(fileRef, file);
-        const downloadURL = await getDownloadURL(snapshot.ref);
+        const snapshot = await fileRef.put(file);
+        const downloadURL = await snapshot.ref.getDownloadURL();
 
-        const projectRef = doc(db, "projects", projectId);
-        await updateDoc(projectRef, {
+        await db.collection("projects").doc(projectId).update({
             downloadUrl: downloadURL,
             step: 'delivered',
             progress: 100

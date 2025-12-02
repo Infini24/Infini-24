@@ -1,9 +1,8 @@
+
 import React, { useState, useEffect } from 'react';
-import { Home, Calculator, Briefcase, Mail, ArrowRight, Infinity as InfinityIcon, LogIn, LogOut, User as UserIcon, Image as ImageIcon } from 'lucide-react';
+import { Home, Calculator, Briefcase, Mail, ArrowRight, Infinity as InfinityIcon, LogIn, LogOut, User as UserIcon, Image as ImageIcon, Loader2 } from 'lucide-react';
 import { Toaster } from 'react-hot-toast';
-import { onAuthStateChanged } from 'firebase/auth'; // Listener Firebase
 import { auth, db } from './firebaseConfig';
-import { doc, getDoc } from 'firebase/firestore';
 
 import HomePage from './pages/HomePage';
 import ServicesPage from './pages/ServicesPage';
@@ -13,6 +12,18 @@ import ContactPage from './pages/ContactPage';
 import AuthPage from './pages/AuthPage';
 import { User, ServiceType, UserType } from './types';
 import { logoutUser } from './db';
+
+// --- COMPONENTS ---
+
+const LoadingScreen = () => (
+  <div className="flex flex-col items-center justify-center h-screen bg-[#FDFCF8]">
+    <div className="relative mb-4">
+        <div className="absolute inset-0 bg-[#B48646] blur-2xl opacity-20 rounded-full animate-pulse"></div>
+        <InfinityIcon size={64} className="text-[#B48646] relative z-10 animate-bounce" strokeWidth={1.5} />
+    </div>
+    <p className="text-slate-400 text-xs font-bold uppercase tracking-[0.2em] animate-pulse">Chargement Infini 24...</p>
+  </div>
+);
 
 // --- SIDEBAR COMPONENT (DESKTOP) ---
 const DesktopSidebar = ({ 
@@ -28,6 +39,8 @@ const DesktopSidebar = ({
   onLoginClick: () => void;
   onLogout: () => void;
 }) => {
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+
   return (
     <aside className="hidden md:flex flex-col w-72 h-screen fixed left-0 top-0 bg-white border-r border-slate-100 shadow-[4px_0_24px_rgba(0,0,0,0.02)] z-50 overflow-y-auto">
       {/* Sidebar Header / Logo */}
@@ -72,16 +85,28 @@ const DesktopSidebar = ({
       {/* Sidebar Footer / User Profile */}
       <div className="p-6 border-t border-slate-50">
         {user ? (
-           <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100 flex items-center gap-3 shadow-sm hover:shadow-md transition-shadow cursor-pointer group" onClick={() => { if(window.confirm("Se déconnecter ?")) onLogout(); }}>
-              <div className="w-10 h-10 rounded-full bg-[#B48646] text-white flex items-center justify-center font-bold text-sm shadow-md group-hover:bg-red-500 transition-colors">
-                  {user.name.charAt(0)}
-              </div>
-              <div className="flex-1 overflow-hidden">
-                  <p className="text-sm font-bold text-slate-900 truncate">{user.name}</p>
-                  <p className="text-xs text-slate-400 truncate">{user.email}</p>
-              </div>
-              <LogOut size={18} className="text-slate-300 group-hover:text-red-500 transition-colors" />
-           </div>
+           <>
+             {showLogoutConfirm ? (
+                 <div className="bg-red-50 p-4 rounded-2xl border border-red-100 animate-in fade-in slide-in-from-bottom-2">
+                     <p className="text-xs font-bold text-red-800 mb-3 text-center">Déconnexion ?</p>
+                     <div className="flex gap-2">
+                         <button onClick={() => setShowLogoutConfirm(false)} className="flex-1 bg-white text-slate-600 py-2 rounded-xl text-xs font-bold border border-slate-200 hover:bg-slate-50">Annuler</button>
+                         <button onClick={() => { onLogout(); setShowLogoutConfirm(false); }} className="flex-1 bg-red-500 text-white py-2 rounded-xl text-xs font-bold hover:bg-red-600 shadow-sm">Oui</button>
+                     </div>
+                 </div>
+             ) : (
+                <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100 flex items-center gap-3 shadow-sm hover:shadow-md transition-shadow cursor-pointer group" onClick={() => setShowLogoutConfirm(true)}>
+                    <div className="w-10 h-10 rounded-full bg-[#B48646] text-white flex items-center justify-center font-bold text-sm shadow-md group-hover:bg-red-500 transition-colors">
+                        {user.name.charAt(0)}
+                    </div>
+                    <div className="flex-1 overflow-hidden">
+                        <p className="text-sm font-bold text-slate-900 truncate">{user.name}</p>
+                        <p className="text-xs text-slate-400 truncate">{user.email}</p>
+                    </div>
+                    <LogOut size={18} className="text-slate-300 group-hover:text-red-500 transition-colors" />
+                </div>
+             )}
+           </>
         ) : (
            <button 
              onClick={onLoginClick}
@@ -126,23 +151,50 @@ const MobileNavigation = ({ activeTab, onNavigate }: { activeTab: number; onNavi
 const App = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [user, setUser] = useState<User | null>(null);
+  const [isAuthReady, setIsAuthReady] = useState(false); // Nouvel état pour le chargement initial
+  
   const [initialService, setInitialService] = useState<ServiceType | null>(null);
   const [showAuth, setShowAuth] = useState(false);
   const [pendingProject, setPendingProject] = useState<{service: ServiceType, name: string, price: number} | null>(null);
 
   useEffect(() => {
-      console.log("Infini 24 App v1.5 - Firebase Active");
-      if (!auth) return;
-      const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      console.log("Infini 24 App v2.0 - Optimized Auth (v8)");
+      if (!auth) {
+          setIsAuthReady(true);
+          return;
+      }
+
+      const unsubscribe = auth.onAuthStateChanged(async (currentUser) => {
           if (currentUser) {
-              const userDoc = await getDoc(doc(db, "users", currentUser.uid));
-              if (userDoc.exists()) {
-                  setUser({ uid: currentUser.uid, ...userDoc.data() } as User);
-              } else {
-                  setUser({ name: currentUser.displayName || 'Utilisateur', email: currentUser.email || '', type: UserType.PARTICULIER, phone: '' });
+              // 1. FAST UPDATE (Optimistic UI)
+              // On n'attend pas la base de données pour afficher l'interface.
+              // On utilise les infos disponibles immédiatement dans le token Auth.
+              const optimisticUser: User = {
+                  uid: currentUser.uid,
+                  name: currentUser.displayName || 'Utilisateur',
+                  email: currentUser.email || '',
+                  type: UserType.PARTICULIER, // Valeur par défaut (sera écrasée par la DB)
+                  phone: ''
+              };
+              
+              setUser(optimisticUser);
+              setIsAuthReady(true); // On libère l'interface immédiatement
+
+              // 2. BACKGROUND FETCH (Données complètes)
+              // On récupère les infos Firestore en tâche de fond (téléphone, entreprise, type réel)
+              try {
+                  const userDoc = await db.collection("users").doc(currentUser.uid).get();
+                  if (userDoc.exists) {
+                      // Mise à jour silencieuse de l'état avec les données complètes
+                      setUser(prev => ({ ...prev, ...userDoc.data() } as User));
+                  }
+              } catch (error) {
+                  console.error("Erreur chargement profil background:", error);
               }
+
           } else {
               setUser(null);
+              setIsAuthReady(true);
           }
       });
       return () => unsubscribe();
@@ -182,6 +234,12 @@ const App = () => {
 
   const consumePending = () => {
       setPendingProject(null);
+  }
+
+  // --- RENDERING ---
+
+  if (!isAuthReady) {
+      return <LoadingScreen />;
   }
 
   // Content Renderer
