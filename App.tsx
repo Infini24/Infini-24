@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Home, Calculator, Briefcase, Mail, ArrowRight, Infinity as InfinityIcon, LogIn, LogOut, User as UserIcon, Image as ImageIcon, Loader2 } from 'lucide-react';
 import { Toaster } from 'react-hot-toast';
@@ -158,7 +157,7 @@ const App = () => {
   const [pendingProject, setPendingProject] = useState<{service: ServiceType, name: string, price: number} | null>(null);
 
   useEffect(() => {
-      console.log("Infini 24 App v2.0 - Optimized Auth (v8)");
+      console.log("Infini 24 App v3.1 FORCE UPDATE");
       if (!auth) {
           setIsAuthReady(true);
           return;
@@ -167,25 +166,21 @@ const App = () => {
       const unsubscribe = auth.onAuthStateChanged(async (currentUser) => {
           if (currentUser) {
               // 1. FAST UPDATE (Optimistic UI)
-              // On n'attend pas la base de données pour afficher l'interface.
-              // On utilise les infos disponibles immédiatement dans le token Auth.
               const optimisticUser: User = {
                   uid: currentUser.uid,
                   name: currentUser.displayName || 'Utilisateur',
                   email: currentUser.email || '',
-                  type: UserType.PARTICULIER, // Valeur par défaut (sera écrasée par la DB)
+                  type: UserType.PARTICULIER, 
                   phone: ''
               };
               
               setUser(optimisticUser);
-              setIsAuthReady(true); // On libère l'interface immédiatement
+              setIsAuthReady(true);
 
-              // 2. BACKGROUND FETCH (Données complètes)
-              // On récupère les infos Firestore en tâche de fond (téléphone, entreprise, type réel)
+              // 2. BACKGROUND FETCH
               try {
                   const userDoc = await db.collection("users").doc(currentUser.uid).get();
                   if (userDoc.exists) {
-                      // Mise à jour silencieuse de l'état avec les données complètes
                       setUser(prev => ({ ...prev, ...userDoc.data() } as User));
                   }
               } catch (error) {
