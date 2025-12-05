@@ -105,13 +105,25 @@ Envoyé depuis le formulaire de contact Infini 24`);
   return (
     <div className="flex flex-col h-full overflow-y-auto no-scrollbar">
       
-      {/* Simplified Header */}
-      <div className="pt-10 pb-6 px-6">
-         <h1 className="text-3xl font-bold font-['Poppins'] text-slate-900 mb-1">Contact & Aide</h1>
-         <p className="text-slate-500 text-sm font-medium">Une question ? Nous sommes là.</p>
-      </div>
+      {/* Banner */}
+      <header className="relative pt-16 pb-12 px-8 bg-white border-b border-slate-50 rounded-b-[3rem] mb-8 overflow-hidden shadow-[0_4px_30px_-15px_rgba(0,0,0,0.05)] shrink-0 z-10">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-[#B48646]/5 rounded-full blur-[80px] -mr-16 -mt-16 pointer-events-none"></div>
+        <div className="absolute bottom-0 left-0 w-48 h-48 bg-slate-900/5 rounded-full blur-[60px] -ml-10 -mb-10 pointer-events-none"></div>
+        
+        <div className="relative z-10">
+           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#B48646]/5 text-[#B48646] text-[10px] font-bold uppercase tracking-widest mb-4 border border-[#B48646]/10">
+              <Mail size={12} /> Support
+           </div>
+           <h1 className="text-3xl md:text-4xl font-extrabold font-['Poppins'] text-slate-900 leading-tight mb-2">
+             Contact & Aide
+           </h1>
+           <p className="text-slate-500 font-medium max-w-md text-sm md:text-base">
+             Une question sur un service ou une commande ? Nous sommes là pour vous répondre rapidement.
+           </p>
+        </div>
+      </header>
 
-      <div className="flex-1 px-4 lg:px-8 relative z-20 pb-8 mt-2">
+      <div className="flex-1 px-4 lg:px-8 relative z-20 pb-24 mt-2">
         <div className="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 p-8 max-w-7xl mx-auto w-full transition-all">
             
             <div className="text-center mb-10">

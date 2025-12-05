@@ -113,11 +113,23 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLogin }) => {
   return (
     <div className="flex flex-col h-full overflow-y-auto no-scrollbar">
       
-      {/* Simplified Header */}
-      <div className="pt-10 pb-6 px-6 text-center">
-         <h1 className="text-3xl font-bold font-['Poppins'] text-slate-900 mb-1">Mon Espace</h1>
-         <p className="text-slate-500 text-sm font-medium">{isRegistering ? 'Création de compte' : 'Connexion Sécurisée'}</p>
-      </div>
+      {/* Banner */}
+      <header className="relative pt-16 pb-12 px-8 bg-white border-b border-slate-50 rounded-b-[3rem] mb-8 overflow-hidden shadow-[0_4px_30px_-15px_rgba(0,0,0,0.05)] shrink-0 z-10 text-center">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-[#B48646]/5 rounded-full blur-[80px] -mr-16 -mt-16 pointer-events-none"></div>
+        <div className="absolute bottom-0 left-0 w-48 h-48 bg-[#F3C06B]/10 rounded-full blur-[60px] -ml-10 -mb-10 pointer-events-none"></div>
+        
+        <div className="relative z-10">
+           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#B48646]/5 text-[#B48646] text-[10px] font-bold uppercase tracking-widest mb-4 border border-[#B48646]/10">
+              <Lock size={12} /> Sécurisé
+           </div>
+           <h1 className="text-3xl md:text-4xl font-extrabold font-['Poppins'] text-slate-900 leading-tight mb-2">
+             Mon Espace
+           </h1>
+           <p className="text-slate-500 font-medium max-w-md mx-auto text-sm md:text-base">
+             {isRegistering ? 'Créez votre compte pour commencer.' : 'Connectez-vous pour accéder à vos projets.'}
+           </p>
+        </div>
+      </header>
 
       <div className="flex-1 px-4 md:px-6 relative z-20 pb-8">
         <div className="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 p-8 max-w-lg mx-auto w-full transition-all">

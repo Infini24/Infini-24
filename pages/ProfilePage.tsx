@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { User } from '../types';
-import { FolderOpen, LogIn, Infinity, Download, ExternalLink, Clock, Plus, Trash2, Send, FileCheck, Package, Facebook, UploadCloud, FileText, Loader2, Users, Phone as PhoneIcon, Calendar, Gift, Edit2, Smartphone } from 'lucide-react';
+import { FolderOpen, LogIn, Infinity, Download, ExternalLink, Clock, Plus, Trash2, Send, FileCheck, Package, Facebook, UploadCloud, FileText, Loader2, Users, Phone as PhoneIcon, Calendar, Gift, Edit2, Smartphone, Briefcase } from 'lucide-react';
 import { updateProjectStatus, deleteProject, saveProject, uploadProjectFile, uploadFinalDelivery, subscribeToProjects, subscribeToUsers } from '../db';
 import toast from 'react-hot-toast';
 
@@ -309,11 +309,23 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
         accept="*/*" 
       />
       
-      {/* Simplified Header */}
-      <div className="pt-10 pb-6 px-6">
-         <h1 className="text-3xl font-bold font-['Poppins'] text-slate-900 mb-1">Mon Suivi</h1>
-         <p className="text-slate-500 text-sm font-medium">{isAdmin ? 'Espace Administrateur' : 'Espace Client'}</p>
-      </div>
+      {/* Banner */}
+      <header className="relative pt-16 pb-12 px-8 bg-white border-b border-slate-50 rounded-b-[3rem] mb-8 overflow-hidden shadow-[0_4px_30px_-15px_rgba(0,0,0,0.05)] shrink-0 z-10">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-[#B48646]/5 rounded-full blur-[80px] -mr-16 -mt-16 pointer-events-none"></div>
+        <div className="absolute bottom-0 left-0 w-48 h-48 bg-[#F3C06B]/10 rounded-full blur-[60px] -ml-10 -mb-10 pointer-events-none"></div>
+        
+        <div className="relative z-10">
+           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#B48646]/5 text-[#B48646] text-[10px] font-bold uppercase tracking-widest mb-4 border border-[#B48646]/10">
+              <Briefcase size={12} /> Mon Espace
+           </div>
+           <h1 className="text-3xl md:text-4xl font-extrabold font-['Poppins'] text-slate-900 leading-tight mb-2">
+             Suivi de Projets
+           </h1>
+           <p className="text-slate-500 font-medium max-w-md text-sm md:text-base">
+             {isAdmin ? 'Administration des commandes et des clients.' : 'Retrouvez vos commandes et téléchargez vos fichiers.'}
+           </p>
+        </div>
+      </header>
 
       <div className="flex-1 px-4 lg:px-8 relative z-20 pb-20 flex flex-col items-center justify-start">
         
