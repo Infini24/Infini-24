@@ -103,34 +103,20 @@ Envoyé depuis le formulaire de contact Infini 24`);
     };
 
   return (
-    <div className="flex flex-col h-full bg-[#FDFCF8] overflow-y-auto no-scrollbar">
+    <div className="flex flex-col h-full overflow-y-auto no-scrollbar">
       
-      <header className="flex-none pt-14 pb-10 px-6 bg-white border-b border-slate-50 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] relative overflow-hidden rounded-b-[3.5rem] mb-6 z-10">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-[#B48646] to-[#F3C06B] rounded-full blur-[80px] opacity-15 -mr-16 -mt-16 animate-pulse"></div>
-            <div className="absolute bottom-0 left-0 w-48 h-48 bg-slate-900 rounded-full blur-[60px] opacity-5 -ml-10 -mb-10"></div>
+      {/* Simplified Header */}
+      <div className="pt-10 pb-6 px-6">
+         <h1 className="text-3xl font-bold font-['Poppins'] text-slate-900 mb-1">Contact & Aide</h1>
+         <p className="text-slate-500 text-sm font-medium">Une question ? Nous sommes là.</p>
+      </div>
 
-            <div className="relative z-10 flex flex-col items-center justify-center text-center mt-2">
-                <div className="flex items-center justify-center mb-4 relative group cursor-pointer transition-transform duration-500 hover:scale-110">
-                     <div className="absolute inset-0 bg-[#B48646] blur-3xl opacity-20 rounded-full group-hover:opacity-40 transition-opacity duration-500"></div>
-                     <Infinity size={48} strokeWidth={1.5} className="text-[#B48646] relative z-10 drop-shadow-sm transition-transform duration-700 group-hover:rotate-180" />
-                </div>
-                <h1 className="text-4xl tracking-tighter mb-2 font-['Poppins'] font-bold text-slate-900">
-                    Contact & Aide
-                </h1>
-                <div className="inline-block px-4 py-1.5 rounded-full bg-[#B48646]/5 border border-[#B48646]/10 backdrop-blur-sm">
-                     <p className="text-[#B48646] text-[10px] font-bold tracking-[0.3em] uppercase">
-                        Infini 24
-                     </p>
-                </div>
-            </div>
-        </header>
-
-      <div className="flex-1 px-4 lg:px-8 relative z-20 pb-8 mt-4">
+      <div className="flex-1 px-4 lg:px-8 relative z-20 pb-8 mt-2">
         <div className="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 p-8 max-w-7xl mx-auto w-full transition-all">
             
             <div className="text-center mb-10">
                 <h2 className="text-xl font-bold text-slate-900 mb-2">Comment préférez-vous échanger ?</h2>
-                <p className="text-slate-500 text-sm">Choisissez votre moyen de communication favori pour nous parler de votre projet.</p>
+                <p className="text-slate-500 text-sm">Choisissez votre moyen de communication favori.</p>
             </div>
 
             {/* --- GRID CONTACT OPTIMISÉE (PRIORITÉ SMS/MAIL/FB) --- */}

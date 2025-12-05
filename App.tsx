@@ -18,7 +18,7 @@ const DesktopSidebar = ({
 }) => {
 
   return (
-    <aside className="hidden md:flex flex-col w-72 h-screen fixed left-0 top-0 bg-white border-r border-slate-100 shadow-[4px_0_24px_rgba(0,0,0,0.02)] z-50 overflow-y-auto">
+    <aside className="hidden md:flex flex-col w-72 h-screen fixed left-0 top-0 bg-white/80 backdrop-blur-xl border-r border-slate-100 shadow-[4px_0_24px_rgba(0,0,0,0.02)] z-50 overflow-y-auto">
       {/* Sidebar Header / Logo */}
       <div className="p-8 pb-4 flex flex-col items-start">
         <div className="flex items-center gap-3 mb-1 group cursor-pointer" onClick={() => onNavigate(0)}>
@@ -73,7 +73,7 @@ const DesktopSidebar = ({
 // --- MOBILE NAVIGATION ---
 const MobileNavigation = ({ activeTab, onNavigate }: { activeTab: number; onNavigate: (index: number) => void }) => {
   return (
-    <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 px-6 py-4 flex justify-between items-center z-50 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+    <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-lg border-t border-slate-100 px-6 py-4 flex justify-between items-center z-50 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
       {[
         { icon: Home, index: 0 },
         { icon: ImageIcon, index: 1 },
@@ -106,31 +106,8 @@ const App = () => {
     if (serviceType) {
       setInitialService(serviceType);
     }
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0 });
   };
-
-  // Content Renderer
-  let content;
-  
-  switch (activeTab) {
-    case 0:
-        content = <HomePage onNavigate={handleNavigate} />;
-        break;
-    case 1:
-        content = <RealizationsPage />;
-        break;
-    case 2:
-        content = <ServicesPage 
-            initialService={initialService} 
-            onClearInitial={() => setInitialService(null)} 
-        />;
-        break;
-    case 4:
-        content = <ContactPage />;
-        break;
-    default:
-        content = <HomePage onNavigate={handleNavigate} />;
-  }
 
   return (
     <div className="flex bg-[#FDFCF8] h-screen w-screen overflow-hidden text-slate-900 font-['Inter'] selection:bg-[#B48646]/20 selection:text-[#B48646]">
@@ -143,13 +120,40 @@ const App = () => {
         }}
       />
 
+      {/* GLOBAL BACKGROUND ELEMENTS */}
+      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-[#B48646]/5 rounded-full blur-[120px] opacity-60" />
+        <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-slate-900/5 rounded-full blur-[100px] opacity-60" />
+        <div className="absolute top-[40%] left-[20%] w-[300px] h-[300px] bg-[#F3C06B]/5 rounded-full blur-[80px] opacity-40" />
+      </div>
+
       <DesktopSidebar 
         activeTab={activeTab} 
         onNavigate={handleNavigate} 
       />
       
-      <main className="flex-1 h-full relative flex flex-col md:pl-72 transition-all duration-300">
-        {content}
+      <main className="flex-1 h-full relative flex flex-col md:pl-72 transition-all duration-300 z-10">
+        
+        {/* Page Content with Keep-Alive Logic */}
+        <div className={`flex-1 h-full overflow-hidden ${activeTab === 0 ? 'block' : 'hidden'}`}>
+             <HomePage onNavigate={handleNavigate} />
+        </div>
+        
+        <div className={`flex-1 h-full overflow-hidden ${activeTab === 1 ? 'block' : 'hidden'}`}>
+             <RealizationsPage />
+        </div>
+
+        <div className={`flex-1 h-full overflow-hidden ${activeTab === 2 ? 'block' : 'hidden'}`}>
+             <ServicesPage 
+                initialService={initialService} 
+                onClearInitial={() => setInitialService(null)} 
+            />
+        </div>
+
+        <div className={`flex-1 h-full overflow-hidden ${activeTab === 4 ? 'block' : 'hidden'}`}>
+             <ContactPage />
+        </div>
+
         <MobileNavigation activeTab={activeTab} onNavigate={handleNavigate} />
       </main>
     </div>

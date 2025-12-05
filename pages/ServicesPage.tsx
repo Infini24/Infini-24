@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronLeft, Sliders, CheckCircle, Video, PenTool, LifeBuoy, Crown, Palette, Film, Lock, X, Check, ArrowRight, Infinity, Phone, Mail, MessageCircle, ShieldCheck, Eye } from 'lucide-react';
+import { ChevronLeft, Sliders, CheckCircle, Video, PenTool, LifeBuoy, Crown, Palette, Film, Lock, X, Check, ArrowRight, Phone, Mail, MessageCircle, ShieldCheck, Eye, Sparkles } from 'lucide-react';
 import { ServiceType } from '../types';
 import toast from 'react-hot-toast';
 
@@ -15,7 +15,6 @@ interface ProjectWorkflowModalProps {
 
 const ProjectWorkflowModal: React.FC<ProjectWorkflowModalProps> = ({ serviceName, price, customDetails, isOpen, onClose, onSuccess }) => {
   const [step, setStep] = useState<'info' | 'contact' | 'success'>('info');
-  // Changement de la valeur par défaut à 'email' pour privilégier ce canal
   const [contactMethod, setContactMethod] = useState<'phone' | 'whatsapp' | 'email'>('email');
   const [name, setName] = useState('');
   const [contactInfo, setContactInfo] = useState('');
@@ -245,30 +244,20 @@ const GraphicDesignForm = ({ onBack, onRequest, initialValues }: FormProps) => {
     };
 
     return (
-        <div className="animate-in slide-in-from-right duration-300">
-            <header className="flex-none pt-14 pb-10 px-6 bg-white border-b border-slate-50 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] relative overflow-hidden rounded-b-[3.5rem] mb-6">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-[#B48646] to-[#F3C06B] rounded-full blur-[80px] opacity-15 -mr-16 -mt-16 animate-pulse"></div>
-                <div className="absolute bottom-0 left-0 w-48 h-48 bg-slate-900 rounded-full blur-[60px] opacity-5 -ml-10 -mb-10"></div>
-                <div className="relative z-10 flex flex-col items-center justify-center text-center mt-2">
-                    <div className="flex items-center justify-center mb-4 relative group cursor-pointer transition-transform duration-500 hover:scale-110">
-                        <div className="absolute inset-0 bg-[#B48646] blur-3xl opacity-20 rounded-full group-hover:opacity-40 transition-opacity duration-500"></div>
-                        <Infinity size={48} strokeWidth={1.5} className="text-[#B48646] relative z-10 drop-shadow-sm transition-transform duration-700 group-hover:rotate-180" />
-                    </div>
-                    <h1 className="text-4xl tracking-tighter mb-2 font-['Poppins'] font-bold text-slate-900">
-                        Logos & Design
-                    </h1>
-                    <div className="inline-block px-4 py-1.5 rounded-full bg-[#B48646]/5 border border-[#B48646]/10 backdrop-blur-sm">
-                        <p className="text-[#B48646] text-[10px] font-bold tracking-[0.3em] uppercase">
-                            Identité Visuelle
-                        </p>
+        <div className="animate-in slide-in-from-right duration-300 pb-20 pt-8">
+            <div className="max-w-5xl mx-auto px-6">
+                
+                <div className="flex items-center gap-4 mb-8">
+                    <button onClick={onBack} className="p-3 bg-white border border-slate-100 rounded-2xl text-slate-400 hover:text-[#B48646] hover:shadow-lg transition-all group">
+                        <ChevronLeft size={20} className="group-hover:-translate-x-0.5 transition-transform"/>
+                    </button>
+                    <div>
+                        <h1 className="text-2xl md:text-3xl font-bold font-['Poppins'] text-slate-900">
+                            Logos & Design
+                        </h1>
+                        <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">Identité Visuelle</p>
                     </div>
                 </div>
-            </header>
-
-            <div className="max-w-5xl mx-auto px-4">
-                <button onClick={onBack} className="mb-8 flex items-center text-sm font-bold text-slate-400 hover:text-[#B48646] transition-colors bg-white px-5 py-3 rounded-full shadow-sm border border-slate-100 w-fit group">
-                    <ChevronLeft size={16} className="mr-1 group-hover:-translate-x-1 transition-transform"/> Retour
-                </button>
                 
                 <form className="space-y-6" onSubmit={handleFormSubmit}>
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -535,31 +524,21 @@ const VideoForm = ({ onBack, onRequest, initialValues }: FormProps) => {
     }
 
     return (
-        <div className="animate-in slide-in-from-right duration-300">
-            <header className="flex-none pt-14 pb-10 px-6 bg-white border-b border-slate-50 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] relative overflow-hidden rounded-b-[3.5rem] mb-6">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-[#B48646] to-[#F3C06B] rounded-full blur-[80px] opacity-15 -mr-16 -mt-16 animate-pulse"></div>
-                <div className="absolute bottom-0 left-0 w-48 h-48 bg-slate-900 rounded-full blur-[60px] opacity-5 -ml-10 -mb-10"></div>
-                <div className="relative z-10 flex flex-col items-center justify-center text-center mt-2">
-                    <div className="flex items-center justify-center mb-4 relative group cursor-pointer transition-transform duration-500 hover:scale-110">
-                        <div className="absolute inset-0 bg-[#B48646] blur-3xl opacity-20 rounded-full group-hover:opacity-40 transition-opacity duration-500"></div>
-                        <Infinity size={48} strokeWidth={1.5} className="text-[#B48646] relative z-10 drop-shadow-sm transition-transform duration-700 group-hover:rotate-180" />
-                    </div>
-                    <h1 className="text-4xl tracking-tighter mb-2 font-['Poppins'] font-bold text-slate-900">
-                        Vidéo & Souvenirs
-                    </h1>
-                    <div className="inline-block px-4 py-1.5 rounded-full bg-[#B48646]/5 border border-[#B48646]/10 backdrop-blur-sm">
-                        <p className="text-[#B48646] text-[10px] font-bold tracking-[0.3em] uppercase">
-                            Création Sur Mesure
-                        </p>
+        <div className="animate-in slide-in-from-right duration-300 pb-20 pt-8">
+            <div className="max-w-5xl mx-auto px-6">
+                
+                <div className="flex items-center gap-4 mb-8">
+                    <button onClick={onBack} className="p-3 bg-white border border-slate-100 rounded-2xl text-slate-400 hover:text-[#B48646] hover:shadow-lg transition-all group">
+                        <ChevronLeft size={20} className="group-hover:-translate-x-0.5 transition-transform"/>
+                    </button>
+                    <div>
+                        <h1 className="text-2xl md:text-3xl font-bold font-['Poppins'] text-slate-900">
+                            Vidéo & Souvenirs
+                        </h1>
+                        <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">Création Sur Mesure</p>
                     </div>
                 </div>
-            </header>
 
-            <div className="max-w-5xl mx-auto px-4">
-                 <button onClick={onBack} className="mb-8 flex items-center text-sm font-bold text-slate-400 hover:text-[#B48646] transition-colors bg-white px-5 py-3 rounded-full shadow-sm border border-slate-100 w-fit group">
-                    <ChevronLeft size={16} className="mr-1 group-hover:-translate-x-1 transition-transform"/> Retour
-                </button>
-                
                 <div className="bg-white rounded-[2rem] p-6 border border-slate-100 shadow-sm mb-8 text-center md:text-left flex items-center gap-6">
                      <div className="hidden md:flex w-16 h-16 bg-[#B48646]/10 rounded-2xl items-center justify-center text-[#B48646] shrink-0">
                         <Film size={28} />
@@ -800,30 +779,20 @@ const AssistanceForm = ({ onBack, onRequest, initialValues }: FormProps) => {
     };
 
     return (
-        <div className="animate-in slide-in-from-right duration-300">
-            <header className="flex-none pt-14 pb-10 px-6 bg-white border-b border-slate-50 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] relative overflow-hidden rounded-b-[3.5rem] mb-6">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-[#B48646] to-[#F3C06B] rounded-full blur-[80px] opacity-15 -mr-16 -mt-16 animate-pulse"></div>
-                <div className="absolute bottom-0 left-0 w-48 h-48 bg-slate-900 rounded-full blur-[60px] opacity-5 -ml-10 -mb-10"></div>
-                <div className="relative z-10 flex flex-col items-center justify-center text-center mt-2">
-                    <div className="flex items-center justify-center mb-4 relative group cursor-pointer transition-transform duration-500 hover:scale-110">
-                        <div className="absolute inset-0 bg-[#B48646] blur-3xl opacity-20 rounded-full group-hover:opacity-40 transition-opacity duration-500"></div>
-                        <Infinity size={48} strokeWidth={1.5} className="text-[#B48646] relative z-10 drop-shadow-sm transition-transform duration-700 group-hover:rotate-180" />
-                    </div>
-                    <h1 className="text-4xl tracking-tighter mb-2 font-['Poppins'] font-bold text-slate-900">
-                        Assistance Rapide
-                    </h1>
-                    <div className="inline-block px-4 py-1.5 rounded-full bg-[#B48646]/5 border border-[#B48646]/10 backdrop-blur-sm">
-                        <p className="text-[#B48646] text-[10px] font-bold tracking-[0.3em] uppercase">
-                            Support Immédiat
-                        </p>
+        <div className="animate-in slide-in-from-right duration-300 pb-20 pt-8">
+            <div className="max-w-5xl mx-auto px-6">
+                
+                <div className="flex items-center gap-4 mb-8">
+                    <button onClick={onBack} className="p-3 bg-white border border-slate-100 rounded-2xl text-slate-400 hover:text-[#B48646] hover:shadow-lg transition-all group">
+                        <ChevronLeft size={20} className="group-hover:-translate-x-0.5 transition-transform"/>
+                    </button>
+                    <div>
+                        <h1 className="text-2xl md:text-3xl font-bold font-['Poppins'] text-slate-900">
+                            Assistance Rapide
+                        </h1>
+                        <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">Support Immédiat</p>
                     </div>
                 </div>
-            </header>
-
-            <div className="max-w-5xl mx-auto px-4">
-                 <button onClick={onBack} className="mb-8 flex items-center text-sm font-bold text-slate-400 hover:text-[#B48646] transition-colors bg-white px-5 py-3 rounded-full shadow-sm border border-slate-100 w-fit group">
-                    <ChevronLeft size={16} className="mr-1 group-hover:-translate-x-1 transition-transform"/> Retour
-                </button>
                 
                 <form className="space-y-6" onSubmit={handleFormSubmit}>
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -940,32 +909,11 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ initialService, onClearInit
 
     return (
       <div className="max-w-7xl mx-auto w-full px-2">
-        {/* New White Header with Infinity Logo */}
-        <header className="flex-none pt-14 pb-10 px-6 bg-white border-b border-slate-50 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] relative overflow-hidden rounded-b-[3.5rem] mb-8">
-            {/* Background Blurs */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-[#B48646] to-[#F3C06B] rounded-full blur-[80px] opacity-15 -mr-16 -mt-16 animate-pulse"></div>
-            <div className="absolute bottom-0 left-0 w-48 h-48 bg-slate-900 rounded-full blur-[60px] opacity-5 -ml-10 -mb-10"></div>
-
-            <div className="relative z-10 flex flex-col items-center justify-center text-center mt-2">
-                {/* Infinity Logo */}
-                <div className="flex items-center justify-center mb-4 relative group cursor-pointer transition-transform duration-500 hover:scale-110">
-                     <div className="absolute inset-0 bg-[#B48646] blur-3xl opacity-20 rounded-full group-hover:opacity-40 transition-opacity duration-500"></div>
-                     <Infinity size={48} strokeWidth={1.5} className="text-[#B48646] relative z-10 drop-shadow-sm transition-transform duration-700 group-hover:rotate-180" />
-                </div>
-                
-                {/* Title */}
-                <h1 className="text-4xl tracking-tighter mb-2 font-['Poppins'] font-bold text-slate-900">
-                    Nos Services
-                </h1>
-                
-                {/* Subtitle Badge */}
-                <div className="inline-block px-4 py-1.5 rounded-full bg-[#B48646]/5 border border border-[#B48646]/10 backdrop-blur-sm">
-                     <p className="text-[#B48646] text-[10px] font-bold tracking-[0.3em] uppercase">
-                        Choisissez votre univers
-                     </p>
-                </div>
-            </div>
-        </header>
+        {/* Simplified Header */}
+        <div className="pt-10 pb-8 px-6">
+           <h1 className="text-3xl font-bold font-['Poppins'] text-slate-900 mb-1">Nos Services</h1>
+           <p className="text-slate-500 text-sm font-medium">Choisissez votre univers</p>
+        </div>
 
         {/* Services Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-in slide-in-from-bottom duration-700 delay-200 px-4">
@@ -1080,7 +1028,7 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ initialService, onClearInit
   };
 
   return (
-    <div className="flex flex-col h-full bg-[#FDFCF8] overflow-y-auto no-scrollbar pb-20">
+    <div className="flex flex-col h-full overflow-y-auto no-scrollbar pb-20">
        <ProjectWorkflowModal 
           isOpen={showProjectModal}
           onClose={() => setShowProjectModal(false)}
