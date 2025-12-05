@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowRight, Video, PenTool, Info, LifeBuoy, Infinity, Sparkles, Briefcase, User as UserIcon } from 'lucide-react';
+import { ArrowRight, Video, PenTool, Info, LifeBuoy, Infinity, Sparkles, Briefcase, User as UserIcon, Check } from 'lucide-react';
 import { ServiceType, User } from '../types';
 
 interface HomePageProps {
@@ -57,38 +57,60 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate, user, onLoginClick, onL
         {/* Banner / Carousel */}
         <section className="mt-2 px-4">
             <div 
-                className="bg-gradient-to-br from-[#B48646] via-[#D49E52] to-[#F3C06B] rounded-[2.5rem] p-8 flex flex-col md:flex-row items-center justify-between shadow-2xl shadow-[#B48646]/20 relative overflow-hidden group cursor-pointer hover:scale-[1.02] active:scale-[0.98] transition-all duration-500 max-w-4xl mx-auto" 
+                className="bg-slate-900 rounded-[2.5rem] p-8 flex flex-col md:flex-row items-center justify-between shadow-xl shadow-slate-900/10 relative overflow-hidden group cursor-pointer hover:scale-[1.01] transition-all duration-500 max-w-4xl mx-auto border border-slate-800" 
                 onClick={() => onNavigate(2, ServiceType.GRAPHIC_DESIGN)}
             >
-                <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 mix-blend-overlay"></div>
-                <div className="absolute -right-10 -top-10 w-48 h-48 bg-white/20 rounded-full blur-3xl group-hover:bg-white/30 transition-colors"></div>
-                <div className="absolute -left-10 bottom-0 w-32 h-32 bg-black/5 rounded-full blur-2xl"></div>
+                {/* Background Effects */}
+                <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-[#B48646] rounded-full blur-[100px] opacity-10 group-hover:opacity-20 transition-opacity duration-700"></div>
+                <div className="absolute bottom-0 left-0 w-[200px] h-[200px] bg-[#F3C06B] rounded-full blur-[80px] opacity-5"></div>
                 
-                <div className="relative z-10 text-white flex-1 mb-6 md:mb-0">
-                    <span className="inline-flex items-center gap-1 px-3 py-1 bg-white/25 backdrop-blur-md text-white text-[10px] font-extrabold rounded-full mb-3 shadow-inner border border-white/20 animate-pulse">
-                        <Sparkles size={10} fill="white" /> OFFRE SPÉCIALE
-                    </span>
-                    <h3 className="font-extrabold text-3xl mb-1 leading-none tracking-tight">Pack Identité<br/>Complète</h3>
-                    
-                    <div className="bg-black/10 p-3 rounded-xl mt-3 backdrop-blur-sm border border-white/10 w-fit">
-                         <p className="text-[11px] text-white/90 font-medium leading-relaxed">
-                            • Création Logo Unique sur mesure<br/>
-                            • Bannière Réseaux Sociaux<br/>
-                            • Design Cartes & Flyers (Offert)
-                        </p>
+                <div className="relative z-10 flex-1 w-full md:w-auto mb-6 md:mb-0">
+                    <div className="flex items-center gap-3 mb-4">
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#B48646] text-white text-[10px] font-bold rounded-full shadow-lg shadow-[#B48646]/20 animate-pulse">
+                            <Sparkles size={10} fill="currentColor" /> OFFRE SPÉCIALE
+                        </span>
+                        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Pack Premium</span>
                     </div>
 
-                    <div className="mt-4 flex items-baseline gap-3">
-                         <span className="text-white/60 line-through font-bold text-lg">370€</span>
-                         <span className="text-white font-extrabold text-3xl">320€</span>
+                    <h3 className="font-extrabold text-white text-3xl md:text-4xl mb-6 leading-tight">
+                        Identité Visuelle <br/>
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#B48646] to-[#F3C06B]">Complète & Pro</span>
+                    </h3>
+                    
+                    <div className="space-y-3 mb-8">
+                         <div className="flex items-center gap-3 text-slate-300 text-sm">
+                            <div className="w-5 h-5 rounded-full bg-[#B48646]/20 flex items-center justify-center text-[#B48646] shrink-0">
+                                <Check size={10} strokeWidth={4} />
+                            </div>
+                            <span>Logo Unique + Bannière Réseaux</span>
+                         </div>
+                         <div className="flex items-center gap-3 text-white text-sm font-bold">
+                            <div className="w-5 h-5 rounded-full bg-[#B48646] flex items-center justify-center text-white shrink-0">
+                                <Check size={10} strokeWidth={4} />
+                            </div>
+                            <span>Design Cartes & Flyers <span className="text-[#F3C06B]">OFFERT</span></span>
+                         </div>
+                    </div>
+
+                    <div className="flex items-end gap-3">
+                         <div className="flex flex-col">
+                            <span className="text-slate-500 text-xs font-bold line-through mb-0.5">Valeur 370€</span>
+                            <span className="text-4xl font-extrabold text-white tracking-tight">320€</span>
+                         </div>
+                         <span className="mb-2 text-xs font-bold text-[#F3C06B] bg-[#F3C06B]/10 px-2 py-1 rounded-lg border border-[#F3C06B]/20">
+                            -50€
+                         </span>
                     </div>
                 </div>
                 
-                <button 
-                    className="w-16 h-16 bg-white text-[#B48646] rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:rotate-[-45deg] transition-all duration-500 z-10 shrink-0"
-                >
-                    <ArrowRight size={28} />
-                </button>
+                {/* CTA Button */}
+                <div className="relative z-10 md:pl-8 flex justify-end md:block">
+                    <button 
+                        className="w-16 h-16 bg-white hover:bg-[#B48646] hover:text-white text-slate-900 rounded-2xl flex items-center justify-center shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:rotate-6"
+                    >
+                        <ArrowRight size={24} strokeWidth={2.5} />
+                    </button>
+                </div>
             </div>
         </section>
 
