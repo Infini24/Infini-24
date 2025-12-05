@@ -842,9 +842,9 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ initialService, onClearInit
   };
 
   const renderContent = () => {
-    if (selectedService === ServiceType.VIDEO) return <VideoForm onBack={handleBack} onRequest={handleProjectRequest} />;
-    if (selectedService === ServiceType.GRAPHIC_DESIGN) return <GraphicDesignForm onBack={handleBack} onRequest={handleProjectRequest} />;
-    if (selectedService === ServiceType.ASSISTANCE) return <AssistanceForm onBack={handleBack} onRequest={handleProjectRequest} />;
+    if (selectedService === ServiceType.VIDEO) return <VideoForm onBack={handleBack} onRequest={handleProjectRequest} initialValues={null} />;
+    if (selectedService === ServiceType.GRAPHIC_DESIGN) return <GraphicDesignForm onBack={handleBack} onRequest={handleProjectRequest} initialValues={null} />;
+    if (selectedService === ServiceType.ASSISTANCE) return <AssistanceForm onBack={handleBack} onRequest={handleProjectRequest} initialValues={null} />;
 
     return (
       <div className="max-w-7xl mx-auto w-full px-2">
@@ -880,59 +880,81 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ initialService, onClearInit
           {/* Card 1 */}
           <div 
             onClick={() => setSelectedService(ServiceType.GRAPHIC_DESIGN)}
-            className="group bg-white p-8 rounded-[2.5rem] shadow-[0_10px_30px_-15px_rgba(0,0,0,0.05)] border border-slate-50 hover:shadow-[0_20px_50px_-10px_rgba(180,134,70,0.15)] hover:-translate-y-2 transition-all duration-500 cursor-pointer text-center relative overflow-hidden"
+            className="group bg-white p-8 rounded-[2.5rem] shadow-[0_10px_30px_-15px_rgba(0,0,0,0.03)] border border-slate-50 hover:border-[#B48646]/20 hover:shadow-[0_20px_40px_-10px_rgba(180,134,70,0.1)] hover:-translate-y-1 transition-all duration-500 cursor-pointer flex flex-col items-center text-center h-full relative overflow-hidden"
           >
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#B48646] to-[#F3C06B] opacity-0 group-hover:opacity-100 transition-opacity"></div>
-            <div className="w-20 h-20 mx-auto bg-slate-50 rounded-[1.5rem] flex items-center justify-center mb-6 group-hover:bg-slate-900 group-hover:scale-110 transition-all duration-500">
-              <PenTool size={32} className="text-slate-700 group-hover:text-[#F3C06B] transition-colors" />
-            </div>
-            <h3 className="text-xl font-bold text-slate-900 mb-2 group-hover:text-[#B48646] transition-colors">Logos & Design</h3>
-            <p className="text-sm text-slate-400 font-medium">Identité visuelle, chartes graphiques, supports de communication.</p>
+             <div className="absolute top-0 right-0 w-32 h-32 bg-slate-50 rounded-bl-[100%] -mr-10 -mt-10 z-0 group-hover:bg-[#B48646]/5 transition-colors"></div>
+             
+             <div className="w-20 h-20 bg-slate-50 rounded-2xl flex items-center justify-center mb-6 shadow-inner group-hover:bg-[#B48646] group-hover:text-white transition-all duration-500 relative z-10">
+                 <PenTool size={32} />
+             </div>
+             
+             <h3 className="text-xl font-bold text-slate-900 mb-2 relative z-10">Design Graphique</h3>
+             <p className="text-sm text-slate-500 mb-6 relative z-10 leading-relaxed">
+                Logos, identités visuelles, cartes de visite et supports de communication.
+             </p>
+             
+             <div className="mt-auto relative z-10">
+                 <span className="text-xs font-bold text-[#B48646] bg-[#B48646]/10 px-4 py-2 rounded-xl group-hover:bg-[#B48646] group-hover:text-white transition-colors">Découvrir</span>
+             </div>
           </div>
 
           {/* Card 2 */}
           <div 
             onClick={() => setSelectedService(ServiceType.VIDEO)}
-            className="group bg-white p-8 rounded-[2.5rem] shadow-[0_10px_30px_-15px_rgba(0,0,0,0.05)] border border-slate-50 hover:shadow-[0_20px_50px_-10px_rgba(180,134,70,0.15)] hover:-translate-y-2 transition-all duration-500 cursor-pointer text-center relative overflow-hidden"
+            className="group bg-white p-8 rounded-[2.5rem] shadow-[0_10px_30px_-15px_rgba(0,0,0,0.03)] border border-slate-50 hover:border-[#B48646]/20 hover:shadow-[0_20px_40px_-10px_rgba(180,134,70,0.1)] hover:-translate-y-1 transition-all duration-500 cursor-pointer flex flex-col items-center text-center h-full relative overflow-hidden"
           >
-             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#B48646] to-[#F3C06B] opacity-0 group-hover:opacity-100 transition-opacity"></div>
-            <div className="w-20 h-20 mx-auto bg-slate-50 rounded-[1.5rem] flex items-center justify-center mb-6 group-hover:bg-slate-900 group-hover:scale-110 transition-all duration-500">
-              <Video size={32} className="text-slate-700 group-hover:text-[#F3C06B] transition-colors" />
-            </div>
-            <h3 className="text-xl font-bold text-slate-900 mb-2 group-hover:text-[#B48646] transition-colors">Vidéo & Souvenirs</h3>
-            <p className="text-sm text-slate-400 font-medium">Montages vidéo, diaporamas photo, clips promotionnels.</p>
+             <div className="absolute top-0 right-0 w-32 h-32 bg-slate-50 rounded-bl-[100%] -mr-10 -mt-10 z-0 group-hover:bg-[#B48646]/5 transition-colors"></div>
+
+             <div className="w-20 h-20 bg-slate-50 rounded-2xl flex items-center justify-center mb-6 shadow-inner group-hover:bg-[#B48646] group-hover:text-white transition-all duration-500 relative z-10">
+                 <Video size={32} />
+             </div>
+             
+             <h3 className="text-xl font-bold text-slate-900 mb-2 relative z-10">Vidéo & Souvenirs</h3>
+             <p className="text-sm text-slate-500 mb-6 relative z-10 leading-relaxed">
+                Montage vidéo, diaporamas émouvants, numérisation VHS et colorimétrie.
+             </p>
+             
+             <div className="mt-auto relative z-10">
+                 <span className="text-xs font-bold text-[#B48646] bg-[#B48646]/10 px-4 py-2 rounded-xl group-hover:bg-[#B48646] group-hover:text-white transition-colors">Découvrir</span>
+             </div>
           </div>
 
           {/* Card 3 */}
           <div 
             onClick={() => setSelectedService(ServiceType.ASSISTANCE)}
-            className="group bg-white p-8 rounded-[2.5rem] shadow-[0_10px_30px_-15px_rgba(0,0,0,0.05)] border border-slate-50 hover:shadow-[0_20px_50px_-10px_rgba(180,134,70,0.15)] hover:-translate-y-2 transition-all duration-500 cursor-pointer text-center relative overflow-hidden"
+            className="group bg-white p-8 rounded-[2.5rem] shadow-[0_10px_30px_-15px_rgba(0,0,0,0.03)] border border-slate-50 hover:border-[#B48646]/20 hover:shadow-[0_20px_40px_-10px_rgba(180,134,70,0.1)] hover:-translate-y-1 transition-all duration-500 cursor-pointer flex flex-col items-center text-center h-full relative overflow-hidden"
           >
-             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#B48646] to-[#F3C06B] opacity-0 group-hover:opacity-100 transition-opacity"></div>
-            <div className="w-20 h-20 mx-auto bg-slate-50 rounded-[1.5rem] flex items-center justify-center mb-6 group-hover:bg-slate-900 group-hover:scale-110 transition-all duration-500">
-              <LifeBuoy size={32} className="text-slate-700 group-hover:text-[#F3C06B] transition-colors" />
-            </div>
-            <h3 className="text-xl font-bold text-slate-900 mb-2 group-hover:text-[#B48646] transition-colors">Assistance Rapide</h3>
-            <p className="text-sm text-slate-400 font-medium">Retouches urgentes, modifications, mise en page simple.</p>
+             <div className="absolute top-0 right-0 w-32 h-32 bg-slate-50 rounded-bl-[100%] -mr-10 -mt-10 z-0 group-hover:bg-[#B48646]/5 transition-colors"></div>
+
+             <div className="w-20 h-20 bg-slate-50 rounded-2xl flex items-center justify-center mb-6 shadow-inner group-hover:bg-[#B48646] group-hover:text-white transition-all duration-500 relative z-10">
+                 <LifeBuoy size={32} />
+             </div>
+             
+             <h3 className="text-xl font-bold text-slate-900 mb-2 relative z-10">Assistance Rapide</h3>
+             <p className="text-sm text-slate-500 mb-6 relative z-10 leading-relaxed">
+                Retouches express, modifications de fichiers et petits travaux graphiques.
+             </p>
+             
+             <div className="mt-auto relative z-10">
+                 <span className="text-xs font-bold text-[#B48646] bg-[#B48646]/10 px-4 py-2 rounded-xl group-hover:bg-[#B48646] group-hover:text-white transition-colors">Découvrir</span>
+             </div>
           </div>
+
         </div>
       </div>
     );
   };
 
   return (
-    <div className="flex flex-col h-full overflow-y-auto no-scrollbar pt-0 pb-12">
-        {/* Project Workflow Modal (Replaces payment) */}
-        <ProjectWorkflowModal 
-            isOpen={showProjectModal}
-            serviceName={currentServiceName}
-            price={currentServicePrice}
-            onClose={() => setShowProjectModal(false)}
-            onSuccess={handleSuccess}
-        />
-
-        {/* Dynamic Content (List or Form) */}
-        {renderContent()}
+    <div className="flex flex-col h-full bg-[#FDFCF8] overflow-y-auto no-scrollbar pb-20">
+       <ProjectWorkflowModal 
+          isOpen={showProjectModal}
+          onClose={() => setShowProjectModal(false)}
+          serviceName={currentServiceName}
+          price={currentServicePrice}
+          onSuccess={handleSuccess}
+       />
+       {renderContent()}
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowRight, Video, PenTool, Info, LifeBuoy, Infinity, Sparkles, Briefcase, Check } from 'lucide-react';
+import { ArrowRight, Video, PenTool, Info, LifeBuoy, Infinity, Sparkles, Briefcase } from 'lucide-react';
 import { ServiceType, User } from '../types';
 
 interface HomePageProps {
@@ -134,22 +134,9 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate, user, onLoginClick, onL
                     </div>
                 </div>
 
-                <ul className="space-y-3 mb-6 flex-1">
-                    {[
-                        "Création de Logo Unique",
-                        "Refonte & Modernisation",
-                        "Cartes de Visite & Flyers",
-                        "Bannières Réseaux Sociaux",
-                        "Impression en option"
-                    ].map((item, i) => (
-                        <li key={i} className="flex items-center gap-3 text-sm text-slate-600 font-medium">
-                            <div className="w-5 h-5 rounded-full bg-[#B48646]/10 flex items-center justify-center shrink-0">
-                                <Check size={10} className="text-[#B48646] stroke-[3]" />
-                            </div>
-                            {item}
-                        </li>
-                    ))}
-                </ul>
+                <p className="text-sm text-slate-600 font-medium mb-6 flex-1 leading-relaxed">
+                    Donnez vie à votre image de marque avec des designs uniques et professionnels qui captivent votre audience.
+                </p>
 
                 <div className="mt-auto flex items-center justify-between pt-4 border-t border-slate-50">
                     <span className="text-xs font-bold text-slate-400">À partir de 50€</span>
@@ -174,23 +161,9 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate, user, onLoginClick, onL
                     </div>
                 </div>
 
-                <ul className="space-y-3 mb-6 flex-1">
-                    {[
-                        "Montage Vidéo Promotionnel",
-                        "Diaporama Anniversaire / Retraite",
-                        "Diaporama Mariage / Baptême",
-                        "Hommage & Obsèques",
-                        "Numérisation de vos vidéos VHS",
-                        "Retouche Colorimétrique"
-                    ].map((item, i) => (
-                        <li key={i} className="flex items-center gap-3 text-sm text-slate-600 font-medium">
-                             <div className="w-5 h-5 rounded-full bg-[#B48646]/10 flex items-center justify-center shrink-0">
-                                <Check size={10} className="text-[#B48646] stroke-[3]" />
-                            </div>
-                            {item}
-                        </li>
-                    ))}
-                </ul>
+                <p className="text-sm text-slate-600 font-medium mb-6 flex-1 leading-relaxed">
+                    Immortalisez vos moments précieux ou dynamisez votre communication avec un montage vidéo expert et émouvant.
+                </p>
 
                 <div className="mt-auto flex items-center justify-between pt-4 border-t border-slate-50">
                     <span className="text-xs font-bold text-slate-400">À partir de 20€</span>
@@ -215,22 +188,9 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate, user, onLoginClick, onL
                     </div>
                 </div>
 
-                <ul className="space-y-3 mb-6 flex-1">
-                    {[
-                        "Retouches Photo (5€/photo)",
-                        "Modification / Montage (5€/photo)",
-                        "Détourage d'images",
-                        "Modifications de Textes",
-                        "Conversion de fichiers"
-                    ].map((item, i) => (
-                        <li key={i} className="flex items-center gap-3 text-sm text-slate-600 font-medium">
-                             <div className="w-5 h-5 rounded-full bg-[#B48646]/10 flex items-center justify-center shrink-0">
-                                <Check size={10} className="text-[#B48646] stroke-[3]" />
-                            </div>
-                            {item}
-                        </li>
-                    ))}
-                </ul>
+                <p className="text-sm text-slate-600 font-medium mb-6 flex-1 leading-relaxed">
+                    Une aide rapide et efficace pour toutes vos retouches, modifications et petits ajustements graphiques du quotidien.
+                </p>
 
                 <div className="mt-auto flex items-center justify-between pt-4 border-t border-slate-50">
                     <span className="text-xs font-bold text-slate-400">Dès 5€</span>
