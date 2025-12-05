@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { User } from '../types';
-import { FolderOpen, LogIn, Infinity, Download, ExternalLink, Clock, Plus, Trash2, Send, FileCheck, Package, Facebook, UploadCloud, FileText, Loader2, Users, Phone as PhoneIcon, Calendar, Gift, Edit2, Smartphone, Briefcase } from 'lucide-react';
+import { FolderOpen, LogIn, Infinity, Download, ExternalLink, Clock, Plus, Trash2, Send, FileCheck, Package, Facebook, UploadCloud, FileText, Loader2, Users, Phone as PhoneIcon, Calendar, Gift, Edit2, Smartphone, Briefcase, LogOut } from 'lucide-react';
 import { updateProjectStatus, deleteProject, saveProject, uploadProjectFile, uploadFinalDelivery, subscribeToProjects, subscribeToUsers } from '../db';
 import toast from 'react-hot-toast';
 
@@ -32,11 +32,11 @@ interface LocalProject {
   files?: ProjectFile[];
 }
 
-const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick }) => {
+const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout }) => {
   
   const [projects, setProjects] = useState<LocalProject[]>([]);
   const [allUsers, setAllUsers] = useState<any[]>([]);
-  const isAdmin = user?.email.toLowerCase() === 'infinivingtquatre@gmail.com';
+  const isAdmin = user?.email.toLowerCase() === 'infinivingtquatre@gmail.com'; // Robust check
   
   const [uploadingId, setUploadingId] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -285,7 +285,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
 
   const displayedProjects = isAdmin 
     ? projects 
-    : projects.filter(p => (p.clientEmail || "").trim().toLowerCase() === (user?.email || "").trim().toLowerCase()); // Strict Lowercase Check
+    : projects.filter(p => (p.clientEmail || "").trim().toLowerCase() === (user?.email || "").trim().toLowerCase());
 
   const pendingProjects = displayedProjects.filter(p => p.step === 'request_received');
   const activeProjects = displayedProjects.filter(p => p.step !== 'request_received');
@@ -315,201 +315,198 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
         <div className="absolute bottom-0 left-0 w-48 h-48 bg-[#F3C06B]/10 rounded-full blur-[60px] -ml-10 -mb-10 pointer-events-none"></div>
         
         <div className="relative z-10">
-           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#B48646]/5 text-[#B48646] text-[10px] font-bold uppercase tracking-widest mb-4 border border-[#B48646]/10">
-              <Briefcase size={12} /> Mon Espace
+           <div className="flex justify-between items-start">
+               <div>
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#B48646]/5 text-[#B48646] text-[10px] font-bold uppercase tracking-widest mb-4 border border-[#B48646]/10">
+                        <Briefcase size={12} /> Mon Espace
+                    </div>
+                    <h1 className="text-3xl md:text-4xl font-extrabold font-['Poppins'] text-slate-900 leading-tight mb-2">
+                        {isAdmin ? 'Dashboard Admin' : `Bonjour, ${user?.name?.split(' ')[0] || 'Client'}`}
+                    </h1>
+                    <p className="text-slate-500 font-medium max-w-md text-sm md:text-base">
+                        {isAdmin ? 'Administration des commandes.' : 'Suivez vos projets et téléchargez vos fichiers.'}
+                    </p>
+               </div>
+               <button 
+                  onClick={onLogout}
+                  className="bg-slate-100 p-3 rounded-2xl text-slate-500 hover:text-red-500 hover:bg-red-50 transition-colors"
+                  title="Se déconnecter"
+               >
+                   <LogOut size={20} />
+               </button>
            </div>
-           <h1 className="text-3xl md:text-4xl font-extrabold font-['Poppins'] text-slate-900 leading-tight mb-2">
-             Suivi de Projets
-           </h1>
-           <p className="text-slate-500 font-medium max-w-md text-sm md:text-base">
-             {isAdmin ? 'Administration des commandes et des clients.' : 'Retrouvez vos commandes et téléchargez vos fichiers.'}
-           </p>
         </div>
       </header>
 
       <div className="flex-1 px-4 lg:px-8 relative z-20 pb-20 flex flex-col items-center justify-start">
         
-        {user ? (
-             <div className="w-full max-w-3xl animate-in slide-in-from-bottom duration-500">
-                
-                {pendingProjects.length > 0 && (
-                    <div className="bg-white p-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 mb-8">
-                        <div className="flex justify-between items-end mb-6">
-                            <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-                                <Clock className="text-orange-500" size={24} /> En attente
-                            </h2>
-                            <span className="text-xs font-bold text-slate-400 bg-slate-50 px-3 py-1 rounded-full">{pendingProjects.length} demande(s)</span>
-                        </div>
-                        <div>
-                            {pendingProjects.map(renderProjectCard)}
-                        </div>
+         <div className="w-full max-w-3xl animate-in slide-in-from-bottom duration-500">
+            
+            {pendingProjects.length > 0 && (
+                <div className="bg-white p-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 mb-8">
+                    <div className="flex justify-between items-end mb-6">
+                        <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
+                            <Clock className="text-orange-500" size={24} /> En attente
+                        </h2>
+                        <span className="text-xs font-bold text-slate-400 bg-slate-50 px-3 py-1 rounded-full">{pendingProjects.length} demande(s)</span>
                     </div>
-                )}
-
-                {activeProjects.length > 0 && (
-                    <div className="bg-white p-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 mb-8">
-                        <div className="flex justify-between items-end mb-6">
-                            <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-                                <FolderOpen className="text-[#B48646]" size={24} /> Projets actifs
-                            </h2>
-                            <span className="text-xs font-bold text-slate-400 bg-slate-50 px-3 py-1 rounded-full">{activeProjects.length} en cours</span>
-                        </div>
-                        <div>
-                            {activeProjects.map(renderProjectCard)}
-                        </div>
+                    <div>
+                        {pendingProjects.map(renderProjectCard)}
                     </div>
-                )}
+                </div>
+            )}
 
-                {displayedProjects.length === 0 && (
-                    <div className="bg-white p-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 mb-8 text-center py-10 text-slate-400">
-                        <FolderOpen size={40} className="mx-auto mb-4 opacity-50" />
-                        <p className="text-sm">Aucun projet pour le moment.</p>
+            {activeProjects.length > 0 && (
+                <div className="bg-white p-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 mb-8">
+                    <div className="flex justify-between items-end mb-6">
+                        <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
+                            <FolderOpen className="text-[#B48646]" size={24} /> Projets actifs
+                        </h2>
+                        <span className="text-xs font-bold text-slate-400 bg-slate-50 px-3 py-1 rounded-full">{activeProjects.length} en cours</span>
                     </div>
-                )}
-
-                {!isAdmin && (
-                    <div className="bg-[#B48646] text-white p-8 rounded-[2.5rem] shadow-xl shadow-[#B48646]/20 relative overflow-hidden mb-12">
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-white blur-[50px] opacity-20 rounded-full"></div>
-                        <h3 className="text-lg font-bold mb-2 relative z-10">Une question sur un projet ?</h3>
-                        <p className="text-sm opacity-90 mb-6 relative z-10">Utilisez nos messageries pour une réponse rapide.</p>
-                        
-                        <div className="flex flex-col sm:flex-row gap-3 relative z-10">
-                            <a href="sms:+33663083676?body=Bonjour Infini 24, j'ai une question sur mon projet..." className="flex-1 flex justify-center bg-white text-[#B48646] px-6 py-3 rounded-xl font-bold text-sm hover:bg-slate-50 transition-colors items-center gap-2">
-                                <span className="truncate">SMS Rapide</span> <Smartphone size={16}/>
-                            </a>
-                            <a href="https://www.facebook.com/profile.php?id=61584316950503" target="_blank" rel="noreferrer" className="flex-1 flex justify-center bg-white/10 border border-white/20 text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-white/20 transition-colors items-center gap-2">
-                                <Facebook size={18}/> <span className="truncate">Facebook</span>
-                            </a>
-                        </div>
+                    <div>
+                        {activeProjects.map(renderProjectCard)}
                     </div>
-                )}
+                </div>
+            )}
 
-                {isAdmin && (
-                    <div className="border-t-2 border-dashed border-slate-200 pt-8 mt-8">
-                        <div className="bg-slate-800 text-white p-6 rounded-[2rem] shadow-2xl">
-                            <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
-                                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div> 
-                                Dashboard Administrateur
-                            </h3>
-                            <p className="text-xs text-slate-400 mb-6">Gérez les demandes reçues par Email / WhatsApp ici.</p>
+            {displayedProjects.length === 0 && (
+                <div className="bg-white p-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 mb-8 text-center py-10 text-slate-400">
+                    <FolderOpen size={40} className="mx-auto mb-4 opacity-50" />
+                    <p className="text-sm">Aucun projet pour le moment.</p>
+                </div>
+            )}
 
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                                <div className="space-y-6">
-                                    <div className="bg-slate-700/50 p-4 rounded-2xl border border-slate-600">
-                                        <h4 className="font-bold text-sm mb-3 flex items-center gap-2"><Plus size={14} /> Nouvelle Demande Reçue</h4>
-                                        <div className="space-y-3">
-                                            <input 
-                                                type="text" 
-                                                placeholder="Nom du projet (ex: Logo)" 
-                                                value={newProjectTitle}
-                                                onChange={(e) => setNewProjectTitle(e.target.value)}
-                                                className="w-full bg-slate-900 border border-slate-600 rounded-xl px-3 py-2 text-sm outline-none focus:border-[#B48646]"
-                                            />
-                                            <input 
-                                                type="text" 
-                                                placeholder="Nom du client" 
-                                                value={newClientName}
-                                                onChange={(e) => setNewClientName(e.target.value)}
-                                                className="w-full bg-slate-900 border border-slate-600 rounded-xl px-3 py-2 text-sm outline-none focus:border-[#B48646]"
-                                            />
-                                            <select 
-                                                value={newProjectType}
-                                                onChange={(e) => setNewProjectType(e.target.value)}
-                                                className="w-full bg-slate-900 border border-slate-600 rounded-xl px-3 py-2 text-sm outline-none focus:border-[#B48646]"
-                                            >
-                                                <option value="Graphisme">Graphisme</option>
-                                                <option value="Vidéo">Vidéo</option>
-                                            </select>
-                                            <button onClick={handleAddProject} className="w-full bg-green-600 hover:bg-green-500 text-white py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-colors">
-                                                Créer le dossier
-                                            </button>
-                                        </div>
-                                    </div>
+            {!isAdmin && (
+                <div className="bg-[#B48646] text-white p-8 rounded-[2.5rem] shadow-xl shadow-[#B48646]/20 relative overflow-hidden mb-12">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-white blur-[50px] opacity-20 rounded-full"></div>
+                    <h3 className="text-lg font-bold mb-2 relative z-10">Une question sur un projet ?</h3>
+                    <p className="text-sm opacity-90 mb-6 relative z-10">Utilisez nos messageries pour une réponse rapide.</p>
+                    
+                    <div className="flex flex-col sm:flex-row gap-3 relative z-10">
+                        <a href="sms:+33663083676?body=Bonjour Infini 24, j'ai une question sur mon projet..." className="flex-1 flex justify-center bg-white text-[#B48646] px-6 py-3 rounded-xl font-bold text-sm hover:bg-slate-50 transition-colors items-center gap-2">
+                            <span className="truncate">SMS Rapide</span> <Smartphone size={16}/>
+                        </a>
+                        <a href="https://www.facebook.com/profile.php?id=61584316950503" target="_blank" rel="noreferrer" className="flex-1 flex justify-center bg-white/10 border border-white/20 text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-white/20 transition-colors items-center gap-2">
+                            <Facebook size={18}/> <span className="truncate">Facebook</span>
+                        </a>
+                    </div>
+                </div>
+            )}
 
-                                    <div className="bg-slate-700/50 p-4 rounded-2xl border border-slate-600">
-                                        <h4 className="font-bold text-sm mb-3">Mise à jour des statuts</h4>
-                                        <div className="space-y-2 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
-                                            {projects.map(p => (
-                                                <div key={p.id} className="bg-slate-800 p-3 rounded-xl border border-slate-600">
-                                                    <div className="flex justify-between items-center mb-2">
-                                                        <span className="font-bold text-xs truncate max-w-[100px]">{p.title}</span>
-                                                        <span className="text-[9px] text-slate-400 truncate">{p.clientName}</span>
-                                                        <button onClick={() => handleDeleteProject(p.id)} className="text-red-400 hover:text-red-300 ml-2"><Trash2 size={12}/></button>
-                                                    </div>
-                                                    <div className="grid grid-cols-4 gap-1 mb-2">
-                                                        <button 
-                                                            onClick={() => handleUpdateStatus(p.id, 'request_received')} 
-                                                            className={`h-1.5 rounded-full ${p.step === 'request_received' ? 'bg-blue-500' : 'bg-slate-600'}`}
-                                                            title="Reçu"
-                                                        />
-                                                        <button 
-                                                            onClick={() => handleUpdateStatus(p.id, 'in_creation')} 
-                                                            className={`h-1.5 rounded-full ${p.step === 'in_creation' ? 'bg-orange-500' : 'bg-slate-600'}`}
-                                                            title="Création"
-                                                        />
-                                                        <button 
-                                                            onClick={() => handleUpdateStatus(p.id, 'validation')} 
-                                                            className={`h-1.5 rounded-full ${p.step === 'validation' ? 'bg-purple-500' : 'bg-slate-600'}`}
-                                                            title="Validation"
-                                                        />
-                                                        <button 
-                                                            onClick={() => handleUpdateStatus(p.id, 'delivered')} 
-                                                            className={`h-1.5 rounded-full ${p.step === 'delivered' ? 'bg-green-500' : 'bg-slate-600'}`}
-                                                            title="Livré"
-                                                        />
-                                                    </div>
-                                                    <button 
-                                                        onClick={() => handleDeliveryClick(p.id)}
-                                                        className="w-full text-[10px] bg-slate-700 hover:bg-slate-600 py-1.5 rounded-lg flex items-center justify-center gap-1 text-slate-300 transition-colors"
-                                                    >
-                                                        {deliveringId === p.id ? <Loader2 size={10} className="animate-spin"/> : <Gift size={10} />}
-                                                        {p.downloadUrl ? 'Modifier le livrable' : 'Déposer le livrable'}
-                                                    </button>
-                                                </div>
-                                            ))}
-                                        </div>
+            {isAdmin && (
+                <div className="border-t-2 border-dashed border-slate-200 pt-8 mt-8">
+                    <div className="bg-slate-800 text-white p-6 rounded-[2rem] shadow-2xl">
+                        <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
+                            <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div> 
+                            Dashboard Administrateur
+                        </h3>
+                        <p className="text-xs text-slate-400 mb-6">Gérez les demandes reçues par Email / WhatsApp ici.</p>
+
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div className="space-y-6">
+                                <div className="bg-slate-700/50 p-4 rounded-2xl border border-slate-600">
+                                    <h4 className="font-bold text-sm mb-3 flex items-center gap-2"><Plus size={14} /> Nouvelle Demande Reçue</h4>
+                                    <div className="space-y-3">
+                                        <input 
+                                            type="text" 
+                                            placeholder="Nom du projet (ex: Logo)" 
+                                            value={newProjectTitle}
+                                            onChange={(e) => setNewProjectTitle(e.target.value)}
+                                            className="w-full bg-slate-900 border border-slate-600 rounded-xl px-3 py-2 text-sm outline-none focus:border-[#B48646]"
+                                        />
+                                        <input 
+                                            type="text" 
+                                            placeholder="Nom du client" 
+                                            value={newClientName}
+                                            onChange={(e) => setNewClientName(e.target.value)}
+                                            className="w-full bg-slate-900 border border-slate-600 rounded-xl px-3 py-2 text-sm outline-none focus:border-[#B48646]"
+                                        />
+                                        <select 
+                                            value={newProjectType}
+                                            onChange={(e) => setNewProjectType(e.target.value)}
+                                            className="w-full bg-slate-900 border border-slate-600 rounded-xl px-3 py-2 text-sm outline-none focus:border-[#B48646]"
+                                        >
+                                            <option value="Graphisme">Graphisme</option>
+                                            <option value="Vidéo">Vidéo</option>
+                                        </select>
+                                        <button onClick={handleAddProject} className="w-full bg-green-600 hover:bg-green-500 text-white py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-colors">
+                                            Créer le dossier
+                                        </button>
                                     </div>
                                 </div>
 
-                                <div className="bg-slate-700/50 p-4 rounded-2xl border border-slate-600 flex flex-col">
-                                    <h4 className="font-bold text-sm mb-3 flex items-center gap-2"><Users size={14} /> Derniers Clients Inscrits</h4>
-                                    <div className="space-y-2 flex-1 overflow-y-auto max-h-[300px] pr-2 custom-scrollbar">
-                                        {allUsers.length === 0 && <p className="text-xs text-slate-500 italic">Aucun client pour le moment.</p>}
-                                        {allUsers.map((client, idx) => (
-                                            <div key={client.uid || idx} className="bg-slate-800 p-3 rounded-xl border border-slate-600">
-                                                <div className="flex justify-between items-start">
-                                                    <div>
-                                                        <p className="font-bold text-xs text-white">{client.name}</p>
-                                                        <p className="text-[10px] text-slate-400">{client.email}</p>
-                                                    </div>
-                                                    {idx < 3 && <span className="text-[9px] bg-red-500/20 text-red-400 px-1.5 py-0.5 rounded-md font-bold">Nouveau</span>}
+                                <div className="bg-slate-700/50 p-4 rounded-2xl border border-slate-600">
+                                    <h4 className="font-bold text-sm mb-3">Mise à jour des statuts</h4>
+                                    <div className="space-y-2 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
+                                        {projects.map(p => (
+                                            <div key={p.id} className="bg-slate-800 p-3 rounded-xl border border-slate-600">
+                                                <div className="flex justify-between items-center mb-2">
+                                                    <span className="font-bold text-xs truncate max-w-[100px]">{p.title}</span>
+                                                    <span className="text-[9px] text-slate-400 truncate">{p.clientName}</span>
+                                                    <button onClick={() => handleDeleteProject(p.id)} className="text-red-400 hover:text-red-300 ml-2"><Trash2 size={12}/></button>
                                                 </div>
-                                                <div className="mt-2 flex items-center gap-2 text-[10px] text-slate-500">
-                                                    <PhoneIcon size={10} /> {client.phone || 'N/A'}
-                                                    {client.companyName && <span className="text-slate-400">• {client.companyName}</span>}
+                                                <div className="grid grid-cols-4 gap-1 mb-2">
+                                                    <button 
+                                                        onClick={() => handleUpdateStatus(p.id, 'request_received')} 
+                                                        className={`h-1.5 rounded-full ${p.step === 'request_received' ? 'bg-blue-500' : 'bg-slate-600'}`}
+                                                        title="Reçu"
+                                                    />
+                                                    <button 
+                                                        onClick={() => handleUpdateStatus(p.id, 'in_creation')} 
+                                                        className={`h-1.5 rounded-full ${p.step === 'in_creation' ? 'bg-orange-500' : 'bg-slate-600'}`}
+                                                        title="Création"
+                                                    />
+                                                    <button 
+                                                        onClick={() => handleUpdateStatus(p.id, 'validation')} 
+                                                        className={`h-1.5 rounded-full ${p.step === 'validation' ? 'bg-purple-500' : 'bg-slate-600'}`}
+                                                        title="Validation"
+                                                    />
+                                                    <button 
+                                                        onClick={() => handleUpdateStatus(p.id, 'delivered')} 
+                                                        className={`h-1.5 rounded-full ${p.step === 'delivered' ? 'bg-green-500' : 'bg-slate-600'}`}
+                                                        title="Livré"
+                                                    />
                                                 </div>
+                                                <button 
+                                                    onClick={() => handleDeliveryClick(p.id)}
+                                                    className="w-full text-[10px] bg-slate-700 hover:bg-slate-600 py-1.5 rounded-lg flex items-center justify-center gap-1 text-slate-300 transition-colors"
+                                                >
+                                                    {deliveringId === p.id ? <Loader2 size={10} className="animate-spin"/> : <Gift size={10} />}
+                                                    {p.downloadUrl ? 'Modifier le livrable' : 'Déposer le livrable'}
+                                                </button>
                                             </div>
                                         ))}
                                     </div>
                                 </div>
                             </div>
+
+                            <div className="bg-slate-700/50 p-4 rounded-2xl border border-slate-600 flex flex-col">
+                                <h4 className="font-bold text-sm mb-3 flex items-center gap-2"><Users size={14} /> Derniers Clients Inscrits</h4>
+                                <div className="space-y-2 flex-1 overflow-y-auto max-h-[300px] pr-2 custom-scrollbar">
+                                    {allUsers.length === 0 && <p className="text-xs text-slate-500 italic">Aucun client pour le moment.</p>}
+                                    {allUsers.map((client, idx) => (
+                                        <div key={client.uid || idx} className="bg-slate-800 p-3 rounded-xl border border-slate-600">
+                                            <div className="flex justify-between items-start">
+                                                <div>
+                                                    <p className="font-bold text-xs text-white">{client.name}</p>
+                                                    <p className="text-[10px] text-slate-400">{client.email}</p>
+                                                </div>
+                                                {idx < 3 && <span className="text-[9px] bg-red-500/20 text-red-400 px-1.5 py-0.5 rounded-md font-bold">Nouveau</span>}
+                                            </div>
+                                            <div className="mt-2 flex items-center gap-2 text-[10px] text-slate-500">
+                                                <PhoneIcon size={10} /> {client.phone || 'N/A'}
+                                                {client.companyName && <span className="text-slate-400">• {client.companyName}</span>}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
                         </div>
                     </div>
-                )}
-             </div>
-        ) : (
-             <div className="flex flex-col items-center justify-center h-full text-center max-w-md animate-in zoom-in duration-500">
-                 <div className="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center mb-6 relative group">
-                     <div className="absolute inset-0 bg-[#B48646] rounded-full blur-xl opacity-0 group-hover:opacity-20 transition-opacity"></div>
-                     <LogIn size={40} className="text-slate-300 group-hover:text-[#B48646] transition-colors" />
-                 </div>
-                 <h2 className="text-2xl font-bold text-slate-900 mb-2">Connectez-vous</h2>
-                 <p className="text-slate-500 text-sm mb-8">Pour suivre l'avancement de vos projets et échanger avec nous.</p>
-                 <button onClick={onLoginClick} className="bg-slate-900 text-white px-8 py-4 rounded-[1.5rem] font-bold shadow-xl hover:bg-[#B48646] hover:shadow-[#B48646]/30 transition-all flex items-center gap-2">
-                     <LogIn size={20} /> Se connecter
-                 </button>
-             </div>
-        )}
+                </div>
+            )}
+         </div>
 
       </div>
     </div>

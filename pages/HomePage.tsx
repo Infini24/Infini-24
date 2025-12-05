@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowRight, Video, PenTool, Info, LifeBuoy, Infinity, Sparkles, Briefcase } from 'lucide-react';
+import { ArrowRight, Video, PenTool, Info, LifeBuoy, Infinity, Sparkles, Briefcase, User as UserIcon } from 'lucide-react';
 import { ServiceType, User } from '../types';
 
 interface HomePageProps {
@@ -16,7 +16,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate, user, onLoginClick, onL
       {/* Header / Branding */}
       <header className="flex-none pt-14 pb-10 px-6 bg-white border-b border-slate-50 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] relative overflow-hidden rounded-b-[3.5rem] mb-6 z-10">
         <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-[#B48646] to-[#F3C06B] rounded-full blur-[80px] opacity-15 -mr-16 -mt-16 animate-pulse"></div>
-        <div className="absolute bottom-0 left-0 w-48 h-48 bg-slate-900 rounded-full blur-[60px] opacity-5 -ml-10 -mb-10"></div>
+        <div className="absolute bottom-0 left-0 w-48 h-48 bg-slate-900 rounded-full blur-[60px] -ml-10 -mb-10"></div>
 
         <div className="relative z-10 flex flex-col items-center justify-center text-center mt-2">
            <div className="flex items-center justify-center mb-4 relative group cursor-pointer transition-transform duration-500 hover:scale-110">
@@ -33,6 +33,14 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate, user, onLoginClick, onL
               Créateur de souvenirs
              </p>
            </div>
+           
+           {/* Welcome User Banner */}
+           {user && (
+               <div className="mt-6 flex items-center gap-2 bg-slate-50 px-4 py-2 rounded-2xl border border-slate-100 shadow-sm animate-in slide-in-from-top duration-500">
+                    <UserIcon size={14} className="text-[#B48646]" />
+                    <span className="text-xs font-bold text-slate-700">Bonjour, {user.name.split(' ')[0]} !</span>
+               </div>
+           )}
         </div>
       </header>
       
@@ -134,9 +142,11 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate, user, onLoginClick, onL
                     </div>
                 </div>
 
-                <p className="text-lg text-slate-700 font-bold mb-6 flex-1 leading-tight">
-                    Votre image de marque, <span className="text-[#B48646]">sublime et unique.</span>
-                </p>
+                <div className="mb-6 flex-1 px-2">
+                     <p className="text-2xl font-bold text-slate-900 leading-none mb-1">
+                        Sublimez <br/><span className="text-[#B48646]">votre image.</span>
+                     </p>
+                </div>
 
                 <div className="mt-auto flex items-center justify-between pt-4 border-t border-slate-50">
                     <span className="text-xs font-bold text-slate-400">À partir de 50€</span>
@@ -161,9 +171,11 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate, user, onLoginClick, onL
                     </div>
                 </div>
 
-                <p className="text-lg text-slate-700 font-bold mb-6 flex-1 leading-tight">
-                    Transformez vos souvenirs en <span className="text-[#B48646]">émotions inoubliables.</span>
-                </p>
+                 <div className="mb-6 flex-1 px-2">
+                     <p className="text-2xl font-bold text-slate-900 leading-none mb-1">
+                        Éternisez <br/><span className="text-[#B48646]">vos émotions.</span>
+                     </p>
+                </div>
 
                 <div className="mt-auto flex items-center justify-between pt-4 border-t border-slate-50">
                     <span className="text-xs font-bold text-slate-400">À partir de 20€</span>
@@ -188,9 +200,11 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate, user, onLoginClick, onL
                     </div>
                 </div>
 
-                <p className="text-lg text-slate-700 font-bold mb-6 flex-1 leading-tight">
-                    Un graphiste expert à vos côtés, <span className="text-[#B48646]">instantanément.</span>
-                </p>
+                 <div className="mb-6 flex-1 px-2">
+                     <p className="text-2xl font-bold text-slate-900 leading-none mb-1">
+                        Un expert <br/><span className="text-[#B48646]">à vos côtés.</span>
+                     </p>
+                </div>
 
                 <div className="mt-auto flex items-center justify-between pt-4 border-t border-slate-50">
                     <span className="text-xs font-bold text-slate-400">Dès 5€</span>
