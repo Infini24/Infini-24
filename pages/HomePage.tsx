@@ -15,8 +15,9 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate, user, onLoginClick, onL
     <div className="flex flex-col h-full overflow-y-auto no-scrollbar bg-[#FDFCF8]">
       {/* Header / Branding */}
       <header className="flex-none pt-14 pb-10 px-6 bg-white border-b border-slate-50 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] relative overflow-hidden rounded-b-[3.5rem] mb-6 z-10">
+        {/* Effets d'arrière-plan lumineux et doux (plus de noir) */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-[#B48646] to-[#F3C06B] rounded-full blur-[80px] opacity-15 -mr-16 -mt-16 animate-pulse"></div>
-        <div className="absolute bottom-0 left-0 w-48 h-48 bg-slate-900 rounded-full blur-[60px] -ml-10 -mb-10"></div>
+        <div className="absolute bottom-0 left-0 w-56 h-56 bg-[#F3C06B] rounded-full blur-[80px] opacity-10 -ml-16 -mb-16"></div>
 
         <div className="relative z-10 flex flex-col items-center justify-center text-center mt-2">
            <div className="flex items-center justify-center mb-4 relative group cursor-pointer transition-transform duration-500 hover:scale-110">
@@ -28,7 +29,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate, user, onLoginClick, onL
              <span className="font-bold text-slate-900">INFINI</span>
              <span className="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#B48646] to-[#F3C06B]">24</span>
            </h1>
-           <div className="inline-block px-4 py-1.5 rounded-full bg-[#B48646]/5 border border-[#B48646]/10 backdrop-blur-sm">
+           <div className="inline-block px-5 py-2 rounded-full bg-gradient-to-r from-[#B48646]/5 to-[#F3C06B]/10 border border-[#B48646]/10 backdrop-blur-sm">
              <p className="text-[#B48646] text-[10px] font-bold tracking-[0.3em] uppercase">
               Créateur de souvenirs
              </p>
