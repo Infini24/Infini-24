@@ -47,7 +47,7 @@ Merci de me recontacter pour valider le devis.`);
 
     // Ouverture Mail
     setTimeout(() => {
-        window.location.href = `mailto:infinivingtquatre@gmail.com?subject=${subject}&body=${body}`;
+        window.location.href = `mailto:Dywen.officiel7@gmail.com?subject=${subject}&body=${body}`;
     }, 1000);
 
     // Fermeture auto
@@ -174,7 +174,7 @@ interface FormProps {
 // 1. Graphic Design Form
 const GraphicDesignForm = ({ onBack, onRequest, initialValues }: FormProps) => {
     const [subService, setSubService] = useState<string>('identity_complete'); 
-    const [price, setPrice] = useState<number>(240); 
+    const [price, setPrice] = useState<number>(320); 
 
     useEffect(() => {
         if (initialValues) {

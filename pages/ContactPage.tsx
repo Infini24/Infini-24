@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Mail, Phone, MapPin, Send, Facebook, Instagram, Linkedin, MessageCircle, ChevronDown, ChevronUp, HelpCircle, Infinity, AlertTriangle, MessageSquare, Smartphone } from 'lucide-react';
+import React, { useState } from 'react';
+import { Mail, Phone, MapPin, Send, Facebook, Instagram, Linkedin, MessageCircle, ChevronDown, ChevronUp, HelpCircle, Infinity, AlertTriangle, Smartphone } from 'lucide-react';
 import { User } from '../types';
 import toast from 'react-hot-toast';
 
@@ -25,38 +25,8 @@ const ContactPage: React.FC<ContactPageProps> = ({ user, onLoginClick, onLogout 
     });
     const [errors, setErrors] = useState<{[key: string]: string}>({});
 
-    // State for Chat
-    const [messages, setMessages] = useState<{id: number, text: string, isUser: boolean}[]>([
-        { id: 1, text: "Bonjour ! Je suis l'assistant virtuel. Une question sur nos services ?", isUser: false }
-    ]);
-    const [newMessage, setNewMessage] = useState("");
-    const chatEndRef = useRef<HTMLDivElement>(null);
-
     const toggleFaq = (index: number) => {
         setOpenFaq(openFaq === index ? null : index);
-    };
-
-    const scrollToBottom = () => {
-        chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    };
-
-    useEffect(() => {
-        scrollToBottom();
-    }, [messages]);
-
-    const handleSendMessage = (e: React.FormEvent) => {
-        e.preventDefault();
-        const safeMessage = newMessage.replace(/[<>]/g, "").trim(); 
-        if (!safeMessage) return;
-
-        const userMsg = { id: Date.now(), text: safeMessage, isUser: true };
-        setMessages(prev => [...prev, userMsg]);
-        setNewMessage("");
-
-        setTimeout(() => {
-            const botMsg = { id: Date.now() + 1, text: "Merci. Un membre de l'équipe Infini 24 va vous répondre rapidement.", isUser: false };
-            setMessages(prev => [...prev, botMsg]);
-        }, 1500);
     };
 
     const faqData = [
@@ -115,7 +85,7 @@ ${formData.message}
 -------------------------
 Envoyé depuis le formulaire de contact Infini 24`);
 
-        window.location.href = `mailto:wendy.toussaint@icloud.com?subject=${emailSubject}&body=${emailBody}`;
+        window.location.href = `mailto:Dywen.officiel7@gmail.com?subject=${emailSubject}&body=${emailBody}`;
         toast.success("Ouverture de votre messagerie...");
         setFormData({ ...formData, message: '' });
     };
@@ -186,7 +156,7 @@ Envoyé depuis le formulaire de contact Infini 24`);
                 </a>
 
                 {/* 5. EMAIL DIRECT (NOUVEAU) */}
-                <a href="mailto:wendy.toussaint@icloud.com" className="bg-slate-50 p-4 rounded-[2rem] border border-transparent hover:border-[#B48646] hover:bg-white hover:shadow-lg transition-all active:scale-95 flex flex-col items-center justify-center gap-3 group md:col-span-1 col-span-2">
+                <a href="mailto:Dywen.officiel7@gmail.com" className="bg-slate-50 p-4 rounded-[2rem] border border-transparent hover:border-[#B48646] hover:bg-white hover:shadow-lg transition-all active:scale-95 flex flex-col items-center justify-center gap-3 group md:col-span-1 col-span-2">
                     <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-slate-800 shadow-sm group-hover:bg-[#B48646] group-hover:text-white transition-colors">
                         <Mail size={22} />
                     </div>
@@ -195,9 +165,9 @@ Envoyé depuis le formulaire de contact Infini 24`);
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-                {/* Left Col: FAQ & Chat */}
+                {/* Left Col: FAQ Only (Chat removed) */}
                 <div>
-                    <div className="bg-slate-50 rounded-[2rem] p-8 border border-slate-100 mb-10">
+                    <div className="bg-slate-50 rounded-[2rem] p-8 border border-slate-100 mb-10 h-full">
                         <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2 mb-6">
                             <HelpCircle size={14} className="text-[#B48646]"/> Questions Fréquentes
                         </h3>
@@ -218,36 +188,6 @@ Envoyé depuis le formulaire de contact Infini 24`);
                                     )}
                                 </div>
                             ))}
-                        </div>
-                    </div>
-
-                    <div className="bg-slate-50 rounded-[2rem] p-8 border border-slate-100 mb-8 lg:mb-0">
-                        <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2 mb-6">
-                            <MessageSquare size={14} className="text-[#B48646]"/> Chat en direct
-                        </h3>
-                        <div className="bg-white border-2 border-slate-100 rounded-[1.5rem] h-80 flex flex-col overflow-hidden shadow-sm">
-                            <div className="flex-1 overflow-y-auto p-5 space-y-4 bg-slate-50/30">
-                                {messages.map((msg) => (
-                                    <div key={msg.id} className={`flex ${msg.isUser ? 'justify-end' : 'justify-start'}`}>
-                                        <div className={`max-w-[85%] px-5 py-3 rounded-2xl text-sm font-medium leading-relaxed shadow-sm ${msg.isUser ? 'bg-gradient-to-br from-[#B48646] to-[#E5B066] text-white rounded-br-sm' : 'bg-white border border-slate-200 text-slate-600 rounded-bl-sm'}`}>
-                                            {msg.text}
-                                        </div>
-                                    </div>
-                                ))}
-                                <div ref={chatEndRef} />
-                            </div>
-                            <form onSubmit={handleSendMessage} className="p-3 bg-white border-t border-slate-100 flex gap-3">
-                                <input
-                                    type="text"
-                                    value={newMessage}
-                                    onChange={(e) => setNewMessage(e.target.value)}
-                                    placeholder="Posez votre question..."
-                                    className="flex-1 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-[#B48646] outline-none transition-all font-medium"
-                                />
-                                <button type="submit" className="p-3 bg-[#B48646] text-white rounded-xl hover:bg-[#9a733c] transition-colors shadow-lg shadow-[#B48646]/20">
-                                    <Send size={18} />
-                                </button>
-                            </form>
                         </div>
                     </div>
                 </div>

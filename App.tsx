@@ -60,7 +60,7 @@ const DesktopSidebar = ({
       {/* Sidebar Footer - Contact Rapide */}
       <div className="p-6 border-t border-slate-50 text-center">
            <a 
-             href="mailto:infinivingtquatre@gmail.com"
+             href="mailto:Dywen.officiel7@gmail.com"
              className="w-full bg-slate-900 text-white p-4 rounded-2xl flex items-center justify-center gap-2 font-bold shadow-lg hover:bg-[#B48646] hover:shadow-[#B48646]/30 transition-all group text-sm"
            >
              <Mail size={18} className="group-hover:-translate-y-1 transition-transform" /> Nous écrire
