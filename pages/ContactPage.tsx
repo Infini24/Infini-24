@@ -1,15 +1,8 @@
 import React, { useState } from 'react';
 import { Mail, Phone, MapPin, Send, Facebook, Instagram, Linkedin, MessageCircle, ChevronDown, ChevronUp, HelpCircle, Infinity, AlertTriangle, Smartphone } from 'lucide-react';
-import { User } from '../types';
 import toast from 'react-hot-toast';
 
-interface ContactPageProps {
-  user?: User | null;
-  onLoginClick?: () => void;
-  onLogout?: () => void;
-}
-
-const ContactPage: React.FC<ContactPageProps> = ({ user, onLoginClick, onLogout }) => {
+const ContactPage: React.FC = () => {
     const [sending, setSending] = useState(false);
     
     // State for FAQ accordion
@@ -17,9 +10,9 @@ const ContactPage: React.FC<ContactPageProps> = ({ user, onLoginClick, onLogout 
 
     // Form data state
     const [formData, setFormData] = useState({
-        name: user?.name || '',
-        phone: user?.phone || '',
-        email: user?.email || '',
+        name: '',
+        phone: '',
+        email: '',
         subject: '',
         message: ''
     });

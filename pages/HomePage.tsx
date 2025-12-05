@@ -1,15 +1,12 @@
 import React from 'react';
-import { ArrowRight, Video, PenTool, Info, LifeBuoy, Infinity, Sparkles, Briefcase, User as UserIcon, Check } from 'lucide-react';
-import { ServiceType, User } from '../types';
+import { ArrowRight, Video, PenTool, Info, LifeBuoy, Infinity, Sparkles, Briefcase, Check } from 'lucide-react';
+import { ServiceType } from '../types';
 
 interface HomePageProps {
   onNavigate: (index: number, serviceType?: ServiceType) => void;
-  user?: User | null;
-  onLoginClick?: () => void;
-  onLogout?: () => void;
 }
 
-const HomePage: React.FC<HomePageProps> = ({ onNavigate, user, onLoginClick, onLogout }) => {
+const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
   
   return (
     <div className="flex flex-col h-full overflow-y-auto no-scrollbar bg-[#FDFCF8]">
@@ -34,14 +31,6 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate, user, onLoginClick, onL
               Créateur de souvenirs
              </p>
            </div>
-           
-           {/* Welcome User Banner */}
-           {user && (
-               <div className="mt-6 flex items-center gap-2 bg-slate-50 px-4 py-2 rounded-2xl border border-slate-100 shadow-sm animate-in slide-in-from-top duration-500">
-                    <UserIcon size={14} className="text-[#B48646]" />
-                    <span className="text-xs font-bold text-slate-700">Bonjour, {user.name.split(' ')[0]} !</span>
-               </div>
-           )}
         </div>
       </header>
       

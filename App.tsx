@@ -1,15 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { Home, Calculator, Mail, ArrowRight, Infinity as InfinityIcon, Image as ImageIcon, User as UserIcon, Loader2 } from 'lucide-react';
+import React, { useState } from 'react';
+import { Home, Calculator, Mail, Infinity as InfinityIcon, Image as ImageIcon } from 'lucide-react';
 import { Toaster } from 'react-hot-toast';
-import { auth, db } from './firebaseConfig';
 
 import HomePage from './pages/HomePage';
 import ServicesPage from './pages/ServicesPage';
 import RealizationsPage from './pages/RealizationsPage';
 import ContactPage from './pages/ContactPage';
-import AuthPage from './pages/AuthPage';
-import ProfilePage from './pages/ProfilePage';
-import { ServiceType, User } from './types';
+import { ServiceType } from './types';
 
 // --- SIDEBAR COMPONENT (DESKTOP) ---
 const DesktopSidebar = ({ 
@@ -42,8 +39,7 @@ const DesktopSidebar = ({
            { icon: Home, label: "Accueil", index: 0 },
            { icon: ImageIcon, label: "Nos Réalisations", index: 1 },
            { icon: Calculator, label: "Nos Services", index: 2 },
-           { icon: UserIcon, label: "Mon Compte", index: 3 },
-           { icon: Mail, label: "Contact", index: 4 }
+           { icon: Mail, label: "Contact", index: 3 }
          ].map((item) => (
            <button
              key={item.index}
@@ -82,8 +78,7 @@ const MobileNavigation = ({ activeTab, onNavigate }: { activeTab: number; onNavi
         { icon: Home, index: 0 },
         { icon: ImageIcon, index: 1 },
         { icon: Calculator, index: 2 },
-        { icon: UserIcon, index: 3 },
-        { icon: Mail, index: 4 }
+        { icon: Mail, index: 3 }
       ].map((item) => (
         <button
           key={item.index}
@@ -105,49 +100,6 @@ const MobileNavigation = ({ activeTab, onNavigate }: { activeTab: number; onNavi
 const App = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [initialService, setInitialService] = useState<ServiceType | null>(null);
-  
-  // Auth State
-  const [user, setUser] = useState<User | null>(null);
-  const [authLoading, setAuthLoading] = useState(true);
-
-  // Auth Persistence Listener
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
-      if (firebaseUser) {
-        try {
-          // Fetch additional user details from Firestore
-          const doc = await db.collection('users').doc(firebaseUser.uid).get();
-          if (doc.exists) {
-            setUser({ uid: firebaseUser.uid, ...doc.data() } as User);
-          } else {
-             // Fallback minimal user info if firestore doc missing
-             setUser({
-               uid: firebaseUser.uid,
-               email: firebaseUser.email || '',
-               name: firebaseUser.displayName || 'Utilisateur',
-               type: 'Particulier', // Default fallback
-               phone: ''
-             } as User);
-          }
-        } catch (error) {
-          console.error("Error fetching user data:", error);
-          // Still set basic user even if fetch fails to allow usage
-          setUser({
-             uid: firebaseUser.uid,
-             email: firebaseUser.email || '',
-             name: firebaseUser.displayName || 'Utilisateur',
-             type: 'Particulier',
-             phone: ''
-          } as User);
-        }
-      } else {
-        setUser(null);
-      }
-      setAuthLoading(false);
-    });
-
-    return () => unsubscribe();
-  }, []);
 
   const handleNavigate = (index: number, serviceType?: ServiceType) => {
     setActiveTab(index);
@@ -156,20 +108,6 @@ const App = () => {
     }
     window.scrollTo({ top: 0 });
   };
-
-  const handleLoginSuccess = (user: User) => {
-      setUser(user);
-      // Stay on tab 3 or navigate elsewhere if needed
-  };
-
-  if (authLoading) {
-    return (
-      <div className="flex h-screen w-screen items-center justify-center bg-[#FDFCF8] flex-col gap-4">
-         <Loader2 className="animate-spin text-[#B48646]" size={48} />
-         <p className="text-slate-400 text-xs font-bold uppercase tracking-widest animate-pulse">Chargement d'Infini 24...</p>
-      </div>
-    );
-  }
 
   return (
     <div className="flex bg-[#FDFCF8] h-screen w-screen overflow-hidden text-slate-900 font-['Inter'] selection:bg-[#B48646]/20 selection:text-[#B48646]">
@@ -200,9 +138,6 @@ const App = () => {
         <div className={`flex-1 h-full overflow-hidden ${activeTab === 0 ? 'block' : 'hidden'}`}>
              <HomePage 
                 onNavigate={handleNavigate} 
-                user={user} 
-                onLoginClick={() => handleNavigate(3)}
-                onLogout={() => auth.signOut()}
              />
         </div>
         
@@ -214,24 +149,11 @@ const App = () => {
              <ServicesPage 
                 initialService={initialService} 
                 onClearInitial={() => setInitialService(null)} 
-                user={user}
             />
         </div>
 
         <div className={`flex-1 h-full overflow-hidden ${activeTab === 3 ? 'block' : 'hidden'}`}>
-             {user ? (
-                 <ProfilePage 
-                    user={user} 
-                    onLogout={() => auth.signOut()} 
-                    onLoginClick={() => {}} // Not used here as user is logged in
-                 />
-             ) : (
-                 <AuthPage onLogin={handleLoginSuccess} />
-             )}
-        </div>
-
-        <div className={`flex-1 h-full overflow-hidden ${activeTab === 4 ? 'block' : 'hidden'}`}>
-             <ContactPage user={user} />
+             <ContactPage />
         </div>
 
         <MobileNavigation activeTab={activeTab} onNavigate={handleNavigate} />

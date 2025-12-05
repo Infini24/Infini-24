@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, Sliders, CheckCircle, Video, PenTool, LifeBuoy, Crown, Palette, Film, Lock, X, Check, ArrowRight, Phone, Mail, MessageCircle, ShieldCheck, Eye, Sparkles, Calculator } from 'lucide-react';
-import { ServiceType, User } from '../types';
+import { ServiceType } from '../types';
 import toast from 'react-hot-toast';
 
 // --- PROJECT WORKFLOW MODAL ---
@@ -11,31 +11,23 @@ interface ProjectWorkflowModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
-  user?: User | null;
 }
 
-const ProjectWorkflowModal: React.FC<ProjectWorkflowModalProps> = ({ serviceName, price, customDetails, isOpen, onClose, onSuccess, user }) => {
+const ProjectWorkflowModal: React.FC<ProjectWorkflowModalProps> = ({ serviceName, price, customDetails, isOpen, onClose, onSuccess }) => {
   const [step, setStep] = useState<'info' | 'contact' | 'success'>('info');
   const [contactMethod, setContactMethod] = useState<'phone' | 'whatsapp' | 'email'>('email');
   const [name, setName] = useState('');
   const [contactInfo, setContactInfo] = useState('');
 
-  // Prefill user data if logged in
+  // Reset modal state when opening
   useEffect(() => {
     if (isOpen) {
         setStep('info');
-        if (user) {
-            setName(user.name);
-            if (user.email) {
-                setContactMethod('email');
-                setContactInfo(user.email);
-            } else if (user.phone) {
-                setContactMethod('phone');
-                setContactInfo(user.phone);
-            }
-        }
+        setName('');
+        setContactInfo('');
+        setContactMethod('email');
     }
-  }, [isOpen, user]);
+  }, [isOpen]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,7 +51,6 @@ Budget estimé : ${price}€
 --- MES COORDONNÉES ---
 Nom : ${name}
 Contact de préférence : ${methodLabel} (${contactInfo})
-${user?.companyName ? `Entreprise : ${user.companyName}\n` : ''}
 
 --- DÉTAILS DU PROJET ---
 ${customDetails}
@@ -157,14 +148,14 @@ Cordialement.`);
                         <div className="flex gap-2 mb-3">
                              <button 
                                 type="button" 
-                                onClick={() => { setContactMethod('email'); if(user?.email) setContactInfo(user.email); else setContactInfo(''); }} 
+                                onClick={() => { setContactMethod('email'); }} 
                                 className={`flex-1 py-3 rounded-xl text-xs font-bold border transition-all ${contactMethod === 'email' ? 'bg-[#B48646]/10 border-[#B48646] text-[#B48646]' : 'bg-slate-50 border-transparent text-slate-400'}`}
                              >
                                  Email
                              </button>
                              <button 
                                 type="button" 
-                                onClick={() => { setContactMethod('phone'); if(user?.phone) setContactInfo(user.phone); else setContactInfo(''); }} 
+                                onClick={() => { setContactMethod('phone'); }} 
                                 className={`flex-1 py-3 rounded-xl text-xs font-bold border transition-all ${contactMethod === 'phone' ? 'bg-[#B48646]/10 border-[#B48646] text-[#B48646]' : 'bg-slate-50 border-transparent text-slate-400'}`}
                              >
                                  Téléphone / SMS
@@ -212,16 +203,15 @@ interface FormProps {
     onBack: () => void;
     onRequest: (name: string, price: number, details: string) => void;
     initialValues?: string | null;
-    user?: User | null;
 }
 
 // 1. Graphic Design Form
-const GraphicDesignForm = ({ onBack, onRequest, initialValues, user }: FormProps) => {
+const GraphicDesignForm = ({ onBack, onRequest, initialValues }: FormProps) => {
     const [subService, setSubService] = useState<string>('identity_complete'); 
     const [price, setPrice] = useState<number>(320); 
     
     // Form Inputs
-    const [companyName, setCompanyName] = useState(user?.companyName || '');
+    const [companyName, setCompanyName] = useState('');
     const [details, setDetails] = useState('');
 
     useEffect(() => {
@@ -455,7 +445,7 @@ const GraphicDesignForm = ({ onBack, onRequest, initialValues, user }: FormProps
 };
 
 // 2. Video Form 
-const VideoForm = ({ onBack, onRequest, initialValues, user }: FormProps) => {
+const VideoForm = ({ onBack, onRequest, initialValues }: FormProps) => {
     const [subService, setSubService] = useState<string>('birthday'); 
     const [photos, setPhotos] = useState<number>(50);
     const [duration, setDuration] = useState<number>(10);
@@ -764,7 +754,7 @@ const VideoForm = ({ onBack, onRequest, initialValues, user }: FormProps) => {
 };
 
 // 3. Assistance Form
-const AssistanceForm = ({ onBack, onRequest, initialValues, user }: FormProps) => {
+const AssistanceForm = ({ onBack, onRequest, initialValues }: FormProps) => {
     const [missionType, setMissionType] = useState<string>('retouche');
     const [photoCount, setPhotoCount] = useState<number>(1);
     const [price, setPrice] = useState<number>(5);
@@ -898,10 +888,9 @@ const AssistanceForm = ({ onBack, onRequest, initialValues, user }: FormProps) =
 interface ServicesPageProps {
   initialService: ServiceType | null;
   onClearInitial: () => void;
-  user?: User | null;
 }
 
-const ServicesPage: React.FC<ServicesPageProps> = ({ initialService, onClearInitial, user }) => {
+const ServicesPage: React.FC<ServicesPageProps> = ({ initialService, onClearInitial }) => {
   const [selectedService, setSelectedService] = useState<ServiceType | null>(null);
   
   // State for Project Modal (Request mode)
@@ -933,9 +922,9 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ initialService, onClearInit
   };
 
   const renderContent = () => {
-    if (selectedService === ServiceType.VIDEO) return <VideoForm onBack={handleBack} onRequest={handleProjectRequest} initialValues={null} user={user} />;
-    if (selectedService === ServiceType.GRAPHIC_DESIGN) return <GraphicDesignForm onBack={handleBack} onRequest={handleProjectRequest} initialValues={null} user={user} />;
-    if (selectedService === ServiceType.ASSISTANCE) return <AssistanceForm onBack={handleBack} onRequest={handleProjectRequest} initialValues={null} user={user} />;
+    if (selectedService === ServiceType.VIDEO) return <VideoForm onBack={handleBack} onRequest={handleProjectRequest} initialValues={null} />;
+    if (selectedService === ServiceType.GRAPHIC_DESIGN) return <GraphicDesignForm onBack={handleBack} onRequest={handleProjectRequest} initialValues={null} />;
+    if (selectedService === ServiceType.ASSISTANCE) return <AssistanceForm onBack={handleBack} onRequest={handleProjectRequest} initialValues={null} />;
 
     return (
       <div className="flex flex-col h-full">
@@ -1072,18 +1061,17 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ initialService, onClearInit
   };
 
   return (
-    <div className="h-full overflow-y-auto no-scrollbar">
-       <ProjectWorkflowModal 
-          isOpen={showProjectModal}
-          onClose={() => setShowProjectModal(false)}
-          serviceName={currentServiceName}
-          price={currentServicePrice}
-          customDetails={currentServiceDetails}
-          onSuccess={handleSuccess}
-          user={user}
-       />
-       {renderContent()}
-    </div>
+    <>
+        {renderContent()}
+        <ProjectWorkflowModal 
+            serviceName={currentServiceName}
+            price={currentServicePrice}
+            customDetails={currentServiceDetails}
+            isOpen={showProjectModal}
+            onClose={() => setShowProjectModal(false)}
+            onSuccess={handleSuccess}
+        />
+    </>
   );
 };
 
