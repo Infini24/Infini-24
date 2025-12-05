@@ -15,7 +15,8 @@ interface ProjectWorkflowModalProps {
 
 const ProjectWorkflowModal: React.FC<ProjectWorkflowModalProps> = ({ serviceName, price, customDetails, isOpen, onClose, onSuccess }) => {
   const [step, setStep] = useState<'info' | 'contact' | 'success'>('info');
-  const [contactMethod, setContactMethod] = useState<'phone' | 'whatsapp' | 'email'>('whatsapp');
+  // Changement de la valeur par défaut à 'email' pour privilégier ce canal
+  const [contactMethod, setContactMethod] = useState<'phone' | 'whatsapp' | 'email'>('email');
   const [name, setName] = useState('');
   const [contactInfo, setContactInfo] = useState('');
 
@@ -34,6 +35,11 @@ const ProjectWorkflowModal: React.FC<ProjectWorkflowModalProps> = ({ serviceName
 
     // Préparation Mail
     const subject = encodeURIComponent(`[COMMANDE] ${serviceName} - ${name}`);
+    
+    let methodLabel = "EMAIL";
+    if (contactMethod === 'phone') methodLabel = "TÉLÉPHONE / SMS";
+    if (contactMethod === 'whatsapp') methodLabel = "WHATSAPP";
+
     const body = encodeURIComponent(`Bonjour Infini 24,
 
 Je souhaite valider ma commande : ${serviceName}
@@ -41,7 +47,7 @@ Budget estimé : ${price}€
 
 --- MES COORDONNÉES ---
 Nom : ${name}
-Contact de préférence : ${contactMethod.toUpperCase()} (${contactInfo})
+Contact de préférence : ${methodLabel} (${contactInfo})
 
 --- DÉTAILS DU PROJET ---
 ${customDetails}
@@ -133,17 +139,33 @@ Cordialement.`);
                             placeholder="Prénom Nom"
                         />
                     </div>
+                    
                     <div>
-                        <label className="block text-xs font-bold text-slate-500 ml-3 mb-1">
-                            {contactMethod === 'email' ? 'Adresse Email' : 'Numéro de téléphone'}
-                        </label>
+                        <label className="block text-xs font-bold text-slate-500 ml-3 mb-2">Préférence de contact</label>
+                        <div className="flex gap-2 mb-3">
+                             <button 
+                                type="button" 
+                                onClick={() => { setContactMethod('email'); setContactInfo(''); }} 
+                                className={`flex-1 py-3 rounded-xl text-xs font-bold border transition-all ${contactMethod === 'email' ? 'bg-[#B48646]/10 border-[#B48646] text-[#B48646]' : 'bg-slate-50 border-transparent text-slate-400'}`}
+                             >
+                                 Email
+                             </button>
+                             <button 
+                                type="button" 
+                                onClick={() => { setContactMethod('phone'); setContactInfo(''); }} 
+                                className={`flex-1 py-3 rounded-xl text-xs font-bold border transition-all ${contactMethod === 'phone' ? 'bg-[#B48646]/10 border-[#B48646] text-[#B48646]' : 'bg-slate-50 border-transparent text-slate-400'}`}
+                             >
+                                 Téléphone / SMS
+                             </button>
+                        </div>
+
                         <input 
                             type={contactMethod === 'email' ? 'email' : 'tel'} 
                             required
                             value={contactInfo}
                             onChange={(e) => setContactInfo(e.target.value)}
                             className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:border-[#B48646] focus:ring-4 focus:ring-[#B48646]/10 outline-none text-sm font-medium"
-                            placeholder={contactMethod === 'email' ? 'exemple@mail.com' : '06 00 00 00 00'}
+                            placeholder={contactMethod === 'email' ? 'votre@email.com' : '06 00 00 00 00'}
                         />
                     </div>
                 </div>

@@ -52,7 +52,7 @@ const ContactPage: React.FC<ContactPageProps> = ({ user, onLoginClick, onLogout 
         },
         {
             question: "J'ai une urgence, c'est possible ?",
-            answer: "Oui, contactez-nous directement par téléphone ou WhatsApp. Nous pouvons traiter les demandes urgentes (livraison 24/48h) avec un supplément tarifaire."
+            answer: "Oui, contactez-nous directement par téléphone ou SMS. Nous pouvons traiter les demandes urgentes (livraison 24/48h) avec un supplément tarifaire."
         }
     ];
 
@@ -133,33 +133,26 @@ Envoyé depuis le formulaire de contact Infini 24`);
                 <p className="text-slate-500 text-sm">Choisissez votre moyen de communication favori pour nous parler de votre projet.</p>
             </div>
 
-            {/* --- GRID CONTACT OPTIMISÉE --- */}
+            {/* --- GRID CONTACT OPTIMISÉE (PRIORITÉ SMS/MAIL/FB) --- */}
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-12">
-                {/* 1. APPEL */}
-                <a href="tel:+33663083676" className="bg-slate-50 p-4 rounded-[2rem] border border-transparent hover:border-[#B48646] hover:bg-white hover:shadow-lg transition-all active:scale-95 flex flex-col items-center justify-center gap-3 group">
-                    <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-slate-800 shadow-sm group-hover:bg-[#B48646] group-hover:text-white transition-colors">
-                        <Phone size={22} />
-                    </div>
-                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wide group-hover:text-[#B48646]">Appeler</span>
-                </a>
-
-                {/* 2. SMS (NOUVEAU) */}
+                
+                {/* 1. SMS (PRIORITAIRE) */}
                 <a href="sms:+33663083676?body=Bonjour Infini 24, je souhaite vous parler d'un projet..." className="bg-slate-50 p-4 rounded-[2rem] border border-transparent hover:border-[#B48646] hover:bg-white hover:shadow-lg transition-all active:scale-95 flex flex-col items-center justify-center gap-3 group">
                     <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-slate-800 shadow-sm group-hover:bg-[#B48646] group-hover:text-white transition-colors">
                         <Smartphone size={22} />
                     </div>
-                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wide group-hover:text-[#B48646]">SMS</span>
+                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wide group-hover:text-[#B48646]">SMS Rapide</span>
                 </a>
 
-                {/* 3. WHATSAPP */}
-                <a href="https://wa.me/33663083676?text=Bonjour%20Infini%2024,%20j'ai%20une%20question%20sur%20un%20projet" target="_blank" rel="noreferrer" className="bg-slate-50 p-4 rounded-[2rem] border border-transparent hover:border-[#B48646] hover:bg-white hover:shadow-lg transition-all active:scale-95 flex flex-col items-center justify-center gap-3 group">
+                {/* 2. EMAIL DIRECT (PRIORITAIRE) */}
+                <a href="mailto:Dywen.officiel7@gmail.com" className="bg-slate-50 p-4 rounded-[2rem] border border-transparent hover:border-[#B48646] hover:bg-white hover:shadow-lg transition-all active:scale-95 flex flex-col items-center justify-center gap-3 group">
                     <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-slate-800 shadow-sm group-hover:bg-[#B48646] group-hover:text-white transition-colors">
-                        <MessageCircle size={22} />
+                        <Mail size={22} />
                     </div>
-                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wide group-hover:text-[#B48646]">WhatsApp</span>
+                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wide group-hover:text-[#B48646]">Email</span>
                 </a>
 
-                {/* 4. FACEBOOK */}
+                 {/* 3. FACEBOOK (PRIORITAIRE) */}
                 <a href="https://www.facebook.com/profile.php?id=61584316950503" target="_blank" rel="noreferrer" className="bg-slate-50 p-4 rounded-[2rem] border border-transparent hover:border-[#B48646] hover:bg-white hover:shadow-lg transition-all active:scale-95 flex flex-col items-center justify-center gap-3 group">
                     <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-slate-800 shadow-sm group-hover:bg-[#B48646] group-hover:text-white transition-colors">
                         <Facebook size={22} />
@@ -167,17 +160,26 @@ Envoyé depuis le formulaire de contact Infini 24`);
                     <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wide group-hover:text-[#B48646]">Facebook</span>
                 </a>
 
-                {/* 5. EMAIL DIRECT (NOUVEAU) */}
-                <a href="mailto:Dywen.officiel7@gmail.com" className="bg-slate-50 p-4 rounded-[2rem] border border-transparent hover:border-[#B48646] hover:bg-white hover:shadow-lg transition-all active:scale-95 flex flex-col items-center justify-center gap-3 group md:col-span-1 col-span-2">
+                {/* 4. APPEL */}
+                <a href="tel:+33663083676" className="bg-slate-50 p-4 rounded-[2rem] border border-transparent hover:border-[#B48646] hover:bg-white hover:shadow-lg transition-all active:scale-95 flex flex-col items-center justify-center gap-3 group">
                     <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-slate-800 shadow-sm group-hover:bg-[#B48646] group-hover:text-white transition-colors">
-                        <Mail size={22} />
+                        <Phone size={22} />
                     </div>
-                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wide group-hover:text-[#B48646]">Email Direct</span>
+                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wide group-hover:text-[#B48646]">Appeler</span>
                 </a>
+
+                {/* 5. WHATSAPP (MOINS PRIORITAIRE) */}
+                <a href="https://wa.me/33663083676?text=Bonjour%20Infini%2024,%20j'ai%20une%20question%20sur%20un%20projet" target="_blank" rel="noreferrer" className="bg-slate-50 p-4 rounded-[2rem] border border-transparent hover:border-[#B48646] hover:bg-white hover:shadow-lg transition-all active:scale-95 flex flex-col items-center justify-center gap-3 group md:col-span-1 col-span-2">
+                    <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-slate-800 shadow-sm group-hover:bg-[#B48646] group-hover:text-white transition-colors">
+                        <MessageCircle size={22} />
+                    </div>
+                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wide group-hover:text-[#B48646]">WhatsApp</span>
+                </a>
+
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-                {/* Left Col: FAQ Only (Chat removed) */}
+                {/* Left Col: FAQ */}
                 <div>
                     <div className="bg-slate-50 rounded-[2rem] p-8 border border-slate-100 mb-10 h-full">
                         <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2 mb-6">

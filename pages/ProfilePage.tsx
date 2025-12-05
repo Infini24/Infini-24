@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { User } from '../types';
-import { FolderOpen, LogIn, Infinity, Download, ExternalLink, Clock, Plus, Trash2, Send, FileCheck, Package, Facebook, UploadCloud, FileText, Loader2, Users, Phone as PhoneIcon, Calendar, Gift, Edit2 } from 'lucide-react';
+import { FolderOpen, LogIn, Infinity, Download, ExternalLink, Clock, Plus, Trash2, Send, FileCheck, Package, Facebook, UploadCloud, FileText, Loader2, Users, Phone as PhoneIcon, Calendar, Gift, Edit2, Smartphone } from 'lucide-react';
 import { updateProjectStatus, deleteProject, saveProject, uploadProjectFile, uploadFinalDelivery, subscribeToProjects, subscribeToUsers } from '../db';
 import toast from 'react-hot-toast';
 
@@ -378,8 +378,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout, onLoginClick 
                         <p className="text-sm opacity-90 mb-6 relative z-10">Utilisez nos messageries pour une réponse rapide.</p>
                         
                         <div className="flex flex-col sm:flex-row gap-3 relative z-10">
-                            <a href="https://wa.me/33663083676" target="_blank" rel="noreferrer" className="flex-1 flex justify-center bg-white text-[#B48646] px-6 py-3 rounded-xl font-bold text-sm hover:bg-slate-50 transition-colors items-center gap-2">
-                                <span className="truncate">WhatsApp</span> <ExternalLink size={16}/>
+                            <a href="sms:+33663083676?body=Bonjour Infini 24, j'ai une question sur mon projet..." className="flex-1 flex justify-center bg-white text-[#B48646] px-6 py-3 rounded-xl font-bold text-sm hover:bg-slate-50 transition-colors items-center gap-2">
+                                <span className="truncate">SMS Rapide</span> <Smartphone size={16}/>
                             </a>
                             <a href="https://www.facebook.com/profile.php?id=61584316950503" target="_blank" rel="noreferrer" className="flex-1 flex justify-center bg-white/10 border border-white/20 text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-white/20 transition-colors items-center gap-2">
                                 <Facebook size={18}/> <span className="truncate">Facebook</span>
