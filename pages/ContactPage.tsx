@@ -31,16 +31,28 @@ const ContactPage: React.FC<ContactPageProps> = ({ user, onLoginClick, onLogout 
 
     const faqData = [
         {
+            question: "Comment vous envoyer mes photos ou vidéos ?",
+            answer: "C'est très simple ! Vous pouvez nous envoyer vos fichiers directement par mail, via WhatsApp, ou utiliser un lien WeTransfer si les fichiers sont volumineux. Une fois la commande lancée, nous vous guiderons."
+        },
+        {
             question: "Quels sont les délais de création ?",
-            answer: "Pour un logo simple ou un kit réseaux, comptez 3 à 5 jours ouvrés. Pour une identité complète ou une vidéo, le délai est d'environ 1 semaine à 10 jours selon les échanges."
+            answer: "Pour un logo simple ou un kit réseaux, comptez 3 à 5 jours ouvrés. Pour une identité complète ou une vidéo de mariage, le délai est d'environ 1 semaine à 10 jours selon les échanges."
+        },
+        {
+            question: "Est-ce que vous faites l'impression ?",
+            answer: "Nous réalisons uniquement le design graphique (les fichiers). Cependant, nous vous fournissons des fichiers haute qualité prêts à être envoyés chez n'importe quel imprimeur (Vistaprint, imprimeur local, etc.)."
+        },
+        {
+            question: "Combien de modifications puis-je demander ?",
+            answer: "Nous incluons jusqu'à 3 allers-retours de modifications dans nos forfaits pour être sûrs que le résultat vous plaise parfaitement."
         },
         {
             question: "Comment se passe le règlement ?",
-            answer: "Un acompte de 30% est demandé au démarrage du projet pour valider la commande. Le solde est à régler à la livraison des fichiers finaux."
+            answer: "Un acompte peut être demandé pour les gros projets. Sinon, le paiement se fait à la fin, une fois que vous avez validé le visuel final, avant l'envoi des fichiers haute définition."
         },
         {
-            question: "Fournissez-vous les fichiers sources ?",
-            answer: "Oui ! Pour les logos et identités visuelles, nous vous livrons les fichiers vectoriels (AI, EPS, PDF) ainsi que les formats PNG/JPG haute définition."
+            question: "J'ai une urgence, c'est possible ?",
+            answer: "Oui, contactez-nous directement par téléphone ou WhatsApp. Nous pouvons traiter les demandes urgentes (livraison 24/48h) avec un supplément tarifaire."
         }
     ];
 

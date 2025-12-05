@@ -7,12 +7,13 @@ import toast from 'react-hot-toast';
 interface ProjectWorkflowModalProps {
   serviceName: string;
   price: number | string;
+  customDetails: string;
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
 }
 
-const ProjectWorkflowModal: React.FC<ProjectWorkflowModalProps> = ({ serviceName, price, isOpen, onClose, onSuccess }) => {
+const ProjectWorkflowModal: React.FC<ProjectWorkflowModalProps> = ({ serviceName, price, customDetails, isOpen, onClose, onSuccess }) => {
   const [step, setStep] = useState<'info' | 'contact' | 'success'>('info');
   const [contactMethod, setContactMethod] = useState<'phone' | 'whatsapp' | 'email'>('whatsapp');
   const [name, setName] = useState('');
@@ -32,18 +33,24 @@ const ProjectWorkflowModal: React.FC<ProjectWorkflowModalProps> = ({ serviceName
     setStep('success');
 
     // Préparation Mail
-    const subject = encodeURIComponent(`Nouvelle commande : ${serviceName}`);
+    const subject = encodeURIComponent(`[COMMANDE] ${serviceName} - ${name}`);
     const body = encodeURIComponent(`Bonjour Infini 24,
 
-Je souhaite lancer un projet : ${serviceName}
-Prix estimé : ${price}€
+Je souhaite valider ma commande : ${serviceName}
+Budget estimé : ${price}€
 
-Mes coordonnées :
+--- MES COORDONNÉES ---
 Nom : ${name}
-Contact via : ${contactMethod.toUpperCase()}
-Info : ${contactInfo}
+Contact de préférence : ${contactMethod.toUpperCase()} (${contactInfo})
 
-Merci de me recontacter pour valider le devis.`);
+--- DÉTAILS DU PROJET ---
+${customDetails}
+
+--- FICHIERS JOINTS ---
+(J'ajoute mes photos, logos ou exemples en pièce jointe de ce mail)
+
+Dans l'attente de votre validation,
+Cordialement.`);
 
     // Ouverture Mail
     setTimeout(() => {
@@ -54,7 +61,7 @@ Merci de me recontacter pour valider le devis.`);
     setTimeout(() => {
         onSuccess();
         onClose();
-    }, 4000);
+    }, 5000);
   };
 
   if (!isOpen) return null;
@@ -71,7 +78,7 @@ Merci de me recontacter pour valider le devis.`);
             <div className="bg-[#B48646]/10 p-2.5 rounded-xl text-[#B48646]">
                  <ShieldCheck size={18} />
             </div>
-            <span className="text-sm font-bold text-slate-800">Devis Gratuit</span>
+            <span className="text-sm font-bold text-slate-800">Finaliser la demande</span>
           </div>
           <button onClick={onClose} className="bg-slate-100 p-2.5 rounded-full text-slate-400 hover:text-slate-600 transition-colors">
             <X size={20} />
@@ -84,24 +91,25 @@ Merci de me recontacter pour valider le devis.`);
           {step === 'info' && (
             <div className="space-y-6">
               <div className="text-center mb-6">
-                <h3 className="text-2xl font-bold text-slate-900 mb-2">Demande de projet</h3>
+                <h3 className="text-2xl font-bold text-slate-900 mb-2">Récapitulatif</h3>
                 <p className="text-slate-500 text-sm font-medium">
-                    Vous avez choisi <span className="text-[#B48646] font-bold">"{serviceName}"</span>.<br/>
-                    Remplissez vos infos pour envoyer la demande par mail.
+                    Vous avez configuré <span className="text-[#B48646] font-bold">"{serviceName}"</span>.
                 </p>
               </div>
 
-              <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
-                  <h4 className="font-bold text-slate-900 text-sm mb-2">Comment ça marche ?</h4>
-                  <ul className="text-xs text-slate-500 space-y-2">
-                      <li>1. Vous validez ce formulaire.</li>
+              <div className="bg-orange-50 p-6 rounded-2xl border border-orange-100">
+                  <h4 className="font-bold text-orange-800 text-sm mb-2 flex items-center gap-2">
+                      <Lock size={14} /> Comment ça marche ?
+                  </h4>
+                  <ul className="text-xs text-orange-700 space-y-2">
+                      <li>1. Validez ce formulaire avec vos infos.</li>
                       <li>2. Votre application Mail s'ouvre avec le résumé.</li>
-                      <li>3. Vous envoyez, et nous vous répondons sous 24h.</li>
+                      <li className="font-bold">3. IMPORTANT : Vous pourrez ajouter vos photos/logos en pièce jointe directement dans le mail.</li>
                   </ul>
               </div>
 
               <button onClick={() => setStep('contact')} className="w-full mt-4 bg-gradient-to-r from-[#B48646] to-[#E5B066] hover:shadow-xl hover:shadow-[#B48646]/30 text-white font-bold py-5 rounded-[1.5rem] transition-all active:scale-95 text-lg flex items-center justify-center gap-2 group">
-                  Continuer <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform"/>
+                  J'ai compris, suivant <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform"/>
               </button>
             </div>
           )}
@@ -110,7 +118,7 @@ Merci de me recontacter pour valider le devis.`);
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="text-center mb-4">
                     <h3 className="text-xl font-bold text-slate-900">Vos coordonnées</h3>
-                    <p className="text-slate-400 text-xs font-medium uppercase tracking-wide">Pour vous recontacter</p>
+                    <p className="text-slate-400 text-xs font-medium uppercase tracking-wide">Pour créer votre dossier</p>
                 </div>
 
                 <div className="space-y-4">
@@ -141,7 +149,7 @@ Merci de me recontacter pour valider le devis.`);
                 </div>
 
                 <button type="submit" className="w-full bg-gradient-to-r from-[#B48646] to-[#E5B066] hover:shadow-xl hover:shadow-[#B48646]/30 text-white font-bold py-5 rounded-[1.5rem] transition-all active:scale-95 text-lg flex items-center justify-center gap-2 group">
-                    Envoyer la demande <CheckCircle size={20} />
+                    Ouvrir mon mail <Mail size={20} />
                 </button>
             </form>
           )}
@@ -151,9 +159,10 @@ Merci de me recontacter pour valider le devis.`);
               <div className="w-24 h-24 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-6 shadow-xl shadow-green-100/50 animate-bounce">
                 <Check size={48} strokeWidth={3} />
               </div>
-              <h3 className="text-2xl font-bold text-slate-900 mb-2">C'est parti !</h3>
+              <h3 className="text-2xl font-bold text-slate-900 mb-2">Mail prêt !</h3>
               <p className="text-sm text-slate-500 mb-4">
-                  Vérifiez votre application Mail pour valider l'envoi.
+                  Vérifiez votre application Mail.<br/>
+                  <span className="font-bold text-[#B48646]">N'oubliez pas d'ajouter vos pièces jointes !</span>
               </p>
             </div>
           )}
@@ -167,7 +176,7 @@ Merci de me recontacter pour valider le devis.`);
 // --- Sub-components for Forms ---
 interface FormProps {
     onBack: () => void;
-    onRequest: (name: string, price: number) => void;
+    onRequest: (name: string, price: number, details: string) => void;
     initialValues?: string | null;
 }
 
@@ -175,6 +184,10 @@ interface FormProps {
 const GraphicDesignForm = ({ onBack, onRequest, initialValues }: FormProps) => {
     const [subService, setSubService] = useState<string>('identity_complete'); 
     const [price, setPrice] = useState<number>(320); 
+    
+    // Form Inputs
+    const [companyName, setCompanyName] = useState('');
+    const [details, setDetails] = useState('');
 
     useEffect(() => {
         if (initialValues) {
@@ -203,7 +216,10 @@ const GraphicDesignForm = ({ onBack, onRequest, initialValues }: FormProps) => {
         if(subService === 'print') serviceName = "Cartes de Visite & Flyers";
         if(subService === 'social_kit') serviceName = "Kit Réseaux Sociaux";
         
-        onRequest(serviceName, price);
+        const fullDetails = `• Entreprise : ${companyName || 'Non renseigné'}
+• Préférences / Idées : ${details}`;
+
+        onRequest(serviceName, price, fullDetails);
     };
 
     return (
@@ -360,12 +376,25 @@ const GraphicDesignForm = ({ onBack, onRequest, initialValues }: FormProps) => {
                                 </h3>
                                 <div>
                                     <label className="block text-sm font-bold text-slate-700 mb-3">Nom de l'entreprise</label>
-                                    <input type="text" className="w-full px-6 py-4 border-2 border-slate-100 rounded-2xl focus:border-[#B48646] focus:ring-4 focus:ring-[#B48646]/10 outline-none transition-all bg-slate-50 focus:bg-white text-sm" placeholder="Ex: Boulangerie Durand" required />
+                                    <input 
+                                        type="text" 
+                                        value={companyName}
+                                        onChange={(e) => setCompanyName(e.target.value)}
+                                        className="w-full px-6 py-4 border-2 border-slate-100 rounded-2xl focus:border-[#B48646] focus:ring-4 focus:ring-[#B48646]/10 outline-none transition-all bg-slate-50 focus:bg-white text-sm" 
+                                        placeholder="Ex: Boulangerie Durand" 
+                                        required 
+                                    />
                                 </div>
                                 
                                 <div>
                                     <label className="block text-sm font-bold text-slate-700 mb-3">Détails</label>
-                                    <textarea className="w-full px-6 py-4 border-2 border-slate-100 rounded-2xl outline-none text-sm focus:border-[#B48646] focus:ring-4 focus:ring-[#B48646]/10 bg-slate-50 focus:bg-white transition-all resize-none" rows={3} placeholder="Couleurs, ambiance, préférences..."></textarea>
+                                    <textarea 
+                                        value={details}
+                                        onChange={(e) => setDetails(e.target.value)}
+                                        className="w-full px-6 py-4 border-2 border-slate-100 rounded-2xl outline-none text-sm focus:border-[#B48646] focus:ring-4 focus:ring-[#B48646]/10 bg-slate-50 focus:bg-white transition-all resize-none" 
+                                        rows={3} 
+                                        placeholder="Couleurs, ambiance, préférences..."
+                                    ></textarea>
                                 </div>
                             </div>
 
@@ -403,6 +432,10 @@ const VideoForm = ({ onBack, onRequest, initialValues }: FormProps) => {
     const [tapes, setTapes] = useState<number>(1);
     const [musicOption, setMusicOption] = useState<boolean>(true);
     const [price, setPrice] = useState<number>(0);
+    
+    // Promo specifics
+    const [promoObjective, setPromoObjective] = useState('');
+    const [promoDesc, setPromoDesc] = useState('');
 
     useEffect(() => {
         if (initialValues) {
@@ -457,12 +490,26 @@ const VideoForm = ({ onBack, onRequest, initialValues }: FormProps) => {
 
     const handleOrder = () => {
         let name = "Vidéo Souvenir";
-        if (subService === 'wedding') name = "Diaporama Mariage / Baptême";
-        if (subService === 'birthday') name = "Diaporama Anniversaire / Retraite";
-        if (subService === 'funeral') name = "Hommage & Obsèques";
-        if (subService === 'grading') name = "Retouche Colorimétrique";
-        if (subService === 'digitization') name = "Numérisation VHS";
-        onRequest(name, price);
+        let details = "";
+
+        if (subService === 'promo') {
+            name = "Montage Vidéo Promotionnel";
+            details = `• Objectif : ${promoObjective}\n• Description : ${promoDesc}`;
+        } else {
+            if (subService === 'wedding') name = "Diaporama Mariage / Baptême";
+            if (subService === 'birthday') name = "Diaporama Anniversaire / Retraite";
+            if (subService === 'funeral') name = "Hommage & Obsèques";
+            if (subService === 'grading') name = "Retouche Colorimétrique";
+            if (subService === 'digitization') name = "Numérisation VHS";
+            
+            details = `• Configuration : 
+  - ${photos} photos (si applicable)
+  - Durée estimée : ${duration} min
+  - Cassettes : ${tapes} (si applicable)
+  - Option Musique : ${musicOption ? 'Oui' : 'Non'}`;
+        }
+
+        onRequest(name, price, details);
     }
 
     return (
@@ -661,13 +708,25 @@ const VideoForm = ({ onBack, onRequest, initialValues }: FormProps) => {
                                 <p className="text-sm text-slate-600 bg-[#B48646]/5 p-6 rounded-2xl border border-[#B48646]/20 font-medium leading-relaxed">Pour les vidéos promotionnelles, nous réalisons un devis sur mesure après étude de votre scénario.</p>
                                 <div>
                                     <label className="block text-sm font-bold text-slate-700 mb-3">Objectif de la vidéo</label>
-                                    <input type="text" className="w-full px-6 py-4 border-2 border-slate-100 rounded-2xl outline-none bg-slate-50 focus:bg-white focus:border-[#B48646] focus:ring-4 focus:ring-[#B48646]/10 transition-all text-sm" placeholder="Ex: Présentation produit..." />
+                                    <input 
+                                        type="text" 
+                                        value={promoObjective}
+                                        onChange={(e) => setPromoObjective(e.target.value)}
+                                        className="w-full px-6 py-4 border-2 border-slate-100 rounded-2xl outline-none bg-slate-50 focus:bg-white focus:border-[#B48646] focus:ring-4 focus:ring-[#B48646]/10 transition-all text-sm" 
+                                        placeholder="Ex: Présentation produit..." 
+                                    />
                                 </div>
                                 <div>
                                     <label className="block text-sm font-bold text-slate-700 mb-3">Description du projet</label>
-                                    <textarea className="w-full px-6 py-4 border-2 border-slate-100 rounded-2xl outline-none text-sm bg-slate-50 focus:bg-white focus:border-[#B48646] focus:ring-4 focus:ring-[#B48646]/10 transition-all resize-none" rows={4} placeholder="Décrivez votre idée..."></textarea>
+                                    <textarea 
+                                        value={promoDesc}
+                                        onChange={(e) => setPromoDesc(e.target.value)}
+                                        className="w-full px-6 py-4 border-2 border-slate-100 rounded-2xl outline-none text-sm bg-slate-50 focus:bg-white focus:border-[#B48646] focus:ring-4 focus:ring-[#B48646]/10 transition-all resize-none" 
+                                        rows={4} 
+                                        placeholder="Décrivez votre idée..."
+                                    ></textarea>
                                 </div>
-                                <button onClick={() => onRequest('Vidéo Promo', 0)} className="w-full mt-2 bg-slate-900 text-white font-bold py-5 rounded-[2rem] shadow-lg hover:shadow-xl hover:bg-slate-800 transition-all active:scale-95">
+                                <button onClick={handleOrder} className="w-full mt-2 bg-slate-900 text-white font-bold py-5 rounded-[2rem] shadow-lg hover:shadow-xl hover:bg-slate-800 transition-all active:scale-95">
                                     Demander un devis
                                 </button>
                             </div>
@@ -684,6 +743,7 @@ const AssistanceForm = ({ onBack, onRequest, initialValues }: FormProps) => {
     const [missionType, setMissionType] = useState<string>('retouche');
     const [photoCount, setPhotoCount] = useState<number>(1);
     const [price, setPrice] = useState<number>(5);
+    const [details, setDetails] = useState('');
     
     // Try to restore state if initialValues provided
     useEffect(() => {
@@ -713,7 +773,8 @@ const AssistanceForm = ({ onBack, onRequest, initialValues }: FormProps) => {
         e.preventDefault();
         const finalPrice = isFixedPrice ? price : 0;
         const name = "Assistance - " + missionType;
-        onRequest(name, finalPrice);
+        const fullDetails = `• Mission : ${missionType}\n• Nombre de photos : ${photoCount}\n• Description : ${details}`;
+        onRequest(name, finalPrice, fullDetails);
     };
 
     return (
@@ -783,7 +844,14 @@ const AssistanceForm = ({ onBack, onRequest, initialValues }: FormProps) => {
 
                                 <label className="block text-sm font-bold text-slate-700 mb-3">Détails de la mission</label>
                                 <p className="text-xs text-slate-500 mb-4 font-medium">Soyez le plus précis possible pour un traitement rapide.</p>
-                                <textarea className="w-full px-6 py-4 border-2 border-slate-100 rounded-2xl outline-none text-sm focus:border-[#B48646] focus:ring-4 focus:ring-[#B48646]/10 bg-slate-50 focus:bg-white transition-all resize-none" rows={5} placeholder="Expliquez ce que nous devons modifier..." required></textarea>
+                                <textarea 
+                                    value={details}
+                                    onChange={(e) => setDetails(e.target.value)}
+                                    className="w-full px-6 py-4 border-2 border-slate-100 rounded-2xl outline-none text-sm focus:border-[#B48646] focus:ring-4 focus:ring-[#B48646]/10 bg-slate-50 focus:bg-white transition-all resize-none" 
+                                    rows={5} 
+                                    placeholder="Expliquez ce que nous devons modifier..." 
+                                    required
+                                ></textarea>
                             </div>
                             
                             <div className="bg-slate-900 p-8 rounded-[2.5rem] border border-slate-800 text-center relative overflow-hidden text-white shadow-2xl">
@@ -819,6 +887,7 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ initialService, onClearInit
   const [showProjectModal, setShowProjectModal] = useState(false);
   const [currentServiceName, setCurrentServiceName] = useState("");
   const [currentServicePrice, setCurrentServicePrice] = useState<number | string>(0);
+  const [currentServiceDetails, setCurrentServiceDetails] = useState("");
 
   useEffect(() => {
     if (initialService) {
@@ -831,9 +900,10 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ initialService, onClearInit
     onClearInitial();
   };
 
-  const handleProjectRequest = (name: string, price: number) => {
+  const handleProjectRequest = (name: string, price: number, details: string = "") => {
       setCurrentServiceName(name);
       setCurrentServicePrice(price);
+      setCurrentServiceDetails(details);
       setShowProjectModal(true);
   };
 
@@ -994,6 +1064,7 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ initialService, onClearInit
           onClose={() => setShowProjectModal(false)}
           serviceName={currentServiceName}
           price={currentServicePrice}
+          customDetails={currentServiceDetails}
           onSuccess={handleSuccess}
        />
        {renderContent()}
