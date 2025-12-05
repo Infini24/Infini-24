@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { ChevronLeft, Sliders, CheckCircle, Video, PenTool, LifeBuoy, Crown, Palette, Film, Lock, X, Check, ArrowRight, Infinity, Phone, Mail, MessageCircle, ShieldCheck, Eye, UploadCloud, FileText } from 'lucide-react';
-import { ServiceType, User } from '../types';
-import { saveProject } from '../db';
+import React, { useState, useEffect } from 'react';
+import { ChevronLeft, Sliders, CheckCircle, Video, PenTool, LifeBuoy, Crown, Palette, Film, Lock, X, Check, ArrowRight, Infinity, Phone, Mail, MessageCircle, ShieldCheck, Eye } from 'lucide-react';
+import { ServiceType } from '../types';
 import toast from 'react-hot-toast';
 
 // --- PROJECT WORKFLOW MODAL ---
@@ -11,59 +10,30 @@ interface ProjectWorkflowModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
-  user: User | null; 
 }
 
-const ProjectWorkflowModal: React.FC<ProjectWorkflowModalProps> = ({ serviceName, price, isOpen, onClose, onSuccess, user }) => {
+const ProjectWorkflowModal: React.FC<ProjectWorkflowModalProps> = ({ serviceName, price, isOpen, onClose, onSuccess }) => {
   const [step, setStep] = useState<'info' | 'contact' | 'success'>('info');
   const [contactMethod, setContactMethod] = useState<'phone' | 'whatsapp' | 'email'>('whatsapp');
-  const [name, setName] = useState(user?.name || '');
-  const [contactInfo, setContactInfo] = useState(user?.email || '');
-  const [fileToUpload, setFileToUpload] = useState<File | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [name, setName] = useState('');
+  const [contactInfo, setContactInfo] = useState('');
 
   useEffect(() => {
     if (isOpen) {
         setStep('info');
-        setFileToUpload(null);
-        if (user) {
-            setName(user.name);
-            setContactInfo(user.email);
-        }
     }
-  }, [isOpen, user]);
+  }, [isOpen]);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (e.target.files && e.target.files[0]) {
-          setFileToUpload(e.target.files[0]);
-      }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    const toastId = toast.loading("Création du projet et envoi du fichier...");
+    // Affichage succès immédiat
+    toast.success("Ouverture de votre messagerie...", { icon: '📧' });
+    setStep('success');
 
-    try {
-        const newProject = {
-            title: serviceName,
-            type: serviceName.includes('Vidéo') || serviceName.includes('Diaporama') || serviceName.includes('VHS') ? 'Vidéo' : 'Graphisme',
-            step: 'request_received',
-            progress: 10,
-            date: new Date().toLocaleDateString(),
-            clientName: name,
-            clientEmail: user ? user.email.toLowerCase().trim() : contactInfo.toLowerCase().trim(),
-            price: price,
-        };
-
-        await saveProject(newProject, fileToUpload || undefined);
-        
-        toast.success("Projet créé avec succès !", { id: toastId });
-        setStep('success');
-
-        setTimeout(() => {
-            const subject = encodeURIComponent(`Nouvelle commande : ${serviceName}`);
-            const body = encodeURIComponent(`Bonjour Infini 24,
+    // Préparation Mail
+    const subject = encodeURIComponent(`Nouvelle commande : ${serviceName}`);
+    const body = encodeURIComponent(`Bonjour Infini 24,
 
 Je souhaite lancer un projet : ${serviceName}
 Prix estimé : ${price}€
@@ -73,22 +43,18 @@ Nom : ${name}
 Contact via : ${contactMethod.toUpperCase()}
 Info : ${contactInfo}
 
-${fileToUpload ? "(J'ai joint un fichier via l'interface)" : ""}
+Merci de me recontacter pour valider le devis.`);
 
-Merci de me recontacter.`);
+    // Ouverture Mail
+    setTimeout(() => {
+        window.location.href = `mailto:infinivingtquatre@gmail.com?subject=${subject}&body=${body}`;
+    }, 1000);
 
-            window.location.href = `mailto:infinivingtquatre@gmail.com?subject=${subject}&body=${body}`;
-        }, 1500);
-
-        setTimeout(() => {
-            onSuccess();
-            onClose();
-        }, 5000);
-
-    } catch (error) {
-        console.error(error);
-        toast.error("Erreur lors de la création. Vérifiez votre connexion.", { id: toastId });
-    }
+    // Fermeture auto
+    setTimeout(() => {
+        onSuccess();
+        onClose();
+    }, 4000);
   };
 
   if (!isOpen) return null;
@@ -105,7 +71,7 @@ Merci de me recontacter.`);
             <div className="bg-[#B48646]/10 p-2.5 rounded-xl text-[#B48646]">
                  <ShieldCheck size={18} />
             </div>
-            <span className="text-sm font-bold text-slate-800">Garantie Satisfaction</span>
+            <span className="text-sm font-bold text-slate-800">Devis Gratuit</span>
           </div>
           <button onClick={onClose} className="bg-slate-100 p-2.5 rounded-full text-slate-400 hover:text-slate-600 transition-colors">
             <X size={20} />
@@ -118,45 +84,24 @@ Merci de me recontacter.`);
           {step === 'info' && (
             <div className="space-y-6">
               <div className="text-center mb-6">
-                <h3 className="text-2xl font-bold text-slate-900 mb-2">Pas de paiement immédiat</h3>
+                <h3 className="text-2xl font-bold text-slate-900 mb-2">Demande de projet</h3>
                 <p className="text-slate-500 text-sm font-medium">
-                    Pour garantir votre satisfaction sur le projet <span className="text-[#B48646] font-bold">"{serviceName}"</span>, nous fonctionnons par étapes.
+                    Vous avez choisi <span className="text-[#B48646] font-bold">"{serviceName}"</span>.<br/>
+                    Remplissez vos infos pour envoyer la demande par mail.
                 </p>
               </div>
 
-              {/* Timeline Steps */}
-              <div className="relative space-y-6 pl-4 before:absolute before:left-[19px] before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-100">
-                  <div className="relative flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-full bg-[#B48646] text-white flex items-center justify-center z-10 shadow-lg shadow-[#B48646]/30 shrink-0">
-                          <span className="font-bold text-sm">1</span>
-                      </div>
-                      <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 flex-1">
-                          <h4 className="font-bold text-slate-900 text-sm">Demande & Échange</h4>
-                          <p className="text-xs text-slate-500 mt-1">Vous validez ce formulaire. Nous vous contactons pour affiner le besoin.</p>
-                      </div>
-                  </div>
-                  <div className="relative flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-full bg-white border-2 border-[#B48646] text-[#B48646] flex items-center justify-center z-10 shrink-0">
-                          <span className="font-bold text-sm">2</span>
-                      </div>
-                      <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 flex-1">
-                          <h4 className="font-bold text-slate-900 text-sm">Création & Aperçu</h4>
-                          <p className="text-xs text-slate-500 mt-1">Nous créons votre design. Vous recevez un aperçu avec <span className="font-bold">filigrane de protection</span>.</p>
-                      </div>
-                  </div>
-                   <div className="relative flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center z-10 shrink-0">
-                          <span className="font-bold text-sm">3</span>
-                      </div>
-                      <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 flex-1">
-                          <h4 className="font-bold text-slate-900 text-sm">Validation & Paiement</h4>
-                          <p className="text-xs text-slate-500 mt-1">Si le résultat vous plaît, vous réglez les <span className="text-[#B48646] font-bold">{price}€</span> et recevez les fichiers finaux.</p>
-                      </div>
-                  </div>
+              <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
+                  <h4 className="font-bold text-slate-900 text-sm mb-2">Comment ça marche ?</h4>
+                  <ul className="text-xs text-slate-500 space-y-2">
+                      <li>1. Vous validez ce formulaire.</li>
+                      <li>2. Votre application Mail s'ouvre avec le résumé.</li>
+                      <li>3. Vous envoyez, et nous vous répondons sous 24h.</li>
+                  </ul>
               </div>
 
               <button onClick={() => setStep('contact')} className="w-full mt-4 bg-gradient-to-r from-[#B48646] to-[#E5B066] hover:shadow-xl hover:shadow-[#B48646]/30 text-white font-bold py-5 rounded-[1.5rem] transition-all active:scale-95 text-lg flex items-center justify-center gap-2 group">
-                  Commencer le projet <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform"/>
+                  Continuer <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform"/>
               </button>
             </div>
           )}
@@ -164,8 +109,8 @@ Merci de me recontacter.`);
           {step === 'contact' && (
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="text-center mb-4">
-                    <h3 className="text-xl font-bold text-slate-900">Finaliser la demande</h3>
-                    <p className="text-slate-400 text-xs font-medium uppercase tracking-wide">Confirmez vos infos</p>
+                    <h3 className="text-xl font-bold text-slate-900">Vos coordonnées</h3>
+                    <p className="text-slate-400 text-xs font-medium uppercase tracking-wide">Pour vous recontacter</p>
                 </div>
 
                 <div className="space-y-4">
@@ -193,31 +138,10 @@ Merci de me recontacter.`);
                             placeholder={contactMethod === 'email' ? 'exemple@mail.com' : '06 00 00 00 00'}
                         />
                     </div>
-                    {/* FILE UPLOAD INPUT */}
-                    <div>
-                        <label className="block text-xs font-bold text-slate-500 ml-3 mb-1">Joindre un fichier (Optionnel)</label>
-                        <div 
-                            onClick={() => fileInputRef.current?.click()}
-                            className={`w-full px-5 py-4 border-2 border-dashed rounded-2xl cursor-pointer flex items-center justify-center gap-2 transition-all ${fileToUpload ? 'border-[#B48646] bg-[#B48646]/5 text-[#B48646]' : 'border-slate-300 bg-slate-50 text-slate-400 hover:border-[#B48646]/50'}`}
-                        >
-                            <UploadCloud size={20} />
-                            <span className="text-sm font-bold truncate">
-                                {fileToUpload ? fileToUpload.name : "Cliquez pour ajouter une photo/vidéo"}
-                            </span>
-                        </div>
-                        <input 
-                            type="file" 
-                            ref={fileInputRef} 
-                            onChange={handleFileChange} 
-                            className="hidden" 
-                            accept="image/*,video/*,.pdf"
-                        />
-                        <p className="text-[10px] text-slate-400 ml-3 mt-1">Vous pouvez aussi envoyer vos fichiers plus tard.</p>
-                    </div>
                 </div>
 
                 <button type="submit" className="w-full bg-gradient-to-r from-[#B48646] to-[#E5B066] hover:shadow-xl hover:shadow-[#B48646]/30 text-white font-bold py-5 rounded-[1.5rem] transition-all active:scale-95 text-lg flex items-center justify-center gap-2 group">
-                    Valider la demande <CheckCircle size={20} />
+                    Envoyer la demande <CheckCircle size={20} />
                 </button>
             </form>
           )}
@@ -227,22 +151,12 @@ Merci de me recontacter.`);
               <div className="w-24 h-24 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-6 shadow-xl shadow-green-100/50 animate-bounce">
                 <Check size={48} strokeWidth={3} />
               </div>
-              <h3 className="text-2xl font-bold text-slate-900 mb-2">Demande envoyée !</h3>
+              <h3 className="text-2xl font-bold text-slate-900 mb-2">C'est parti !</h3>
               <p className="text-sm text-slate-500 mb-4">
-                  Merci {name}. Votre projet a bien été créé.
+                  Vérifiez votre application Mail pour valider l'envoi.
               </p>
-              <div className="bg-slate-50 p-4 rounded-2xl text-xs text-slate-600 font-medium">
-                  Votre messagerie va s'ouvrir pour finaliser l'envoi.
-                  <br/>Retrouvez votre suivi dans l'onglet "Mon Suivi".
-              </div>
             </div>
           )}
-        </div>
-        
-        <div className="bg-slate-50 p-4 text-center border-t border-slate-100">
-          <p className="text-[10px] text-slate-400 flex items-center justify-center gap-1 font-medium">
-            <Lock size={10} /> Vos données restent confidentielles
-          </p>
         </div>
       </div>
     </div>
@@ -262,7 +176,6 @@ const GraphicDesignForm = ({ onBack, onRequest, initialValues }: FormProps) => {
     const [subService, setSubService] = useState<string>('identity_complete'); 
     const [price, setPrice] = useState<number>(240); 
 
-    // Restore state
     useEffect(() => {
         if (initialValues) {
              if (initialValues.includes("Création")) setSubService('logo_creation');
@@ -450,19 +363,6 @@ const GraphicDesignForm = ({ onBack, onRequest, initialValues }: FormProps) => {
                                     <input type="text" className="w-full px-6 py-4 border-2 border-slate-100 rounded-2xl focus:border-[#B48646] focus:ring-4 focus:ring-[#B48646]/10 outline-none transition-all bg-slate-50 focus:bg-white text-sm" placeholder="Ex: Boulangerie Durand" required />
                                 </div>
                                 
-                                {subService !== 'social_kit' && (
-                                    <div>
-                                        <label className="block text-sm font-bold text-slate-700 mb-3">Style souhaité</label>
-                                        <div className="grid grid-cols-2 gap-3">
-                                            {['Moderne', 'Luxe', 'Vintage', 'Illustratif'].map((style) => (
-                                                <label key={style} className="bg-slate-50 border-2 border-transparent p-3.5 rounded-2xl text-center text-xs font-semibold cursor-pointer hover:bg-white hover:shadow-md has-[:checked]:border-[#B48646] has-[:checked]:text-[#B48646] has-[:checked]:bg-[#B48646]/5 transition-all">
-                                                    <input type="radio" name="style" className="hidden" /> {style}
-                                                </label>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
-
                                 <div>
                                     <label className="block text-sm font-bold text-slate-700 mb-3">Détails</label>
                                     <textarea className="w-full px-6 py-4 border-2 border-slate-100 rounded-2xl outline-none text-sm focus:border-[#B48646] focus:ring-4 focus:ring-[#B48646]/10 bg-slate-50 focus:bg-white transition-all resize-none" rows={3} placeholder="Couleurs, ambiance, préférences..."></textarea>
@@ -596,7 +496,7 @@ const VideoForm = ({ onBack, onRequest, initialValues }: FormProps) => {
                         <Film size={28} />
                      </div>
                      <p className="text-slate-500 text-sm font-medium leading-relaxed">
-                        Transformez vos photos et vidéos en souvenirs inoubliables. Configurez votre projet et validez-le sans paiement immédiat.
+                        Transformez vos photos et vidéos en souvenirs inoubliables.
                      </p>
                 </div>
 
@@ -849,8 +749,7 @@ const AssistanceForm = ({ onBack, onRequest, initialValues }: FormProps) => {
                             <div className="grid gap-4">
                                 {[
                                     {id: 'retouche', label: 'Retouche Photo Simple', desc: '5€ / photo', details: ["Retouche Colorimétrique", "Amélioration Netteté"]},
-                                    {id: 'modif_photo', label: 'Modification / Montage', desc: '5€ / photo', details: ["Détourage d'images", "Suppression d'éléments"]},
-                                    {id: 'autre', label: 'Autre demande', desc: 'Besoin spécifique', details: ["Conversion de fichiers", "Autre demande"]}
+                                    {id: 'modif_photo', label: 'Modification / Montage', desc: '5€ / photo', details: ["Détourage d'images", "Suppression d'éléments"]}
                                 ].map((item) => (
                                     <label key={item.id} className={`bg-slate-50 border-2 p-5 rounded-[2rem] flex items-start gap-4 cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-md ${missionType === item.id ? 'border-[#B48646] ring-1 ring-[#B48646]/20 bg-white' : 'hover:bg-white border-transparent'}`}>
                                         <input type="radio" name="missionType" value={item.id} checked={missionType === item.id} onChange={() => setMissionType(item.id)} className="w-5 h-5 accent-[#B48646] mt-1" />
@@ -911,15 +810,9 @@ const AssistanceForm = ({ onBack, onRequest, initialValues }: FormProps) => {
 interface ServicesPageProps {
   initialService: ServiceType | null;
   onClearInitial: () => void;
-  user: User | null;
-  onLoginReq: (data?: {service: ServiceType, name: string, price: number}) => void;
-  initialModalData?: {service: ServiceType, name: string, price: number} | null;
-  onConsumePending?: () => void;
-  onLoginClick?: () => void;
-  onLogout?: () => void;
 }
 
-const ServicesPage: React.FC<ServicesPageProps> = ({ initialService, onClearInitial, user, onLoginReq, initialModalData, onConsumePending, onLoginClick, onLogout }) => {
+const ServicesPage: React.FC<ServicesPageProps> = ({ initialService, onClearInitial }) => {
   const [selectedService, setSelectedService] = useState<ServiceType | null>(null);
   
   // State for Project Modal (Request mode)
@@ -933,34 +826,12 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ initialService, onClearInit
     }
   }, [initialService]);
 
-  // Handle pending modal action (auto-open after login)
-  useEffect(() => {
-      if (initialModalData && selectedService === initialModalData.service) {
-          setCurrentServiceName(initialModalData.name);
-          setCurrentServicePrice(initialModalData.price);
-          setShowProjectModal(true);
-          // Consume the pending action so it doesn't reopen if we close it
-          if (onConsumePending) onConsumePending();
-      }
-  }, [initialModalData, selectedService, onConsumePending]);
-
   const handleBack = () => {
     setSelectedService(null);
     onClearInitial();
   };
 
   const handleProjectRequest = (name: string, price: number) => {
-      // GATEKEEPER: Check if user is logged in
-      if (!user) {
-          // Pass the current project details to App so it can be restored after login
-          if (selectedService) {
-              onLoginReq({service: selectedService, name, price});
-          } else {
-              onLoginReq();
-          }
-          return;
-      }
-
       setCurrentServiceName(name);
       setCurrentServicePrice(price);
       setShowProjectModal(true);
@@ -970,21 +841,14 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ initialService, onClearInit
     handleBack(); 
   };
 
-  const restoreStateFromPending = () => {
-      if (initialModalData && selectedService === initialModalData.service) {
-          return initialModalData.name;
-      }
-      return null;
-  }
-
   const renderContent = () => {
-    if (selectedService === ServiceType.VIDEO) return <VideoForm onBack={handleBack} onRequest={handleProjectRequest} initialValues={restoreStateFromPending()} />;
-    if (selectedService === ServiceType.GRAPHIC_DESIGN) return <GraphicDesignForm onBack={handleBack} onRequest={handleProjectRequest} initialValues={restoreStateFromPending()} />;
-    if (selectedService === ServiceType.ASSISTANCE) return <AssistanceForm onBack={handleBack} onRequest={handleProjectRequest} initialValues={restoreStateFromPending()} />;
+    if (selectedService === ServiceType.VIDEO) return <VideoForm onBack={handleBack} onRequest={handleProjectRequest} />;
+    if (selectedService === ServiceType.GRAPHIC_DESIGN) return <GraphicDesignForm onBack={handleBack} onRequest={handleProjectRequest} />;
+    if (selectedService === ServiceType.ASSISTANCE) return <AssistanceForm onBack={handleBack} onRequest={handleProjectRequest} />;
 
     return (
       <div className="max-w-7xl mx-auto w-full px-2">
-        {/* New White Header with Infinity Logo - Added flex-none */}
+        {/* New White Header with Infinity Logo */}
         <header className="flex-none pt-14 pb-10 px-6 bg-white border-b border-slate-50 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] relative overflow-hidden rounded-b-[3.5rem] mb-8">
             {/* Background Blurs */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-[#B48646] to-[#F3C06B] rounded-full blur-[80px] opacity-15 -mr-16 -mt-16 animate-pulse"></div>
@@ -1065,7 +929,6 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ initialService, onClearInit
             price={currentServicePrice}
             onClose={() => setShowProjectModal(false)}
             onSuccess={handleSuccess}
-            user={user}
         />
 
         {/* Dynamic Content (List or Form) */}

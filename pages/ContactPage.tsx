@@ -20,6 +20,7 @@ const ContactPage: React.FC<ContactPageProps> = ({ user, onLoginClick, onLogout 
         name: user?.name || '',
         phone: user?.phone || '',
         email: user?.email || '',
+        subject: '',
         message: ''
     });
     const [errors, setErrors] = useState<{[key: string]: string}>({});
@@ -78,13 +79,14 @@ const ContactPage: React.FC<ContactPageProps> = ({ user, onLoginClick, onLogout 
         const emailRe = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         if (!emailRe.test(formData.email.trim())) newErrors.email = "Email invalide";
         if (!formData.name.trim() || formData.name.length < 2) newErrors.name = "Nom requis";
+        if (!formData.subject.trim()) newErrors.subject = "Objet requis";
         if (!formData.message.trim() || formData.message.length < 10) newErrors.message = "Message trop court";
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
     };
@@ -96,15 +98,24 @@ const ContactPage: React.FC<ContactPageProps> = ({ user, onLoginClick, onLogout 
             return;
         }
 
-        const subject = encodeURIComponent(`Contact Site: ${formData.name}`);
-        const body = encodeURIComponent(`Nom: ${formData.name}
-Email: ${formData.email}
-Téléphone: ${formData.phone}
+        const emailSubject = encodeURIComponent(`[SITE WEB] ${formData.subject} - ${formData.name}`);
+        const emailBody = encodeURIComponent(`NOUVELLE DEMANDE DE CONTACT
 
-Message:
-${formData.message}`);
+--- INFORMATIONS CLIENT ---
+👤 Nom : ${formData.name}
+📧 Email : ${formData.email}
+📱 Téléphone : ${formData.phone}
 
-        window.location.href = `mailto:infinivingtquatre@gmail.com?subject=${subject}&body=${body}`;
+--- SUJET ---
+${formData.subject}
+
+--- MESSAGE ---
+${formData.message}
+
+-------------------------
+Envoyé depuis le formulaire de contact Infini 24`);
+
+        window.location.href = `mailto:wendy.toussaint@icloud.com?subject=${emailSubject}&body=${emailBody}`;
         toast.success("Ouverture de votre messagerie...");
         setFormData({ ...formData, message: '' });
     };
@@ -175,7 +186,7 @@ ${formData.message}`);
                 </a>
 
                 {/* 5. EMAIL DIRECT (NOUVEAU) */}
-                <a href="mailto:infinivingtquatre@gmail.com" className="bg-slate-50 p-4 rounded-[2rem] border border-transparent hover:border-[#B48646] hover:bg-white hover:shadow-lg transition-all active:scale-95 flex flex-col items-center justify-center gap-3 group md:col-span-1 col-span-2">
+                <a href="mailto:wendy.toussaint@icloud.com" className="bg-slate-50 p-4 rounded-[2rem] border border-transparent hover:border-[#B48646] hover:bg-white hover:shadow-lg transition-all active:scale-95 flex flex-col items-center justify-center gap-3 group md:col-span-1 col-span-2">
                     <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-slate-800 shadow-sm group-hover:bg-[#B48646] group-hover:text-white transition-colors">
                         <Mail size={22} />
                     </div>
@@ -289,7 +300,24 @@ ${formData.message}`);
                             {errors.email && <p className="text-red-500 text-[10px] mt-1 ml-2 font-bold flex items-center gap-1"><AlertTriangle size={10}/> {errors.email}</p>}
                         </div>
                         <div>
-                            <label className="block text-xs font-bold text-slate-400 uppercase mb-2 ml-1">Description du projet</label>
+                            <label className="block text-xs font-bold text-slate-400 uppercase mb-2 ml-1">Objet de la demande</label>
+                            <select
+                                name="subject"
+                                value={formData.subject}
+                                onChange={handleInputChange}
+                                className={`w-full px-5 py-4 bg-slate-50 border-2 rounded-2xl outline-none text-sm transition-all font-medium cursor-pointer ${errors.subject ? 'border-red-300 focus:border-red-500 focus:ring-red-100' : 'border-slate-200 focus:border-[#B48646] focus:ring-[#B48646]/10'} focus:ring-4`}
+                            >
+                                <option value="">Choisir un sujet...</option>
+                                <option value="Demande de devis">Demande de devis</option>
+                                <option value="Question sur un service">Question sur un service</option>
+                                <option value="Problème technique">Problème technique</option>
+                                <option value="Partenariat">Partenariat</option>
+                                <option value="Autre">Autre</option>
+                            </select>
+                            {errors.subject && <p className="text-red-500 text-[10px] mt-1 ml-2 font-bold flex items-center gap-1"><AlertTriangle size={10}/> {errors.subject}</p>}
+                        </div>
+                        <div>
+                            <label className="block text-xs font-bold text-slate-400 uppercase mb-2 ml-1">Message</label>
                             <textarea 
                                 name="message"
                                 value={formData.message}
