@@ -187,7 +187,7 @@ const GraphicDesignForm = ({ onBack, onRequest, initialValues }: FormProps) => {
 
     useEffect(() => {
         switch(subService) {
-            case 'identity_complete': setPrice(240); break; 
+            case 'identity_complete': setPrice(320); break; 
             case 'logo_creation': setPrice(200); break;
             case 'print': setPrice(50); break; 
             case 'social_kit': setPrice(120); break;
@@ -241,7 +241,7 @@ const GraphicDesignForm = ({ onBack, onRequest, initialValues }: FormProps) => {
                                 <label className={`relative border-2 p-6 rounded-[2rem] cursor-pointer transition-all duration-300 hover:scale-[1.02] ${subService === 'identity_complete' ? 'bg-[#fffcf5] border-[#B48646] shadow-xl shadow-[#B48646]/10' : 'bg-slate-50 hover:bg-white border-transparent shadow-sm'}`}>
                                     {subService === 'identity_complete' && (
                                         <div className="absolute -top-3 right-6 bg-red-500 text-white text-[10px] font-bold px-3 py-1.5 rounded-full flex items-center gap-1 shadow-lg">
-                                            <Crown size={12} fill="white" /> -20% PROMO
+                                            <Crown size={12} fill="white" /> OFFRE SPÉCIALE
                                         </div>
                                     )}
                                     <div className="flex items-start gap-4">
@@ -255,8 +255,7 @@ const GraphicDesignForm = ({ onBack, onRequest, initialValues }: FormProps) => {
                                                 {[
                                                     "1 Création Logo sur mesure",
                                                     "1 Bannière réseaux sociaux",
-                                                    "Cartes de visite & flyers",
-                                                    "Impression en option"
+                                                    "Design Cartes & Flyers OFFERT (Impression sur devis)",
                                                 ].map((item, i) => (
                                                     <div key={i} className="flex items-center gap-2 text-xs text-slate-600">
                                                         <Check size={10} className="text-[#B48646] stroke-[3]" /> {item}
@@ -264,9 +263,10 @@ const GraphicDesignForm = ({ onBack, onRequest, initialValues }: FormProps) => {
                                                 ))}
                                             </div>
                                             <div className="flex items-center gap-2 mt-3 pt-2 border-t border-slate-100/50">
-                                                <span className="text-xs text-slate-400 line-through font-bold">300€</span>
-                                                <span className="inline-block px-3 py-1.5 bg-[#B48646]/10 text-[#B48646] rounded-xl font-bold text-sm">240€</span>
+                                                <span className="text-xs text-slate-400 line-through font-bold">370€</span>
+                                                <span className="inline-block px-3 py-1.5 bg-[#B48646]/10 text-[#B48646] rounded-xl font-bold text-sm">320€</span>
                                             </div>
+                                            <p className="text-[10px] text-[#B48646] font-bold mt-1">50€ de Cartes de Visite & Flyers OFFERTS !</p>
                                         </div>
                                     </div>
                                 </label>
@@ -376,7 +376,7 @@ const GraphicDesignForm = ({ onBack, onRequest, initialValues }: FormProps) => {
                                 <span className="block text-xs text-slate-400 uppercase tracking-widest font-bold mb-2 relative z-10">Total Estimé</span>
                                 <div className="flex flex-col items-center justify-center gap-0 relative z-10">
                                     {subService === 'identity_complete' && (
-                                         <span className="text-white/50 line-through text-lg font-bold">300€</span>
+                                         <span className="text-white/50 line-through text-lg font-bold">370€</span>
                                     )}
                                     <span className="text-6xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-[#B48646] to-[#F3C06B]">{price}€</span>
                                 </div>
@@ -867,7 +867,7 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ initialService, onClearInit
                 </h1>
                 
                 {/* Subtitle Badge */}
-                <div className="inline-block px-4 py-1.5 rounded-full bg-[#B48646]/5 border border-[#B48646]/10 backdrop-blur-sm">
+                <div className="inline-block px-4 py-1.5 rounded-full bg-[#B48646]/5 border border border-[#B48646]/10 backdrop-blur-sm">
                      <p className="text-[#B48646] text-[10px] font-bold tracking-[0.3em] uppercase">
                         Choisissez votre univers
                      </p>
@@ -888,10 +888,24 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ initialService, onClearInit
                  <PenTool size={32} />
              </div>
              
-             <h3 className="text-xl font-bold text-slate-900 mb-2 relative z-10">Design Graphique</h3>
-             <p className="text-sm text-slate-500 mb-6 relative z-10 leading-relaxed">
-                Logos, identités visuelles, cartes de visite et supports de communication.
-             </p>
+             <h3 className="text-xl font-bold text-slate-900 mb-6 relative z-10">Design Graphique</h3>
+             
+             <div className="mb-6 relative z-10 w-full px-2">
+                <ul className="space-y-3">
+                    <li className="flex items-center gap-3 text-sm text-slate-600 font-medium text-left">
+                        <div className="bg-[#B48646]/10 p-1 rounded-full"><Check size={12} className="text-[#B48646]" /></div>
+                        Création de Logo Unique
+                    </li>
+                    <li className="flex items-center gap-3 text-sm text-slate-600 font-medium text-left">
+                        <div className="bg-[#B48646]/10 p-1 rounded-full"><Check size={12} className="text-[#B48646]" /></div>
+                        Cartes de Visite & Flyers
+                    </li>
+                    <li className="flex items-center gap-3 text-sm text-slate-600 font-medium text-left">
+                         <div className="bg-[#B48646]/10 p-1 rounded-full"><Check size={12} className="text-[#B48646]" /></div>
+                        Identité Visuelle Complète
+                    </li>
+                </ul>
+             </div>
              
              <div className="mt-auto relative z-10">
                  <span className="text-xs font-bold text-[#B48646] bg-[#B48646]/10 px-4 py-2 rounded-xl group-hover:bg-[#B48646] group-hover:text-white transition-colors">Découvrir</span>
@@ -909,10 +923,24 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ initialService, onClearInit
                  <Video size={32} />
              </div>
              
-             <h3 className="text-xl font-bold text-slate-900 mb-2 relative z-10">Vidéo & Souvenirs</h3>
-             <p className="text-sm text-slate-500 mb-6 relative z-10 leading-relaxed">
-                Montage vidéo, diaporamas émouvants, numérisation VHS et colorimétrie.
-             </p>
+             <h3 className="text-xl font-bold text-slate-900 mb-6 relative z-10">Vidéo & Souvenirs</h3>
+             
+             <div className="mb-6 relative z-10 w-full px-2">
+                <ul className="space-y-3">
+                    <li className="flex items-center gap-3 text-sm text-slate-600 font-medium text-left">
+                        <div className="bg-[#B48646]/10 p-1 rounded-full"><Check size={12} className="text-[#B48646]" /></div>
+                        Montage Vidéo & Diaporamas
+                    </li>
+                    <li className="flex items-center gap-3 text-sm text-slate-600 font-medium text-left">
+                        <div className="bg-[#B48646]/10 p-1 rounded-full"><Check size={12} className="text-[#B48646]" /></div>
+                        Numérisation de Cassettes VHS
+                    </li>
+                    <li className="flex items-center gap-3 text-sm text-slate-600 font-medium text-left">
+                         <div className="bg-[#B48646]/10 p-1 rounded-full"><Check size={12} className="text-[#B48646]" /></div>
+                        Retouche Colorimétrique
+                    </li>
+                </ul>
+             </div>
              
              <div className="mt-auto relative z-10">
                  <span className="text-xs font-bold text-[#B48646] bg-[#B48646]/10 px-4 py-2 rounded-xl group-hover:bg-[#B48646] group-hover:text-white transition-colors">Découvrir</span>
@@ -930,10 +958,24 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ initialService, onClearInit
                  <LifeBuoy size={32} />
              </div>
              
-             <h3 className="text-xl font-bold text-slate-900 mb-2 relative z-10">Assistance Rapide</h3>
-             <p className="text-sm text-slate-500 mb-6 relative z-10 leading-relaxed">
-                Retouches express, modifications de fichiers et petits travaux graphiques.
-             </p>
+             <h3 className="text-xl font-bold text-slate-900 mb-6 relative z-10">Assistance Rapide</h3>
+             
+             <div className="mb-6 relative z-10 w-full px-2">
+                <ul className="space-y-3">
+                    <li className="flex items-center gap-3 text-sm text-slate-600 font-medium text-left">
+                        <div className="bg-[#B48646]/10 p-1 rounded-full"><Check size={12} className="text-[#B48646]" /></div>
+                        Retouches Photos Rapides
+                    </li>
+                    <li className="flex items-center gap-3 text-sm text-slate-600 font-medium text-left">
+                        <div className="bg-[#B48646]/10 p-1 rounded-full"><Check size={12} className="text-[#B48646]" /></div>
+                        Modifications de Fichiers
+                    </li>
+                    <li className="flex items-center gap-3 text-sm text-slate-600 font-medium text-left">
+                         <div className="bg-[#B48646]/10 p-1 rounded-full"><Check size={12} className="text-[#B48646]" /></div>
+                        Détourage & Montages Simples
+                    </li>
+                </ul>
+             </div>
              
              <div className="mt-auto relative z-10">
                  <span className="text-xs font-bold text-[#B48646] bg-[#B48646]/10 px-4 py-2 rounded-xl group-hover:bg-[#B48646] group-hover:text-white transition-colors">Découvrir</span>

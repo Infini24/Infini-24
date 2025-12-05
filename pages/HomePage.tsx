@@ -58,7 +58,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate, user, onLoginClick, onL
                 
                 <div className="relative z-10 text-white flex-1 mb-6 md:mb-0">
                     <span className="inline-flex items-center gap-1 px-3 py-1 bg-white/25 backdrop-blur-md text-white text-[10px] font-extrabold rounded-full mb-3 shadow-inner border border-white/20 animate-pulse">
-                        <Sparkles size={10} fill="white" /> OFFRE SPÉCIALE -20%
+                        <Sparkles size={10} fill="white" /> OFFRE SPÉCIALE
                     </span>
                     <h3 className="font-extrabold text-3xl mb-1 leading-none tracking-tight">Pack Identité<br/>Complète</h3>
                     
@@ -66,13 +66,13 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate, user, onLoginClick, onL
                          <p className="text-[11px] text-white/90 font-medium leading-relaxed">
                             • Création Logo Unique sur mesure<br/>
                             • Bannière Réseaux Sociaux<br/>
-                            • Cartes de visite & flyers
+                            • Design Cartes & Flyers (Offert)
                         </p>
                     </div>
 
                     <div className="mt-4 flex items-baseline gap-3">
-                         <span className="text-white/60 line-through font-bold text-lg">300€</span>
-                         <span className="text-white font-extrabold text-3xl">240€</span>
+                         <span className="text-white/60 line-through font-bold text-lg">370€</span>
+                         <span className="text-white font-extrabold text-3xl">320€</span>
                     </div>
                 </div>
                 
@@ -134,8 +134,8 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate, user, onLoginClick, onL
                     </div>
                 </div>
 
-                <p className="text-sm text-slate-600 font-medium mb-6 flex-1 leading-relaxed">
-                    Donnez vie à votre image de marque avec des designs uniques et professionnels qui captivent votre audience.
+                <p className="text-lg text-slate-700 font-bold mb-6 flex-1 leading-tight">
+                    Votre image de marque, <span className="text-[#B48646]">sublime et unique.</span>
                 </p>
 
                 <div className="mt-auto flex items-center justify-between pt-4 border-t border-slate-50">
@@ -161,8 +161,8 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate, user, onLoginClick, onL
                     </div>
                 </div>
 
-                <p className="text-sm text-slate-600 font-medium mb-6 flex-1 leading-relaxed">
-                    Immortalisez vos moments précieux ou dynamisez votre communication avec un montage vidéo expert et émouvant.
+                <p className="text-lg text-slate-700 font-bold mb-6 flex-1 leading-tight">
+                    Transformez vos souvenirs en <span className="text-[#B48646]">émotions inoubliables.</span>
                 </p>
 
                 <div className="mt-auto flex items-center justify-between pt-4 border-t border-slate-50">
@@ -188,8 +188,8 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate, user, onLoginClick, onL
                     </div>
                 </div>
 
-                <p className="text-sm text-slate-600 font-medium mb-6 flex-1 leading-relaxed">
-                    Une aide rapide et efficace pour toutes vos retouches, modifications et petits ajustements graphiques du quotidien.
+                <p className="text-lg text-slate-700 font-bold mb-6 flex-1 leading-tight">
+                    Un graphiste expert à vos côtés, <span className="text-[#B48646]">instantanément.</span>
                 </p>
 
                 <div className="mt-auto flex items-center justify-between pt-4 border-t border-slate-50">
