@@ -27,10 +27,8 @@ const DesktopSidebar = ({
       {/* Sidebar Header / Logo */}
       <div className="p-8 pb-4 flex flex-col items-start">
         <div className="flex items-center gap-3 mb-1 group cursor-pointer" onClick={() => onNavigate(0)}>
-            <div className="relative">
-                <div className="absolute inset-0 bg-[#B48646] opacity-20 rounded-full group-hover:opacity-40 transition-opacity"></div>
-                <InfinityIcon size={40} strokeWidth={1.5} className="text-[#B48646] relative z-10" />
-            </div>
+            {/* Logo sans fond (modifié) */}
+            <InfinityIcon size={40} strokeWidth={1.5} className="text-[#B48646] group-hover:scale-110 transition-transform duration-300" />
             <div className="flex flex-col">
                 <span className="font-bold text-2xl text-slate-900 leading-none tracking-tight">INFINI<span className="text-[#B48646]">24</span></span>
                 <span className="text-sm font-bold text-slate-400 uppercase tracking-widest">Créateur de souvenirs</span>
