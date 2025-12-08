@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, Phone, MapPin, Send, Facebook, Instagram, Linkedin, MessageCircle, ChevronDown, ChevronUp, HelpCircle, Infinity, AlertTriangle, Smartphone } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, Facebook, Instagram, Linkedin, MessageCircle, ChevronDown, ChevronUp, HelpCircle, AlertTriangle, Smartphone } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const ContactPage: React.FC = () => {

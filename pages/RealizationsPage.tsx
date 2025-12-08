@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Image as ImageIcon, Video, PenTool, Instagram, Facebook, ArrowRight, Sparkles, ZoomIn, X, Maximize2, ExternalLink } from 'lucide-react';
+import { Image as ImageIcon, Instagram, Facebook, Maximize2, ExternalLink, X } from 'lucide-react';
 
 // --- TYPES ---
 interface ProjectImage {

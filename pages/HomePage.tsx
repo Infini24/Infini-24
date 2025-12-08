@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowRight, Video, PenTool, Info, LifeBuoy, Infinity, Sparkles, Briefcase, Check } from 'lucide-react';
+import { ArrowRight, Video, PenTool, Info, LifeBuoy, Infinity as InfinityIcon, Sparkles, Briefcase, Check } from 'lucide-react';
 import { ServiceType } from '../types';
 
 interface HomePageProps {
@@ -19,7 +19,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
         <div className="relative z-10 flex flex-col items-center justify-center text-center mt-2">
            <div className="flex items-center justify-center mb-4 relative group cursor-pointer transition-transform duration-500 hover:scale-110">
              <div className="absolute inset-0 bg-[#B48646] blur-3xl opacity-20 rounded-full group-hover:opacity-40 transition-opacity duration-500"></div>
-             <Infinity size={48} strokeWidth={1.5} className="text-[#B48646] relative z-10 drop-shadow-sm transition-transform duration-700 group-hover:rotate-180" />
+             <InfinityIcon size={48} strokeWidth={1.5} className="text-[#B48646] relative z-10 drop-shadow-sm transition-transform duration-700 group-hover:rotate-180" />
            </div>
            
            <h1 className="text-4xl tracking-tighter mb-2 font-['Poppins']">
