@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Image as ImageIcon, Instagram, Facebook, Maximize2, ExternalLink, X } from 'lucide-react';
 
@@ -27,9 +26,7 @@ const projects: Project[] = [
     category: 'Identité Visuelle',
     date: 'Décembre 2024',
     link: 'https://www.facebook.com/profile.php?id=100076464574527&locale=fr_FR',
-    description: `Pour la Confiserie Parizel, nous avons assuré la conception complète de leur logo original, établissant une identité de marque visuellement chaleureuse et distinctive.
-    Afin d'optimiser leur présence sur les évènements, nous avons également géré le design d'une bâche publicitaire grand format (210cm sur 90cm). 
-    Cette bâche a été conçue en garantissant une visibilité maximale et renforçant l'attractivité du point de vente durant l'événement..`,
+    description: "Pour la Confiserie Parizel, nous avons assuré la conception complète de leur logo original, établissant une identité de marque visuellement chaleureuse et distinctive. Afin d'optimiser leur présence sur les évènements, nous avons également géré le design d'une bâche publicitaire grand format (210cm sur 90cm). Cette bâche a été conçue en garantissant une visibilité maximale et renforçant l'attractivité du point de vente durant l'événement.",
     images: [
       {
         // PHOTO 1 : LE LOGO (Gauche)

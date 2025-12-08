@@ -33,7 +33,7 @@ const DesktopSidebar = ({
             </div>
             <div className="flex flex-col">
                 <span className="font-bold text-2xl text-slate-900 leading-none tracking-tight">INFINI<span className="text-[#B48646]">24</span></span>
-                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Créateur de souvenirs</span>
+                <span className="text-sm font-bold text-slate-400 uppercase tracking-widest">Créateur de souvenirs</span>
             </div>
         </div>
       </div>
@@ -112,23 +112,28 @@ const App = () => {
 
   // Gestion initiale de l'URL et nettoyage
   useEffect(() => {
-    // 1. Nettoyage URL sale (fbclid)
-    const url = new URL(window.location.href);
-    if (url.searchParams.has('fbclid')) {
-        url.searchParams.delete('fbclid');
-        window.history.replaceState({}, document.title, url.pathname);
-    }
+    try {
+        // 1. Nettoyage URL sale (fbclid)
+        const url = new URL(window.location.href);
+        if (url.searchParams.has('fbclid')) {
+            url.searchParams.delete('fbclid');
+            window.history.replaceState({}, document.title, url.pathname);
+        }
 
-    // 2. Routing initial
-    const path = window.location.pathname;
-    let initialTab = 0;
-    if (path.includes('nos-realisations') || path.includes('realisations')) initialTab = 1;
-    else if (path.includes('nos-services') || path.includes('services')) initialTab = 2;
-    else if (path.includes('contact')) initialTab = 3;
+        // 2. Routing initial
+        const path = window.location.pathname;
+        let initialTab = 0;
+        if (path.includes('nos-realisations') || path.includes('realisations')) initialTab = 1;
+        else if (path.includes('nos-services') || path.includes('services')) initialTab = 2;
+        else if (path.includes('contact')) initialTab = 3;
 
-    if (initialTab !== 0) {
-        setActiveTab(initialTab);
-        setMountedTabs(prev => [...prev, initialTab]);
+        if (initialTab !== 0) {
+            setActiveTab(initialTab);
+            setMountedTabs(prev => [...prev, initialTab]);
+        }
+    } catch (e) {
+        // Ignore errors in sandboxed environments where history API might be restricted
+        console.warn("Navigation history update failed (harmless in preview)", e);
     }
   }, []);
 
@@ -165,7 +170,11 @@ const App = () => {
     if (index === 3) path = '/contact';
     
     if (window.location.pathname !== path) {
-        window.history.pushState({}, '', path);
+        try {
+            window.history.pushState({}, '', path);
+        } catch (e) {
+             console.warn("PushState failed (harmless in preview)", e);
+        }
     }
   };
 
