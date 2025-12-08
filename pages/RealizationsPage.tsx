@@ -1,11 +1,75 @@
 
 import React, { useState } from 'react';
-import { Image as ImageIcon, Video, PenTool, Instagram, Facebook, ArrowRight, Sparkles } from 'lucide-react';
+import { Image as ImageIcon, Video, PenTool, Instagram, Facebook, ArrowRight, Sparkles, ZoomIn, X, Maximize2, ExternalLink } from 'lucide-react';
+
+// --- TYPES ---
+interface ProjectImage {
+  url: string;
+  caption: string;
+  isWide?: boolean; // Pour l'affiche 210x90
+}
+
+interface Project {
+  id: string;
+  title: string;
+  category: 'Identité Visuelle' | 'Vidéo' | 'Print' | 'Autre';
+  description: string;
+  date: string;
+  images: ProjectImage[];
+  link?: string; // Lien externe (Facebook, Site web...)
+}
+
+// --- DATA (VOS PROJETS) ---
+const projects: Project[] = [
+  {
+    id: 'confiserie-parizel',
+    title: 'Confiserie Parizel',
+    category: 'Identité Visuelle',
+    date: 'Décembre 2024',
+    link: 'https://www.facebook.com/profile.php?id=100076464574527&locale=fr_FR',
+    description: `Pour la Confiserie Parizel, nous avons assuré la conception complète de leur logo original, établissant une identité de marque visuellement chaleureuse et distinctive.
+    Afin d'optimiser leur présence sur les marchés de Noël, nous avons également géré la réalisation d'une bâche publicitaire grand format (210cm sur 90cm). 
+    Cette bâche a été conçue en garantissant une visibilité maximale et renforçant l'attractivité du point de vente durant l'événement..`,
+    images: [
+      {
+        // PHOTO 1 : LE LOGO
+        url: 'https://i.postimg.cc/bSP312zq/Confiserie1.png', 
+        caption: 'Logo Original'
+      },
+      {
+        // PHOTO 2 : LA BÂCHE (210x90)
+        url: 'https://i.postimg.cc/z31rxtBS/bache-confiserie-parizel3.png', 
+        caption: 'Design Bâche (210x90cm)',
+        isWide: true
+      },
+      {
+        // PHOTO 3 : LE STAND
+        url: 'https://i.postimg.cc/30hn2D3j/595632468-881895807702564-2191728216735661234-n.jpg', 
+        caption: 'Mise en situation sur le stand'
+      }
+    ]
+  }
+];
+
+// --- COMPONENTS ---
+
+const ImageModal = ({ image, onClose }: { image: ProjectImage | null, onClose: () => void }) => {
+  if (!image) return null;
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/95 backdrop-blur-md animate-in fade-in duration-200" onClick={onClose}>
+      <button onClick={onClose} className="absolute top-4 right-4 text-white/70 hover:text-white bg-white/10 p-2 rounded-full transition-colors">
+        <X size={24} />
+      </button>
+      <div className="max-w-5xl w-full max-h-[90vh] flex flex-col items-center">
+        <img src={image.url} alt={image.caption} className="max-w-full max-h-[80vh] object-contain rounded-lg shadow-2xl" />
+        <p className="mt-4 text-white/90 font-medium text-lg">{image.caption}</p>
+      </div>
+    </div>
+  );
+};
 
 const RealizationsPage: React.FC = () => {
-  // Pour l'instant, on laisse la liste vide.
-  // Les clients seront redirigés vers vos réseaux sociaux qui sont à jour.
-  const projects: any[] = [];
+  const [selectedImage, setSelectedImage] = useState<ProjectImage | null>(null);
 
   return (
     <div className="flex flex-col h-full overflow-y-auto no-scrollbar bg-[#FDFCF8]">
@@ -23,69 +87,118 @@ const RealizationsPage: React.FC = () => {
              Nos Réalisations
            </h1>
            <p className="text-slate-500 font-medium max-w-md text-sm md:text-base">
-             Découvrez nos derniers projets graphiques et montages vidéos.
+             Découvrez nos derniers projets graphiques et créations sur mesure.
            </p>
         </div>
       </header>
 
-      {/* Social Media Redirection */}
-      <div className="flex-1 px-4 lg:px-8 pb-24 max-w-7xl mx-auto w-full flex flex-col items-center justify-center">
+      <div className="flex-1 px-4 lg:px-8 pb-24 max-w-7xl mx-auto w-full space-y-12">
         
-        <div className="bg-white p-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 max-w-md w-full text-center relative overflow-hidden group">
-             {/* Background Effects */}
-             <div className="absolute top-0 right-0 w-32 h-32 bg-[#B48646]/10 rounded-full blur-[40px] -mr-10 -mt-10 group-hover:bg-[#B48646]/20 transition-colors duration-700"></div>
-             <div className="absolute bottom-0 left-0 w-32 h-32 bg-[#F3C06B]/10 rounded-full blur-[40px] -ml-10 -mb-10 group-hover:bg-[#F3C06B]/20 transition-colors duration-700"></div>
+        {/* --- PROJECTS GALLERY --- */}
+        {projects.length > 0 ? (
+          <div className="space-y-12">
+            {projects.map((project) => (
+              <div key={project.id} className="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
+                
+                {/* Project Header */}
+                <div className="p-8 pb-4">
+                  <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
+                    <span className="px-3 py-1 rounded-full bg-slate-100 text-slate-500 text-[10px] font-bold uppercase tracking-widest">
+                      {project.category}
+                    </span>
+                    <span className="text-xs font-bold text-slate-400">{project.date}</span>
+                  </div>
+                  
+                  {project.link ? (
+                    <a 
+                        href={project.link} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="inline-flex items-center gap-2 text-2xl font-bold text-slate-900 mb-3 hover:text-[#1877F2] hover:underline decoration-2 underline-offset-4 transition-all group"
+                        title="Voir la page Facebook"
+                    >
+                        {project.title}
+                        <ExternalLink size={18} className="text-slate-300 group-hover:text-[#1877F2] transition-colors" />
+                    </a>
+                  ) : (
+                    <h2 className="text-2xl font-bold text-slate-900 mb-3">{project.title}</h2>
+                  )}
 
-             <div className="relative z-10">
-                <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner relative">
-                    <div className="absolute top-0 right-0 bg-red-500 rounded-full p-1.5 border-2 border-white animate-pulse"></div>
-                    <ImageIcon size={32} className="text-slate-400" />
+                  <p className="text-slate-600 leading-relaxed text-sm max-w-3xl whitespace-pre-line">
+                    {project.description}
+                  </p>
                 </div>
 
-                <h2 className="text-2xl font-bold text-slate-900 mb-3">Nos Dernières Créations</h2>
-                <p className="text-slate-500 mb-8 leading-relaxed text-sm font-medium">
-                    Nos projets sont publiés quotidiennement en Story et Posts. <br/>
-                    <span className="text-[#B48646] font-bold">Abonnez-vous pour voir notre travail !</span>
-                </p>
-
-                <div className="space-y-4">
-                    <a 
-                        href="https://www.instagram.com/infini2.4/" 
-                        target="_blank" 
-                        rel="noreferrer"
-                        className="flex items-center justify-between p-4 rounded-2xl bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 text-white shadow-lg shadow-pink-500/20 hover:scale-[1.02] active:scale-95 transition-all group/btn"
+                {/* Images Grid */}
+                <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {project.images.map((img, idx) => (
+                    <div 
+                      key={idx} 
+                      className={`relative group rounded-2xl overflow-hidden cursor-pointer bg-slate-50 border border-slate-100 shadow-sm transition-all duration-300 hover:shadow-md ${img.isWide ? 'md:col-span-2 lg:col-span-2' : ''} ${img.isWide ? 'aspect-[21/9]' : 'aspect-square'}`}
+                      onClick={() => setSelectedImage(img)}
                     >
-                        <div className="flex items-center gap-3">
-                            <div className="bg-white/20 p-2 rounded-xl"><Instagram size={20} /></div>
-                            <span className="font-bold">Sur Instagram</span>
-                        </div>
-                        <ArrowRight size={20} className="opacity-70 group-hover/btn:translate-x-1 transition-transform" />
-                    </a>
-
-                    <a 
-                        href="https://www.facebook.com/profile.php?id=61584316950503" 
-                        target="_blank" 
-                        rel="noreferrer"
-                        className="flex items-center justify-between p-4 rounded-2xl bg-[#1877F2] text-white shadow-lg shadow-blue-500/20 hover:scale-[1.02] active:scale-95 transition-all group/btn"
-                    >
-                        <div className="flex items-center gap-3">
-                            <div className="bg-white/20 p-2 rounded-xl"><Facebook size={20} /></div>
-                            <span className="font-bold">Sur Facebook</span>
-                        </div>
-                        <ArrowRight size={20} className="opacity-70 group-hover/btn:translate-x-1 transition-transform" />
-                    </a>
-                </div>
-
-                <div className="mt-8 pt-6 border-t border-slate-100">
-                    <div className="flex items-center justify-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">
-                        <Sparkles size={12} className="text-[#B48646]" /> Votre projet ici ?
+                      <div className={`w-full h-full flex items-center justify-center ${img.isWide ? 'bg-white' : ''}`}>
+                         <img 
+                            src={img.url} 
+                            alt={img.caption} 
+                            className={`transition-transform duration-700 group-hover:scale-105 ${img.isWide ? 'w-full h-full object-contain p-2' : 'w-full h-full object-cover'}`}
+                         />
+                      </div>
+                      
+                      <div className="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/20 transition-colors duration-300 flex items-center justify-center pointer-events-none">
+                         <div className="bg-white/90 p-3 rounded-full opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 shadow-lg text-slate-800">
+                            <Maximize2 size={20} />
+                         </div>
+                      </div>
+                      <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                        <span className="text-white text-xs font-bold">{img.caption}</span>
+                      </div>
                     </div>
-                    <p className="text-sm font-bold text-slate-900">Contactez-nous pour le réaliser.</p>
+                  ))}
                 </div>
-             </div>
+
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12 text-slate-400 italic">
+            Aucun projet publié pour le moment.
+          </div>
+        )}
+
+
+        {/* --- SOCIAL CTA (Footer) --- */}
+        <div className="pt-8 border-t border-slate-100 flex flex-col items-center justify-center text-center">
+            <h3 className="text-lg font-bold text-slate-900 mb-2">Envie d'en voir plus ?</h3>
+            <p className="text-slate-500 text-sm mb-6 max-w-xs mx-auto">
+                Retrouvez toutes nos actus et nos stories quotidiennes sur les réseaux.
+            </p>
+            <div className="flex gap-4">
+                <a 
+                    href="https://www.instagram.com/infini2.4/" 
+                    target="_blank" 
+                    rel="noreferrer"
+                    className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 text-white shadow-lg shadow-pink-500/20 hover:scale-[1.02] active:scale-95 transition-all text-sm font-bold"
+                >
+                    <Instagram size={18} /> Instagram
+                </a>
+
+                <a 
+                    href="https://www.facebook.com/profile.php?id=61584316950503" 
+                    target="_blank" 
+                    rel="noreferrer"
+                    className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-[#1877F2] text-white shadow-lg shadow-blue-500/20 hover:scale-[1.02] active:scale-95 transition-all text-sm font-bold"
+                >
+                    <Facebook size={18} /> Facebook
+                </a>
+            </div>
         </div>
 
       </div>
+
+      {/* Lightbox Modal */}
+      <ImageModal image={selectedImage} onClose={() => setSelectedImage(null)} />
+      
     </div>
   );
 };
