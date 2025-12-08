@@ -1,24 +1,16 @@
-import React, { useState, Suspense, lazy } from 'react';
-import { Home, Calculator, Mail, Infinity as InfinityIcon, Image as ImageIcon, Loader2 } from 'lucide-react';
+import React, { useState } from 'react';
+import { Home, Calculator, Mail, Infinity as InfinityIcon, Image as ImageIcon } from 'lucide-react';
 import { Toaster } from 'react-hot-toast';
 
-// Import Home Page eagerly (Critical Path) for instant LCP
+// IMPORT STATIQUE (Vitesse Instantanée)
+// On charge tout d'un coup pour qu'il n'y ait aucun délai au clic
 import HomePage from './pages/HomePage';
+import ServicesPage from './pages/ServicesPage';
+import RealizationsPage from './pages/RealizationsPage';
+import ContactPage from './pages/ContactPage';
 import { ServiceType } from './types';
 
-// Lazy load other pages to reduce initial bundle size
-const ServicesPage = lazy(() => import('./pages/ServicesPage'));
-const RealizationsPage = lazy(() => import('./pages/RealizationsPage'));
-const ContactPage = lazy(() => import('./pages/ContactPage'));
-
 // --- COMPONENTS ---
-
-const LoadingScreen = () => (
-  <div className="h-full w-full flex flex-col items-center justify-center bg-[#FDFCF8]">
-      <Loader2 className="h-10 w-10 text-[#B48646] animate-spin mb-4" />
-      <p className="text-xs font-bold text-slate-400 uppercase tracking-widest animate-pulse">Chargement...</p>
-  </div>
-);
 
 // --- SIDEBAR COMPONENT (DESKTOP) ---
 const DesktopSidebar = ({ 
@@ -36,7 +28,7 @@ const DesktopSidebar = ({
       <div className="p-8 pb-4 flex flex-col items-start">
         <div className="flex items-center gap-3 mb-1 group cursor-pointer" onClick={() => onNavigate(0)}>
             <div className="relative">
-                <div className="absolute inset-0 bg-[#B48646] blur-xl opacity-20 rounded-full group-hover:opacity-40 transition-opacity"></div>
+                <div className="absolute inset-0 bg-[#B48646] opacity-20 rounded-full group-hover:opacity-40 transition-opacity"></div>
                 <InfinityIcon size={40} strokeWidth={1.5} className="text-[#B48646] relative z-10" />
             </div>
             <div className="flex flex-col">
@@ -64,7 +56,7 @@ const DesktopSidebar = ({
              }`}
            >
              <item.icon size={22} strokeWidth={activeTab === item.index ? 2.5 : 2} className="group-hover:scale-110 transition-transform"/>
-             <span className={`text-sm font-bold ${activeTab === item.index ? 'font-extrabold' : ''}`}>{item.label}</span>
+             <span className="text-sm font-bold">{item.label}</span>
              {activeTab === item.index && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-[#B48646]"></div>}
            </button>
          ))}
@@ -86,7 +78,7 @@ const DesktopSidebar = ({
 // --- MOBILE NAVIGATION ---
 const MobileNavigation = ({ activeTab, onNavigate }: { activeTab: number; onNavigate: (index: number) => void }) => {
   return (
-    <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-lg border-t border-slate-100 px-6 py-4 flex justify-between items-center z-50 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+    <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-100 px-6 py-4 flex justify-between items-center z-50 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
       {[
         { icon: Home, index: 0 },
         { icon: ImageIcon, index: 1 },
@@ -96,9 +88,9 @@ const MobileNavigation = ({ activeTab, onNavigate }: { activeTab: number; onNavi
         <button
           key={item.index}
           onClick={() => onNavigate(item.index)}
-          className={`p-3 rounded-2xl transition-all duration-300 ${
+          className={`p-3 rounded-2xl transition-all duration-200 ${
             activeTab === item.index 
-            ? 'bg-[#B48646] text-white shadow-lg shadow-[#B48646]/30 translate-y-[-8px]' 
+            ? 'bg-[#B48646] text-white shadow-lg shadow-[#B48646]/30 translate-y-[-4px]' 
             : 'text-slate-400 hover:bg-slate-50'
           }`}
         >
@@ -114,14 +106,14 @@ const App = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [initialService, setInitialService] = useState<ServiceType | null>(null);
   
-  // Keep track of which tabs have been visited to load them only when needed
-  // Index 0 (Home) is always "visited"
+  // Keep track of which tabs have been visited to render them
+  // This allows instant switching while keeping state (forms don't reset)
   const [mountedTabs, setMountedTabs] = useState<number[]>([0]);
 
   const handleNavigate = (index: number, serviceType?: ServiceType) => {
     setActiveTab(index);
     
-    // Add to mounted tabs if not already present
+    // Add to mounted tabs if not already present (Instant Render)
     if (!mountedTabs.includes(index)) {
         setMountedTabs(prev => [...prev, index]);
     }
@@ -143,12 +135,11 @@ const App = () => {
       />
 
       {/* 
-          OPTIMISATION PERFORMANCE PC : 
-          Remplacement des divs avec 'filter: blur()' (très lent sur grand écran) 
-          par un gradient radial fixe (accéléré GPU et instantané).
+          OPTIMISATION PERFORMANCE PC & MOBILE : 
+          Gradient statique (GPU accelerated) pour éviter les calculs de flou coûteux.
       */}
       <div 
-        className="fixed inset-0 z-0 pointer-events-none"
+        className="fixed inset-0 z-0 pointer-events-none transform-gpu will-change-transform"
         style={{
           background: `
             radial-gradient(circle at 90% 10%, rgba(180, 134, 70, 0.05) 0%, transparent 40%),
@@ -163,40 +154,41 @@ const App = () => {
         onNavigate={handleNavigate} 
       />
       
-      <main className="flex-1 h-full relative flex flex-col md:pl-72 transition-all duration-300 z-10">
+      <main className="flex-1 h-full relative flex flex-col md:pl-72 z-10">
         
-        {/* Page 0: Home (Always Mounted) */}
+        {/* 
+            NAVIGATION INSTANTANÉE (0 latence)
+            Toutes les pages sont chargées statiquement.
+            On utilise 'display: none' pour masquer celles inactives.
+            Cela garantit une vitesse de 0.00s au changement d'onglet.
+        */}
+        
+        {/* Page 0: Home */}
         <div className={`flex-1 h-full overflow-hidden ${activeTab === 0 ? 'block' : 'hidden'}`}>
              <HomePage onNavigate={handleNavigate} />
         </div>
         
-        {/* Page 1: Realizations (Lazy) */}
+        {/* Page 1: Realizations */}
         {mountedTabs.includes(1) && (
             <div className={`flex-1 h-full overflow-hidden ${activeTab === 1 ? 'block' : 'hidden'}`}>
-                <Suspense fallback={<LoadingScreen />}>
-                    <RealizationsPage />
-                </Suspense>
+                <RealizationsPage />
             </div>
         )}
 
-        {/* Page 2: Services (Lazy) */}
+        {/* Page 2: Services */}
         {mountedTabs.includes(2) && (
             <div className={`flex-1 h-full overflow-hidden ${activeTab === 2 ? 'block' : 'hidden'}`}>
-                 <Suspense fallback={<LoadingScreen />}>
-                    <ServicesPage 
-                        initialService={initialService} 
-                        onClearInitial={() => setInitialService(null)} 
-                    />
-                </Suspense>
+                <ServicesPage 
+                    initialService={initialService} 
+                    onClearInitial={() => setInitialService(null)} 
+                />
             </div>
         )}
 
-        {/* Page 3: Contact (Lazy) */}
+        {/* Page 3: Contact */}
         {mountedTabs.includes(3) && (
             <div className={`flex-1 h-full overflow-hidden ${activeTab === 3 ? 'block' : 'hidden'}`}>
-                 <Suspense fallback={<LoadingScreen />}>
-                    <ContactPage />
-                 </Suspense>
+                <ContactPage />
             </div>
         )}
 
