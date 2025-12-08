@@ -140,6 +140,9 @@ Cordialement.`);
                             onChange={(e) => setName(e.target.value)}
                             className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:border-[#B48646] focus:ring-4 focus:ring-[#B48646]/10 outline-none text-sm font-medium"
                             placeholder="Prénom Nom"
+                            autoComplete="name"
+                            inputMode="text"
+                            spellCheck="true"
                         />
                     </div>
                     
@@ -169,6 +172,8 @@ Cordialement.`);
                             onChange={(e) => setContactInfo(e.target.value)}
                             className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:border-[#B48646] focus:ring-4 focus:ring-[#B48646]/10 outline-none text-sm font-medium"
                             placeholder={contactMethod === 'email' ? 'votre@email.com' : '06 00 00 00 00'}
+                            autoComplete={contactMethod === 'email' ? 'email' : 'tel'}
+                            inputMode={contactMethod === 'email' ? 'email' : 'tel'}
                         />
                     </div>
                 </div>
@@ -402,6 +407,8 @@ const GraphicDesignForm = ({ onBack, onRequest, initialValues }: FormProps) => {
                                             className="w-full px-6 py-4 border-2 border-slate-100 rounded-2xl focus:border-[#B48646] focus:ring-4 focus:ring-[#B48646]/10 outline-none transition-all bg-slate-50 focus:bg-white text-sm" 
                                             placeholder="Ex: Boulangerie Durand" 
                                             required 
+                                            autoComplete="organization"
+                                            spellCheck="true"
                                         />
                                     </div>
                                     
@@ -413,6 +420,7 @@ const GraphicDesignForm = ({ onBack, onRequest, initialValues }: FormProps) => {
                                             className="w-full px-6 py-4 border-2 border-slate-100 rounded-2xl outline-none text-sm focus:border-[#B48646] focus:ring-4 focus:ring-[#B48646]/10 bg-slate-50 focus:bg-white transition-all resize-none" 
                                             rows={3} 
                                             placeholder="Couleurs, ambiance, préférences..."
+                                            spellCheck="true"
                                         ></textarea>
                                     </div>
                                 </div>
@@ -728,6 +736,8 @@ const VideoForm = ({ onBack, onRequest, initialValues }: FormProps) => {
                                             onChange={(e) => setPromoObjective(e.target.value)}
                                             className="w-full px-6 py-4 border-2 border-slate-100 rounded-2xl outline-none bg-slate-50 focus:bg-white focus:border-[#B48646] focus:ring-4 focus:ring-[#B48646]/10 transition-all text-sm" 
                                             placeholder="Ex: Présentation produit..." 
+                                            autoComplete="off"
+                                            spellCheck="true"
                                         />
                                     </div>
                                     <div>
@@ -738,6 +748,7 @@ const VideoForm = ({ onBack, onRequest, initialValues }: FormProps) => {
                                             className="w-full px-6 py-4 border-2 border-slate-100 rounded-2xl outline-none text-sm bg-slate-50 focus:bg-white focus:border-[#B48646] focus:ring-4 focus:ring-[#B48646]/10 transition-all resize-none" 
                                             rows={4} 
                                             placeholder="Décrivez votre idée..."
+                                            spellCheck="true"
                                         ></textarea>
                                     </div>
                                     <button onClick={handleOrder} className="w-full mt-2 bg-slate-900 text-white font-bold py-5 rounded-[2rem] shadow-lg hover:shadow-xl hover:bg-slate-800 transition-all active:scale-95">
@@ -860,6 +871,7 @@ const AssistanceForm = ({ onBack, onRequest, initialValues }: FormProps) => {
                                         rows={5} 
                                         placeholder="Expliquez ce que nous devons modifier..." 
                                         required
+                                        spellCheck="true"
                                     ></textarea>
                                 </div>
                                 
@@ -948,11 +960,11 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ initialService, onClearInit
 
         {/* Services Grid */}
         <div className="max-w-7xl mx-auto w-full px-6 pb-24">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-in slide-in-from-bottom duration-700 delay-100">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-in slide-in-from-bottom duration-500 delay-100">
             {/* Card 1 */}
             <div 
                 onClick={() => setSelectedService(ServiceType.GRAPHIC_DESIGN)}
-                className="group bg-white p-8 rounded-[2.5rem] shadow-[0_10px_30px_-15px_rgba(0,0,0,0.03)] border border-slate-50 hover:border-[#B48646]/20 hover:shadow-[0_20px_40px_-10px_rgba(180,134,70,0.1)] hover:-translate-y-1 transition-all duration-500 cursor-pointer flex flex-col items-center text-center h-full relative overflow-hidden"
+                className="group bg-white p-8 rounded-[2.5rem] shadow-[0_10px_30px_-15px_rgba(0,0,0,0.03)] border border-slate-50 hover:border-[#B48646]/20 hover:shadow-[0_20px_40px_-10px_rgba(180,134,70,0.1)] hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 cursor-pointer flex flex-col items-center text-center h-full relative overflow-hidden"
             >
                 <div className="absolute top-0 right-0 w-32 h-32 bg-slate-50 rounded-bl-[100%] -mr-10 -mt-10 z-0 group-hover:bg-[#B48646]/5 transition-colors"></div>
                 
@@ -987,7 +999,7 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ initialService, onClearInit
             {/* Card 2 */}
             <div 
                 onClick={() => setSelectedService(ServiceType.VIDEO)}
-                className="group bg-white p-8 rounded-[2.5rem] shadow-[0_10px_30px_-15px_rgba(0,0,0,0.03)] border border-slate-50 hover:border-[#B48646]/20 hover:shadow-[0_20px_40px_-10px_rgba(180,134,70,0.1)] hover:-translate-y-1 transition-all duration-500 cursor-pointer flex flex-col items-center text-center h-full relative overflow-hidden"
+                className="group bg-white p-8 rounded-[2.5rem] shadow-[0_10px_30px_-15px_rgba(0,0,0,0.03)] border border-slate-50 hover:border-[#B48646]/20 hover:shadow-[0_20px_40px_-10px_rgba(180,134,70,0.1)] hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 cursor-pointer flex flex-col items-center text-center h-full relative overflow-hidden"
             >
                 <div className="absolute top-0 right-0 w-32 h-32 bg-slate-50 rounded-bl-[100%] -mr-10 -mt-10 z-0 group-hover:bg-[#B48646]/5 transition-colors"></div>
 
@@ -1022,7 +1034,7 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ initialService, onClearInit
             {/* Card 3 */}
             <div 
                 onClick={() => setSelectedService(ServiceType.ASSISTANCE)}
-                className="group bg-white p-8 rounded-[2.5rem] shadow-[0_10px_30px_-15px_rgba(0,0,0,0.03)] border border-slate-50 hover:border-[#B48646]/20 hover:shadow-[0_20px_40px_-10px_rgba(180,134,70,0.1)] hover:-translate-y-1 transition-all duration-500 cursor-pointer flex flex-col items-center text-center h-full relative overflow-hidden"
+                className="group bg-white p-8 rounded-[2.5rem] shadow-[0_10px_30px_-15px_rgba(0,0,0,0.03)] border border-slate-50 hover:border-[#B48646]/20 hover:shadow-[0_20px_40px_-10px_rgba(180,134,70,0.1)] hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 cursor-pointer flex flex-col items-center text-center h-full relative overflow-hidden"
             >
                 <div className="absolute top-0 right-0 w-32 h-32 bg-slate-50 rounded-bl-[100%] -mr-10 -mt-10 z-0 group-hover:bg-[#B48646]/5 transition-colors"></div>
 

@@ -106,7 +106,7 @@ const App = () => {
     if (serviceType) {
       setInitialService(serviceType);
     }
-    window.scrollTo({ top: 0 });
+    // Note: window.scrollTo removed to maintain Keep-Alive state and scroll positions
   };
 
   return (
@@ -120,11 +120,11 @@ const App = () => {
         }}
       />
 
-      {/* GLOBAL BACKGROUND ELEMENTS */}
+      {/* GLOBAL BACKGROUND ELEMENTS - GPU ACCELERATED */}
       <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-[#B48646]/5 rounded-full blur-[120px] opacity-60" />
-        <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-slate-900/5 rounded-full blur-[100px] opacity-60" />
-        <div className="absolute top-[40%] left-[20%] w-[300px] h-[300px] bg-[#F3C06B]/5 rounded-full blur-[80px] opacity-40" />
+        <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-[#B48646]/5 rounded-full blur-[120px] opacity-60 transform-gpu will-change-transform translate-z-0" />
+        <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-slate-900/5 rounded-full blur-[100px] opacity-60 transform-gpu will-change-transform translate-z-0" />
+        <div className="absolute top-[40%] left-[20%] w-[300px] h-[300px] bg-[#F3C06B]/5 rounded-full blur-[80px] opacity-40 transform-gpu will-change-transform translate-z-0" />
       </div>
 
       <DesktopSidebar 

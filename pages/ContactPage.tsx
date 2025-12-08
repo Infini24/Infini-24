@@ -217,6 +217,7 @@ Envoyé depuis le formulaire de contact Infini 24`);
                                     onChange={handleInputChange}
                                     className={`w-full px-5 py-4 bg-slate-50 border-2 rounded-2xl outline-none text-sm transition-all font-medium ${errors.name ? 'border-red-300 focus:border-red-500 focus:ring-red-100' : 'border-slate-200 focus:border-[#B48646] focus:ring-[#B48646]/10'} focus:ring-4`}
                                     placeholder="Votre nom" 
+                                    autoComplete="name"
                                 />
                                 {errors.name && <p className="text-red-500 text-[10px] mt-1 ml-2 font-bold flex items-center gap-1"><AlertTriangle size={10}/> {errors.name}</p>}
                             </div>
@@ -229,6 +230,8 @@ Envoyé depuis le formulaire de contact Infini 24`);
                                     onChange={handleInputChange}
                                     className={`w-full px-5 py-4 bg-slate-50 border-2 rounded-2xl outline-none text-sm transition-all font-medium ${errors.phone ? 'border-red-300 focus:border-red-500 focus:ring-red-100' : 'border-slate-200 focus:border-[#B48646] focus:ring-[#B48646]/10'} focus:ring-4`}
                                     placeholder="Votre numéro" 
+                                    autoComplete="tel"
+                                    inputMode="tel"
                                 />
                             </div>
                         </div>
@@ -241,6 +244,8 @@ Envoyé depuis le formulaire de contact Infini 24`);
                                 onChange={handleInputChange}
                                 className={`w-full px-5 py-4 bg-slate-50 border-2 rounded-2xl outline-none text-sm transition-all font-medium ${errors.email ? 'border-red-300 focus:border-red-500 focus:ring-red-100' : 'border-slate-200 focus:border-[#B48646] focus:ring-[#B48646]/10'} focus:ring-4`}
                                 placeholder="votre@email.com" 
+                                autoComplete="email"
+                                inputMode="email"
                             />
                             {errors.email && <p className="text-red-500 text-[10px] mt-1 ml-2 font-bold flex items-center gap-1"><AlertTriangle size={10}/> {errors.email}</p>}
                         </div>
@@ -270,6 +275,7 @@ Envoyé depuis le formulaire de contact Infini 24`);
                                 rows={6} 
                                 className={`w-full px-5 py-4 bg-slate-50 border-2 rounded-2xl outline-none text-sm transition-all font-medium resize-none ${errors.message ? 'border-red-300 focus:border-red-500 focus:ring-red-100' : 'border-slate-200 focus:border-[#B48646] focus:ring-[#B48646]/10'} focus:ring-4`}
                                 placeholder="Décrivez votre besoin en détail..."
+                                spellCheck="true"
                             ></textarea>
                             {errors.message && <p className="text-red-500 text-[10px] mt-1 ml-2 font-bold flex items-center gap-1"><AlertTriangle size={10}/> {errors.message}</p>}
                         </div>
@@ -290,7 +296,7 @@ Envoyé depuis le formulaire de contact Infini 24`);
                  <div className="flex gap-4 mb-6">
                     <a href="https://www.facebook.com/profile.php?id=61584316950503" target="_blank" rel="noreferrer" className="w-12 h-12 rounded-full bg-slate-50 text-slate-500 flex items-center justify-center hover:bg-[#B48646] hover:text-white transition-all duration-300 hover:scale-110 shadow-sm"><Facebook size={22} /></a>
                     <a href="https://www.instagram.com/infini2.4/" target="_blank" rel="noreferrer" className="w-12 h-12 rounded-full bg-slate-50 text-slate-500 flex items-center justify-center hover:bg-[#B48646] hover:text-white transition-all duration-300 hover:scale-110 shadow-sm"><Instagram size={22} /></a>
-                    <a href="#" className="w-12 h-12 rounded-full bg-slate-50 text-slate-500 flex items-center justify-center hover:bg-[#B48646] hover:text-white transition-all duration-300 hover:scale-110 shadow-sm"><Linkedin size={22} /></a>
+                    <a href="https://www.linkedin.com/company/infini24" target="_blank" rel="noreferrer" className="w-12 h-12 rounded-full bg-slate-50 text-slate-500 flex items-center justify-center hover:bg-[#B48646] hover:text-white transition-all duration-300 hover:scale-110 shadow-sm"><Linkedin size={22} /></a>
                  </div>
                  
                  <div className="text-center text-xs text-slate-400 space-y-2 font-medium">

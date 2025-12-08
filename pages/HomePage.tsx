@@ -37,7 +37,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
       <div className="max-w-7xl mx-auto w-full pb-24 px-2 relative z-10 mt-4">
         
         {/* Intro Text */}
-        <div className="text-center max-w-md mx-auto animate-in slide-in-from-bottom duration-700 mb-8 px-4">
+        <div className="text-center max-w-md mx-auto animate-in slide-in-from-bottom duration-500 mb-8 px-4">
           <h2 className="text-2xl font-medium text-slate-800 leading-tight">
             Simplifiez votre<br />
             <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-slate-400 to-slate-600">communication visuelle.</span>
@@ -47,7 +47,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
         {/* Banner / Carousel */}
         <section className="mt-2 px-4">
             <div 
-                className="bg-slate-900 rounded-[2.5rem] p-8 flex flex-col md:flex-row items-center justify-between shadow-xl shadow-slate-900/10 relative overflow-hidden group cursor-pointer hover:scale-[1.01] transition-all duration-500 max-w-4xl mx-auto border border-slate-800" 
+                className="bg-slate-900 rounded-[2.5rem] p-8 flex flex-col md:flex-row items-center justify-between shadow-xl shadow-slate-900/10 relative overflow-hidden group cursor-pointer hover:scale-[1.01] active:scale-[0.99] transition-all duration-300 max-w-4xl mx-auto border border-slate-800" 
                 onClick={() => onNavigate(2, ServiceType.GRAPHIC_DESIGN)}
             >
                 {/* Background Effects */}
@@ -108,7 +108,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
         <section className="mt-6 px-4 grid grid-cols-2 gap-4 max-w-4xl mx-auto w-full">
             <button
                 onClick={() => onNavigate(1)}
-                className="flex flex-col items-center justify-center gap-2 p-6 rounded-[2rem] bg-white border border-slate-100 shadow-sm hover:shadow-lg hover:shadow-[#B48646]/10 hover:border-[#B48646]/30 hover:-translate-y-1 transition-all duration-300 group"
+                className="flex flex-col items-center justify-center gap-2 p-6 rounded-[2rem] bg-white border border-slate-100 shadow-sm hover:shadow-lg hover:shadow-[#B48646]/10 hover:border-[#B48646]/30 hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 group"
             >
                 <div className="w-14 h-14 rounded-2xl bg-slate-50 flex items-center justify-center group-hover:bg-[#B48646] group-hover:text-white transition-colors duration-300">
                     <Briefcase size={24} />
@@ -118,7 +118,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
 
             <button
                 onClick={() => onNavigate(2)}
-                className="flex flex-col items-center justify-center gap-2 p-6 rounded-[2rem] bg-white border border-slate-100 shadow-sm hover:shadow-lg hover:shadow-[#B48646]/10 hover:border-[#B48646]/30 hover:-translate-y-1 transition-all duration-300 group"
+                className="flex flex-col items-center justify-center gap-2 p-6 rounded-[2rem] bg-white border border-slate-100 shadow-sm hover:shadow-lg hover:shadow-[#B48646]/10 hover:border-[#B48646]/30 hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 group"
             >
                 <div className="w-14 h-14 rounded-2xl bg-slate-50 flex items-center justify-center group-hover:bg-[#B48646] group-hover:text-white transition-colors duration-300">
                     <Sparkles size={24} />
@@ -137,12 +137,12 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
                  </div>
             </div>
            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-in slide-in-from-bottom duration-500 delay-100">
             
             {/* Service 1: Graphic Design */}
             <div 
                 onClick={() => onNavigate(2, ServiceType.GRAPHIC_DESIGN)}
-                className="group bg-white p-6 rounded-[2.5rem] shadow-[0_10px_40px_-15px_rgba(0,0,0,0.03)] border border-slate-50 hover:border-[#B48646]/20 hover:shadow-[0_20px_40px_-10px_rgba(180,134,70,0.1)] hover:-translate-y-1 transition-all duration-500 cursor-pointer flex flex-col"
+                className="group bg-white p-6 rounded-[2.5rem] shadow-[0_10px_40px_-15px_rgba(0,0,0,0.03)] border border-slate-50 hover:border-[#B48646]/20 hover:shadow-[0_20px_40px_-10px_rgba(180,134,70,0.1)] hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 cursor-pointer flex flex-col"
             >
                 <div className="flex items-center gap-4 mb-6">
                     <div className="w-16 h-16 bg-slate-50 rounded-[1.2rem] flex items-center justify-center shadow-inner group-hover:bg-slate-900 transition-colors duration-500 shrink-0">
@@ -171,7 +171,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
             {/* Service 2: Video & Photo */}
             <div 
                 onClick={() => onNavigate(2, ServiceType.VIDEO)}
-                className="group bg-white p-6 rounded-[2.5rem] shadow-[0_10px_40px_-15px_rgba(0,0,0,0.03)] border border-slate-50 hover:border-[#B48646]/20 hover:shadow-[0_20px_40px_-10px_rgba(180,134,70,0.1)] hover:-translate-y-1 transition-all duration-500 cursor-pointer flex flex-col"
+                className="group bg-white p-6 rounded-[2.5rem] shadow-[0_10px_40px_-15px_rgba(0,0,0,0.03)] border border-slate-50 hover:border-[#B48646]/20 hover:shadow-[0_20px_40px_-10px_rgba(180,134,70,0.1)] hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 cursor-pointer flex flex-col"
             >
                 <div className="flex items-center gap-4 mb-6">
                     <div className="w-16 h-16 bg-slate-50 rounded-[1.2rem] flex items-center justify-center shadow-inner group-hover:bg-slate-900 transition-colors duration-500 shrink-0">
@@ -200,7 +200,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
             {/* Service 3: Assistance */}
             <div 
                 onClick={() => onNavigate(2, ServiceType.ASSISTANCE)}
-                className="group bg-white p-6 rounded-[2.5rem] shadow-[0_10px_40px_-15px_rgba(0,0,0,0.03)] border border-slate-50 hover:border-[#B48646]/20 hover:shadow-[0_20px_40px_-10px_rgba(180,134,70,0.1)] hover:-translate-y-1 transition-all duration-500 cursor-pointer flex flex-col"
+                className="group bg-white p-6 rounded-[2.5rem] shadow-[0_10px_40px_-15px_rgba(0,0,0,0.03)] border border-slate-50 hover:border-[#B48646]/20 hover:shadow-[0_20px_40px_-10px_rgba(180,134,70,0.1)] hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 cursor-pointer flex flex-col"
             >
                 <div className="flex items-center gap-4 mb-6">
                     <div className="w-16 h-16 bg-slate-50 rounded-[1.2rem] flex items-center justify-center shadow-inner group-hover:bg-slate-900 transition-colors duration-500 shrink-0">
