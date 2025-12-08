@@ -1,12 +1,24 @@
-import React, { useState } from 'react';
-import { Home, Calculator, Mail, Infinity as InfinityIcon, Image as ImageIcon } from 'lucide-react';
+import React, { useState, Suspense, lazy } from 'react';
+import { Home, Calculator, Mail, Infinity as InfinityIcon, Image as ImageIcon, Loader2 } from 'lucide-react';
 import { Toaster } from 'react-hot-toast';
 
+// Import Home Page eagerly (Critical Path) for instant LCP
 import HomePage from './pages/HomePage';
-import ServicesPage from './pages/ServicesPage';
-import RealizationsPage from './pages/RealizationsPage';
-import ContactPage from './pages/ContactPage';
 import { ServiceType } from './types';
+
+// Lazy load other pages to reduce initial bundle size
+const ServicesPage = lazy(() => import('./pages/ServicesPage'));
+const RealizationsPage = lazy(() => import('./pages/RealizationsPage'));
+const ContactPage = lazy(() => import('./pages/ContactPage'));
+
+// --- COMPONENTS ---
+
+const LoadingScreen = () => (
+  <div className="h-full w-full flex flex-col items-center justify-center bg-[#FDFCF8]">
+      <Loader2 className="h-10 w-10 text-[#B48646] animate-spin mb-4" />
+      <p className="text-xs font-bold text-slate-400 uppercase tracking-widest animate-pulse">Chargement...</p>
+  </div>
+);
 
 // --- SIDEBAR COMPONENT (DESKTOP) ---
 const DesktopSidebar = ({ 
@@ -100,13 +112,22 @@ const MobileNavigation = ({ activeTab, onNavigate }: { activeTab: number; onNavi
 const App = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [initialService, setInitialService] = useState<ServiceType | null>(null);
+  
+  // Keep track of which tabs have been visited to load them only when needed
+  // Index 0 (Home) is always "visited"
+  const [mountedTabs, setMountedTabs] = useState<number[]>([0]);
 
   const handleNavigate = (index: number, serviceType?: ServiceType) => {
     setActiveTab(index);
+    
+    // Add to mounted tabs if not already present
+    if (!mountedTabs.includes(index)) {
+        setMountedTabs(prev => [...prev, index]);
+    }
+
     if (serviceType) {
       setInitialService(serviceType);
     }
-    // Note: window.scrollTo removed to maintain Keep-Alive state and scroll positions
   };
 
   return (
@@ -134,27 +155,40 @@ const App = () => {
       
       <main className="flex-1 h-full relative flex flex-col md:pl-72 transition-all duration-300 z-10">
         
-        {/* Page Content with Keep-Alive Logic */}
+        {/* Page 0: Home (Always Mounted) */}
         <div className={`flex-1 h-full overflow-hidden ${activeTab === 0 ? 'block' : 'hidden'}`}>
-             <HomePage 
-                onNavigate={handleNavigate} 
-             />
+             <HomePage onNavigate={handleNavigate} />
         </div>
         
-        <div className={`flex-1 h-full overflow-hidden ${activeTab === 1 ? 'block' : 'hidden'}`}>
-             <RealizationsPage />
-        </div>
+        {/* Page 1: Realizations (Lazy) */}
+        {mountedTabs.includes(1) && (
+            <div className={`flex-1 h-full overflow-hidden ${activeTab === 1 ? 'block' : 'hidden'}`}>
+                <Suspense fallback={<LoadingScreen />}>
+                    <RealizationsPage />
+                </Suspense>
+            </div>
+        )}
 
-        <div className={`flex-1 h-full overflow-hidden ${activeTab === 2 ? 'block' : 'hidden'}`}>
-             <ServicesPage 
-                initialService={initialService} 
-                onClearInitial={() => setInitialService(null)} 
-            />
-        </div>
+        {/* Page 2: Services (Lazy) */}
+        {mountedTabs.includes(2) && (
+            <div className={`flex-1 h-full overflow-hidden ${activeTab === 2 ? 'block' : 'hidden'}`}>
+                 <Suspense fallback={<LoadingScreen />}>
+                    <ServicesPage 
+                        initialService={initialService} 
+                        onClearInitial={() => setInitialService(null)} 
+                    />
+                </Suspense>
+            </div>
+        )}
 
-        <div className={`flex-1 h-full overflow-hidden ${activeTab === 3 ? 'block' : 'hidden'}`}>
-             <ContactPage />
-        </div>
+        {/* Page 3: Contact (Lazy) */}
+        {mountedTabs.includes(3) && (
+            <div className={`flex-1 h-full overflow-hidden ${activeTab === 3 ? 'block' : 'hidden'}`}>
+                 <Suspense fallback={<LoadingScreen />}>
+                    <ContactPage />
+                 </Suspense>
+            </div>
+        )}
 
         <MobileNavigation activeTab={activeTab} onNavigate={handleNavigate} />
       </main>

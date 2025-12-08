@@ -10,6 +10,12 @@
     <meta name="keywords" content="graphiste, logo, identité visuelle, montage vidéo, diaporama, ardennes, communication, PME, design, infini 24" />
     <meta name="author" content="Infini 24" />
     
+    <!-- Optimisation Performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://cdn-icons-png.flaticon.com">
+    
     <!-- PWA Configuration -->
     <link rel="manifest" href="/manifest.json" />
     <meta name="theme-color" content="#FFFFFF" />
@@ -38,6 +44,15 @@
       .no-scrollbar {
         -ms-overflow-style: none;
         scrollbar-width: none;
+      }
+      /* Animation de chargement initial */
+      .app-loader {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        width: 100vw;
+        background-color: #FDFCF8;
       }
     </style>
 <script type="importmap">
