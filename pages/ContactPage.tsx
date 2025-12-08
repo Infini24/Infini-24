@@ -90,7 +90,7 @@ ${formData.message}
 -------------------------
 Envoyé depuis le formulaire de contact Infini 24`);
 
-        window.location.href = `mailto:Dywen.officiel7@gmail.com?subject=${emailSubject}&body=${emailBody}`;
+        window.location.href = `mailto:Wendy.toussaint@icloud.com?subject=${emailSubject}&body=${emailBody}`;
         toast.success("Ouverture de votre messagerie...");
         setFormData({ ...formData, message: '' });
     };
@@ -136,7 +136,7 @@ Envoyé depuis le formulaire de contact Infini 24`);
                 </a>
 
                 {/* 2. EMAIL DIRECT (PRIORITAIRE) */}
-                <a href="mailto:Dywen.officiel7@gmail.com" className="bg-slate-50 p-4 rounded-[2rem] border border-transparent hover:border-[#B48646] hover:bg-white hover:shadow-lg transition-all active:scale-95 flex flex-col items-center justify-center gap-3 group">
+                <a href="mailto:Wendy.toussaint@icloud.com" className="bg-slate-50 p-4 rounded-[2rem] border border-transparent hover:border-[#B48646] hover:bg-white hover:shadow-lg transition-all active:scale-95 flex flex-col items-center justify-center gap-3 group">
                     <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-slate-800 shadow-sm group-hover:bg-[#B48646] group-hover:text-white transition-colors">
                         <Mail size={22} />
                     </div>

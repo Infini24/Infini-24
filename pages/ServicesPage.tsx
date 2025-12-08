@@ -63,7 +63,7 @@ Cordialement.`);
 
     // Ouverture Mail
     setTimeout(() => {
-        window.location.href = `mailto:Dywen.officiel7@gmail.com?subject=${subject}&body=${body}`;
+        window.location.href = `mailto:Wendy.toussaint@icloud.com?subject=${subject}&body=${body}`;
     }, 1000);
 
     // Fermeture auto
@@ -747,7 +747,7 @@ const VideoForm = ({ onBack, onRequest, initialValues }: FormProps) => {
                                             onChange={(e) => setPromoDesc(e.target.value)}
                                             className="w-full px-6 py-4 border-2 border-slate-100 rounded-2xl outline-none text-sm bg-slate-50 focus:bg-white focus:border-[#B48646] focus:ring-4 focus:ring-[#B48646]/10 transition-all resize-none" 
                                             rows={4} 
-                                            placeholder="Décrivez votre idée..."
+                                            placeholder="Décrivez votre idea..."
                                             spellCheck="true"
                                         ></textarea>
                                     </div>
