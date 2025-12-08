@@ -32,20 +32,20 @@ const projects: Project[] = [
     Cette bâche a été conçue en garantissant une visibilité maximale et renforçant l'attractivité du point de vente durant l'événement..`,
     images: [
       {
-        // PHOTO 1 : LE LOGO
-        url: 'https://i.postimg.cc/bSP312zq/Confiserie1.png', 
+        // PHOTO 1 : LE LOGO (Gauche)
+        url: 'https://i.postimg.cc/x8JhDKhN/Confiserie1.png', 
         caption: 'Logo Original'
       },
       {
-        // PHOTO 2 : LA BÂCHE (210x90)
-        url: 'https://i.postimg.cc/z31rxtBS/bache-confiserie-parizel3.png', 
-        caption: 'Design Bâche (210x90cm)',
-        isWide: true
+        // PHOTO 2 : LE STAND (Droite)
+        url: 'https://i.postimg.cc/L5YwKz7W/595632468_881895807702564_2191728216735661234_n.jpg', 
+        caption: 'Mise en situation sur le stand'
       },
       {
-        // PHOTO 3 : LE STAND
-        url: 'https://i.postimg.cc/30hn2D3j/595632468-881895807702564-2191728216735661234-n.jpg', 
-        caption: 'Mise en situation sur le stand'
+        // PHOTO 3 : LA BÂCHE (En dessous, pleine largeur)
+        url: 'https://i.postimg.cc/L4J86GF7/bache_confiserie_parizel3.png', 
+        caption: 'Design Bâche (210x90cm)',
+        isWide: true
       }
     ]
   }
@@ -56,13 +56,18 @@ const projects: Project[] = [
 const ImageModal = ({ image, onClose }: { image: ProjectImage | null, onClose: () => void }) => {
   if (!image) return null;
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/95 backdrop-blur-md animate-in fade-in duration-200" onClick={onClose}>
-      <button onClick={onClose} className="absolute top-4 right-4 text-white/70 hover:text-white bg-white/10 p-2 rounded-full transition-colors">
-        <X size={24} />
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-0 md:p-4 bg-slate-900/98 backdrop-blur-xl animate-in fade-in duration-300" onClick={onClose}>
+      <button onClick={onClose} className="absolute top-4 right-4 text-white/70 hover:text-white bg-white/10 p-3 rounded-full transition-colors z-50">
+        <X size={28} />
       </button>
-      <div className="max-w-5xl w-full max-h-[90vh] flex flex-col items-center">
-        <img src={image.url} alt={image.caption} className="max-w-full max-h-[80vh] object-contain rounded-lg shadow-2xl" />
-        <p className="mt-4 text-white/90 font-medium text-lg">{image.caption}</p>
+      <div className="w-full h-full flex flex-col items-center justify-center p-2">
+        <img 
+            src={image.url} 
+            alt={image.caption} 
+            className="w-auto h-auto max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl animate-in zoom-in-95 duration-300" 
+            style={{ imageRendering: 'auto' }} // Assure le meilleur rendu possible
+        />
+        <p className="mt-6 text-white/90 font-medium text-xl tracking-wide">{image.caption}</p>
       </div>
     </div>
   );
@@ -129,25 +134,27 @@ const RealizationsPage: React.FC = () => {
                   </p>
                 </div>
 
-                {/* Images Grid */}
-                <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {/* Images Grid Optimisée pour le centrage (2 colonnes) */}
+                <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                   {project.images.map((img, idx) => (
                     <div 
                       key={idx} 
-                      className={`relative group rounded-2xl overflow-hidden cursor-pointer bg-slate-50 border border-slate-100 shadow-sm transition-all duration-300 hover:shadow-md ${img.isWide ? 'md:col-span-2 lg:col-span-2' : ''} ${img.isWide ? 'aspect-[21/9]' : 'aspect-square'}`}
+                      className={`relative group rounded-2xl overflow-hidden cursor-pointer bg-slate-50 border border-slate-100 shadow-sm transition-all duration-300 hover:shadow-md 
+                        ${img.isWide ? 'md:col-span-2 aspect-[21/9] md:aspect-[3/1]' : 'aspect-square md:col-span-1'}
+                      `}
                       onClick={() => setSelectedImage(img)}
                     >
                       <div className={`w-full h-full flex items-center justify-center ${img.isWide ? 'bg-white' : ''}`}>
                          <img 
                             src={img.url} 
                             alt={img.caption} 
-                            className={`transition-transform duration-700 group-hover:scale-105 ${img.isWide ? 'w-full h-full object-contain p-2' : 'w-full h-full object-cover'}`}
+                            className={`transition-transform duration-700 group-hover:scale-[1.02] ${img.isWide ? 'w-full h-full object-contain' : 'w-full h-full object-cover'}`}
                          />
                       </div>
                       
-                      <div className="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/20 transition-colors duration-300 flex items-center justify-center pointer-events-none">
-                         <div className="bg-white/90 p-3 rounded-full opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 shadow-lg text-slate-800">
-                            <Maximize2 size={20} />
+                      <div className="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/10 transition-colors duration-300 flex items-center justify-center pointer-events-none">
+                         <div className="bg-white/90 p-4 rounded-full opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 shadow-xl text-slate-800">
+                            <Maximize2 size={24} />
                          </div>
                       </div>
                       <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
