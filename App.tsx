@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Home, Calculator, Mail, Infinity as InfinityIcon, Image as ImageIcon } from 'lucide-react';
 import { Toaster } from 'react-hot-toast';
 
@@ -110,6 +110,42 @@ const App = () => {
   // This allows instant switching while keeping state (forms don't reset)
   const [mountedTabs, setMountedTabs] = useState<number[]>([0]);
 
+  // Gestion initiale de l'URL et nettoyage
+  useEffect(() => {
+    // 1. Nettoyage URL sale (fbclid)
+    const url = new URL(window.location.href);
+    if (url.searchParams.has('fbclid')) {
+        url.searchParams.delete('fbclid');
+        window.history.replaceState({}, document.title, url.pathname);
+    }
+
+    // 2. Routing initial
+    const path = window.location.pathname;
+    let initialTab = 0;
+    if (path.includes('nos-realisations') || path.includes('realisations')) initialTab = 1;
+    else if (path.includes('nos-services') || path.includes('services')) initialTab = 2;
+    else if (path.includes('contact')) initialTab = 3;
+
+    if (initialTab !== 0) {
+        setActiveTab(initialTab);
+        setMountedTabs(prev => [...prev, initialTab]);
+    }
+  }, []);
+
+  // Gestion du bouton "Précédent" du navigateur (Back Button)
+  useEffect(() => {
+    const handlePopState = () => {
+        const path = window.location.pathname;
+        if (path.includes('contact')) setActiveTab(3);
+        else if (path.includes('services')) setActiveTab(2);
+        else if (path.includes('realisations')) setActiveTab(1);
+        else setActiveTab(0);
+    };
+    
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
   const handleNavigate = (index: number, serviceType?: ServiceType) => {
     setActiveTab(index);
     
@@ -120,6 +156,16 @@ const App = () => {
 
     if (serviceType) {
       setInitialService(serviceType);
+    }
+
+    // Mise à jour URL sans rechargement
+    let path = '/';
+    if (index === 1) path = '/nos-realisations';
+    if (index === 2) path = '/nos-services';
+    if (index === 3) path = '/contact';
+    
+    if (window.location.pathname !== path) {
+        window.history.pushState({}, '', path);
     }
   };
 
@@ -142,7 +188,7 @@ const App = () => {
         className="fixed inset-0 z-0 pointer-events-none transform-gpu will-change-transform"
         style={{
           background: `
-            radial-gradient(circle at 90% 10%, rgba(180, 134, 70, 0.05) 0%, transparent 40%),
+            radial-gradient(circle at 90% 10%, rgba(180, 134, 70, 0.08) 0%, transparent 40%),
             radial-gradient(circle at 10% 90%, rgba(30, 41, 59, 0.03) 0%, transparent 40%),
             radial-gradient(circle at 50% 50%, rgba(243, 192, 107, 0.03) 0%, transparent 50%)
           `
