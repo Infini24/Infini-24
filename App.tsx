@@ -30,7 +30,8 @@ const DesktopSidebar = ({
 }) => {
 
   return (
-    <aside className="hidden md:flex flex-col w-72 h-screen fixed left-0 top-0 bg-white/80 backdrop-blur-xl border-r border-slate-100 shadow-[4px_0_24px_rgba(0,0,0,0.02)] z-50 overflow-y-auto">
+    // Optimisation: backdrop-blur-md au lieu de xl pour performance PC
+    <aside className="hidden md:flex flex-col w-72 h-screen fixed left-0 top-0 bg-white/90 backdrop-blur-md border-r border-slate-100 shadow-[4px_0_24px_rgba(0,0,0,0.02)] z-50 overflow-y-auto">
       {/* Sidebar Header / Logo */}
       <div className="p-8 pb-4 flex flex-col items-start">
         <div className="flex items-center gap-3 mb-1 group cursor-pointer" onClick={() => onNavigate(0)}>
@@ -141,12 +142,21 @@ const App = () => {
         }}
       />
 
-      {/* GLOBAL BACKGROUND ELEMENTS - GPU ACCELERATED */}
-      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-[#B48646]/5 rounded-full blur-[120px] opacity-60 transform-gpu will-change-transform translate-z-0" />
-        <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-slate-900/5 rounded-full blur-[100px] opacity-60 transform-gpu will-change-transform translate-z-0" />
-        <div className="absolute top-[40%] left-[20%] w-[300px] h-[300px] bg-[#F3C06B]/5 rounded-full blur-[80px] opacity-40 transform-gpu will-change-transform translate-z-0" />
-      </div>
+      {/* 
+          OPTIMISATION PERFORMANCE PC : 
+          Remplacement des divs avec 'filter: blur()' (très lent sur grand écran) 
+          par un gradient radial fixe (accéléré GPU et instantané).
+      */}
+      <div 
+        className="fixed inset-0 z-0 pointer-events-none"
+        style={{
+          background: `
+            radial-gradient(circle at 90% 10%, rgba(180, 134, 70, 0.05) 0%, transparent 40%),
+            radial-gradient(circle at 10% 90%, rgba(30, 41, 59, 0.03) 0%, transparent 40%),
+            radial-gradient(circle at 50% 50%, rgba(243, 192, 107, 0.03) 0%, transparent 50%)
+          `
+        }}
+      />
 
       <DesktopSidebar 
         activeTab={activeTab} 
