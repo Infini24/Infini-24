@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, Sliders, CheckCircle, Video, PenTool, LifeBuoy, Crown, Palette, Film, Lock, X, Check, ArrowRight, Phone, Mail, MessageCircle, ShieldCheck, Eye, Sparkles, Calculator } from 'lucide-react';
 import { ServiceType } from '../types';
@@ -252,6 +253,60 @@ const GraphicDesignForm = ({ onBack, onRequest, initialValues }: FormProps) => {
         onRequest(serviceName, price, fullDetails);
     };
 
+    const renderConfigPanel = () => (
+        <div className="space-y-6 animate-in slide-in-from-top duration-300">
+            <div className="bg-white p-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 space-y-6">
+                <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2 mb-4">
+                    <Palette size={14} /> Personnalisation
+                </h3>
+                <div>
+                    <label className="block text-sm font-bold text-slate-700 mb-3">Nom de l'entreprise</label>
+                    <input 
+                        type="text" 
+                        value={companyName}
+                        onChange={(e) => setCompanyName(e.target.value)}
+                        className="w-full px-6 py-4 border-2 border-slate-100 rounded-2xl focus:border-[#B48646] focus:ring-4 focus:ring-[#B48646]/10 outline-none transition-all bg-slate-50 focus:bg-white text-sm" 
+                        placeholder="Ex: Boulangerie Durand" 
+                        required 
+                        autoComplete="organization"
+                        spellCheck="true"
+                    />
+                </div>
+                
+                <div>
+                    <label className="block text-sm font-bold text-slate-700 mb-3">Détails</label>
+                    <textarea 
+                        value={details}
+                        onChange={(e) => setDetails(e.target.value)}
+                        className="w-full px-6 py-4 border-2 border-slate-100 rounded-2xl outline-none text-sm focus:border-[#B48646] focus:ring-4 focus:ring-[#B48646]/10 bg-slate-50 focus:bg-white transition-all resize-none" 
+                        rows={3} 
+                        placeholder="Couleurs, ambiance, préférences..."
+                        spellCheck="true"
+                    ></textarea>
+                </div>
+            </div>
+
+            <div className="bg-slate-900 p-8 rounded-[2.5rem] border border-slate-800 text-center relative overflow-hidden text-white shadow-2xl">
+                <div className="absolute top-0 left-0 w-32 h-32 bg-[#B48646] blur-[60px] opacity-30 rounded-full pointer-events-none animate-pulse"></div>
+                <div className="absolute bottom-0 right-0 w-32 h-32 bg-[#F3C06B] blur-[60px] opacity-20 rounded-full pointer-events-none"></div>
+                
+                <span className="block text-xs text-slate-400 uppercase tracking-widest font-bold mb-2 relative z-10">Total Estimé</span>
+                <div className="flex flex-col items-center justify-center gap-0 relative z-10">
+                    {subService === 'identity_complete' && (
+                            <span className="text-white/50 line-through text-lg font-bold">370€</span>
+                    )}
+                    <span className="text-6xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-[#B48646] to-[#F3C06B]">{price}€</span>
+                </div>
+                <p className="text-[10px] text-slate-400 mt-2 font-medium relative z-10">Paiement uniquement à la validation finale</p>
+                
+            </div>
+
+            <button type="submit" className="w-full bg-gradient-to-r from-[#B48646] to-[#E5B066] text-white font-bold text-lg py-5 rounded-[2rem] shadow-xl shadow-[#B48646]/30 hover:shadow-2xl hover:shadow-[#B48646]/40 hover:-translate-y-1 transition-all active:scale-95 flex items-center justify-center gap-3 group">
+                    <Eye size={22} className="group-hover:scale-100 transition-transform" /> Lancer le projet
+            </button>
+        </div>
+    );
+
     return (
         <div className="flex flex-col h-full overflow-y-auto no-scrollbar pb-20">
             {/* Form Header */}
@@ -306,10 +361,17 @@ const GraphicDesignForm = ({ onBack, onRequest, initialValues }: FormProps) => {
                                                     <span className="text-xs text-slate-400 line-through font-bold">370€</span>
                                                     <span className="inline-block px-3 py-1.5 bg-[#B48646]/10 text-[#B48646] rounded-xl font-bold text-sm">320€</span>
                                                 </div>
-                                                <p className="text-[10px] text-[#B48646] font-bold mt-1">50€ de Cartes de Visite & Flyers OFFERTS !</p>
+                                                <p className="text-[10px] text--[#B48646] font-bold mt-1 text-[#B48646]">50€ de Cartes de Visite & Flyers OFFERTS !</p>
                                             </div>
                                         </div>
                                     </label>
+
+                                    {/* MOBILE SIMULATOR ACCORDION (Hidden on LG) */}
+                                    {subService === 'identity_complete' && (
+                                        <div className="lg:hidden mt-4 pl-4 border-l-2 border-[#B48646]/20">
+                                            {renderConfigPanel()}
+                                        </div>
+                                    )}
 
                                     <label className={`border-2 p-5 rounded-[2rem] cursor-pointer transition-all duration-300 hover:scale-[1.02] ${subService === 'logo_creation' ? 'bg-[#fffcf5] border-[#B48646] shadow-lg' : 'bg-slate-50 hover:bg-white border-transparent shadow-sm'}`}>
                                         <div className="flex items-start gap-4">
@@ -336,6 +398,13 @@ const GraphicDesignForm = ({ onBack, onRequest, initialValues }: FormProps) => {
                                             </div>
                                         </div>
                                     </label>
+
+                                    {/* MOBILE SIMULATOR ACCORDION (Hidden on LG) */}
+                                    {subService === 'logo_creation' && (
+                                        <div className="lg:hidden mt-4 pl-4 border-l-2 border-[#B48646]/20">
+                                            {renderConfigPanel()}
+                                        </div>
+                                    )}
 
                                     <label className={`border-2 p-5 rounded-[2rem] cursor-pointer transition-all duration-300 hover:scale-[1.02] ${subService === 'print' ? 'bg-[#fffcf5] border-[#B48646] shadow-lg' : 'bg-slate-50 hover:bg-white border-transparent shadow-sm'}`}>
                                         <div className="flex items-start gap-4">
@@ -364,6 +433,13 @@ const GraphicDesignForm = ({ onBack, onRequest, initialValues }: FormProps) => {
                                         </div>
                                     </label>
 
+                                    {/* MOBILE SIMULATOR ACCORDION (Hidden on LG) */}
+                                    {subService === 'print' && (
+                                        <div className="lg:hidden mt-4 pl-4 border-l-2 border-[#B48646]/20">
+                                            {renderConfigPanel()}
+                                        </div>
+                                    )}
+
                                     <label className={`border-2 p-5 rounded-[2rem] cursor-pointer transition-all duration-300 hover:scale-[1.02] ${subService === 'social_kit' ? 'bg-[#fffcf5] border-[#B48646] shadow-lg' : 'bg-slate-50 hover:bg-white border-transparent shadow-sm'}`}>
                                         <div className="flex items-start gap-4">
                                             <div className={`mt-1 w-5 h-5 rounded-full border-2 flex items-center justify-center ${subService === 'social_kit' ? 'border-[#B48646]' : 'border-slate-200'}`}>
@@ -390,59 +466,19 @@ const GraphicDesignForm = ({ onBack, onRequest, initialValues }: FormProps) => {
                                         </div>
                                     </label>
 
+                                    {/* MOBILE SIMULATOR ACCORDION (Hidden on LG) */}
+                                    {subService === 'social_kit' && (
+                                        <div className="lg:hidden mt-4 pl-4 border-l-2 border-[#B48646]/20">
+                                            {renderConfigPanel()}
+                                        </div>
+                                    )}
+
                                 </div>
                             </div>
 
-                            <div className="space-y-6">
-                                <div className="bg-white p-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 space-y-6">
-                                    <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2 mb-4">
-                                        <Palette size={14} /> Personnalisation
-                                    </h3>
-                                    <div>
-                                        <label className="block text-sm font-bold text-slate-700 mb-3">Nom de l'entreprise</label>
-                                        <input 
-                                            type="text" 
-                                            value={companyName}
-                                            onChange={(e) => setCompanyName(e.target.value)}
-                                            className="w-full px-6 py-4 border-2 border-slate-100 rounded-2xl focus:border-[#B48646] focus:ring-4 focus:ring-[#B48646]/10 outline-none transition-all bg-slate-50 focus:bg-white text-sm" 
-                                            placeholder="Ex: Boulangerie Durand" 
-                                            required 
-                                            autoComplete="organization"
-                                            spellCheck="true"
-                                        />
-                                    </div>
-                                    
-                                    <div>
-                                        <label className="block text-sm font-bold text-slate-700 mb-3">Détails</label>
-                                        <textarea 
-                                            value={details}
-                                            onChange={(e) => setDetails(e.target.value)}
-                                            className="w-full px-6 py-4 border-2 border-slate-100 rounded-2xl outline-none text-sm focus:border-[#B48646] focus:ring-4 focus:ring-[#B48646]/10 bg-slate-50 focus:bg-white transition-all resize-none" 
-                                            rows={3} 
-                                            placeholder="Couleurs, ambiance, préférences..."
-                                            spellCheck="true"
-                                        ></textarea>
-                                    </div>
-                                </div>
-
-                                <div className="bg-slate-900 p-8 rounded-[2.5rem] border border-slate-800 text-center relative overflow-hidden text-white shadow-2xl">
-                                    <div className="absolute top-0 left-0 w-32 h-32 bg-[#B48646] blur-[60px] opacity-30 rounded-full pointer-events-none animate-pulse"></div>
-                                    <div className="absolute bottom-0 right-0 w-32 h-32 bg-[#F3C06B] blur-[60px] opacity-20 rounded-full pointer-events-none"></div>
-                                    
-                                    <span className="block text-xs text-slate-400 uppercase tracking-widest font-bold mb-2 relative z-10">Total Estimé</span>
-                                    <div className="flex flex-col items-center justify-center gap-0 relative z-10">
-                                        {subService === 'identity_complete' && (
-                                             <span className="text-white/50 line-through text-lg font-bold">370€</span>
-                                        )}
-                                        <span className="text-6xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-[#B48646] to-[#F3C06B]">{price}€</span>
-                                    </div>
-                                    <p className="text-[10px] text-slate-400 mt-2 font-medium relative z-10">Paiement uniquement à la validation finale</p>
-                                    
-                                </div>
-
-                                <button type="submit" className="w-full bg-gradient-to-r from-[#B48646] to-[#E5B066] text-white font-bold text-lg py-5 rounded-[2rem] shadow-xl shadow-[#B48646]/30 hover:shadow-2xl hover:shadow-[#B48646]/40 hover:-translate-y-1 transition-all active:scale-95 flex items-center justify-center gap-3 group">
-                                     <Eye size={22} className="group-hover:scale-100 transition-transform" /> Lancer le projet
-                                </button>
+                            {/* DESKTOP CONFIG PANEL (Hidden on Mobile) */}
+                            <div className="hidden lg:block sticky top-6">
+                                {renderConfigPanel()}
                             </div>
                         </div>
                     </form>
