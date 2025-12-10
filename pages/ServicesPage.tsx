@@ -540,6 +540,110 @@ const VideoForm = ({ onBack, onRequest, initialValues }: FormProps) => {
         onRequest(name, price, details);
     }
 
+    // --- RENDERERS ---
+
+    const renderPricingSimulator = () => (
+        <div className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-slate-100 space-y-8 animate-in slide-in-from-top duration-300">
+            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                <Sliders size={14} /> Simulateur de tarif
+            </h3>
+            
+            {subService !== 'grading' && subService !== 'digitization' && (
+                <div>
+                    <label className="flex justify-between text-sm font-bold text-slate-700 mb-3">
+                        <span>Nombre de photos</span>
+                        <span className="text-[#B48646] bg-[#B48646]/10 px-3 py-1 rounded-xl font-bold text-xs">{photos} photos</span>
+                    </label>
+                    <input type="range" min="10" max="500" step="10" value={photos} onChange={(e) => setPhotos(parseInt(e.target.value))} className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#B48646]" />
+                </div>
+            )}
+
+            {subService === 'digitization' && (
+                <div>
+                    <label className="flex justify-between text-sm font-bold text-slate-700 mb-3">
+                        <span>Nombre de cassettes</span>
+                        <span className="text-[#B48646] bg-[#B48646]/10 px-3 py-1 rounded-xl font-bold text-xs">{tapes} cassette{tapes > 1 ? 's' : ''}</span>
+                    </label>
+                    <input type="range" min="1" max="20" step="1" value={tapes} onChange={(e) => setTapes(parseInt(e.target.value))} className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#B48646]" />
+                    <p className="text-[10px] text-slate-400 mt-1">5€ par cassette</p>
+                </div>
+            )}
+
+            {(subService !== 'digitization' || subService === 'digitization') && (
+                <div>
+                    <label className="flex justify-between text-sm font-bold text-slate-700 mb-3">
+                        <span>{subService === 'digitization' ? 'Durée totale en minutes (estimée)' : 'Durée estimée (minutes)'}</span>
+                        <span className="text-[#B48646] bg-[#B48646]/10 px-3 py-1 rounded-xl font-bold text-xs">{duration} min</span>
+                    </label>
+                    <input type="range" min="1" max="180" step="1" value={duration} onChange={(e) => setDuration(parseInt(e.target.value))} className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#B48646]" />
+                    {subService === 'digitization' && <p className="text-[10px] text-slate-400 mt-1">5€ par tranche de 10 min</p>}
+                    {subService === 'grading' && <p className="text-[10px] text-slate-400 mt-1">Forfait 20€ (10 min inclus) + 1€/min sup.</p>}
+                </div>
+            )}
+
+            {subService !== 'grading' && subService !== 'digitization' && (
+                <>
+                    {(subService === 'birthday' || subService === 'wedding' || subService === 'funeral') ? (
+                        <div className="flex items-center justify-between p-5 bg-slate-50 rounded-[1.5rem] border border-slate-100 cursor-default">
+                            <span className="text-sm font-bold text-slate-700">Montage musical</span>
+                            <span className="text-[#B48646] font-bold text-xs bg-[#B48646]/10 px-3 py-1 rounded-full border border-[#B48646]/20">INCLUS</span>
+                        </div>
+                    ) : (
+                        <div className="flex items-center justify-between p-5 bg-slate-50 rounded-[1.5rem] border border-transparent hover:bg-white hover:shadow-md hover:border-slate-100 transition-all cursor-pointer" onClick={() => setMusicOption(!musicOption)}>
+                            <span className="text-sm font-bold text-slate-700">Montage musical (+15€)</span>
+                            <div className={`w-14 h-8 rounded-full p-1 transition-all duration-300 shadow-inner ${musicOption ? 'bg-[#B48646]' : 'bg-slate-300'}`}>
+                                <div className={`w-6 h-6 bg-white rounded-full shadow-md transform transition-transform duration-300 ${musicOption ? 'translate-x-6' : 'translate-x-0'}`} />
+                            </div>
+                        </div>
+                    )}
+                </>
+            )}
+
+            <div className="bg-slate-900 p-8 rounded-[2.5rem] text-center border border-slate-800 text-white relative overflow-hidden shadow-inner">
+                <div className="absolute top-0 left-0 w-32 h-32 bg-[#B48646] blur-[60px] opacity-20"></div>
+                <span className="block text-xs text-slate-400 uppercase tracking-widest font-bold relative z-10">Total TTC</span>
+                <span className="block text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#B48646] to-[#F3C06B] mt-2 relative z-10 tracking-tight">{price}€</span>
+                <p className="text-[10px] text-slate-400 mt-2 font-medium relative z-10">Paiement uniquement à la fin</p>
+            </div>
+
+            <button onClick={handleOrder} className="w-full bg-gradient-to-r from-[#B48646] to-[#E5B066] hover:shadow-xl hover:shadow-[#B48646]/30 hover:-translate-y-1 text-white font-bold py-5 rounded-[2rem] transition-all active:scale-95 flex justify-center items-center gap-3">
+                <Eye size={20} /> Demander ce projet
+            </button>
+        </div>
+    );
+
+    const renderPromoForm = () => (
+        <div className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-slate-100 space-y-6 animate-in slide-in-from-top duration-300">
+            <p className="text-sm text-slate-600 bg-[#B48646]/5 p-6 rounded-2xl border border-[#B48646]/20 font-medium leading-relaxed">Pour les vidéos promotionnelles, nous réalisons un devis sur mesure après étude de votre scénario.</p>
+            <div>
+                <label className="block text-sm font-bold text-slate-700 mb-3">Objectif de la vidéo</label>
+                <input 
+                    type="text" 
+                    value={promoObjective}
+                    onChange={(e) => setPromoObjective(e.target.value)}
+                    className="w-full px-6 py-4 border-2 border-slate-100 rounded-2xl outline-none bg-slate-50 focus:bg-white focus:border-[#B48646] focus:ring-4 focus:ring-[#B48646]/10 transition-all text-sm" 
+                    placeholder="Ex: Présentation produit..." 
+                    autoComplete="off"
+                    spellCheck="true"
+                />
+            </div>
+            <div>
+                <label className="block text-sm font-bold text-slate-700 mb-3">Description du projet</label>
+                <textarea 
+                    value={promoDesc}
+                    onChange={(e) => setPromoDesc(e.target.value)}
+                    className="w-full px-6 py-4 border-2 border-slate-100 rounded-2xl outline-none text-sm bg-slate-50 focus:bg-white focus:border-[#B48646] focus:ring-4 focus:ring-[#B48646]/10 transition-all resize-none" 
+                    rows={4} 
+                    placeholder="Décrivez votre idée..."
+                    spellCheck="true"
+                ></textarea>
+            </div>
+            <button onClick={handleOrder} className="w-full mt-2 bg-slate-900 text-white font-bold py-5 rounded-[2rem] shadow-lg hover:shadow-xl hover:bg-slate-800 transition-all active:scale-95">
+                Demander un devis
+            </button>
+        </div>
+    );
+
     return (
         <div className="flex flex-col h-full overflow-y-auto no-scrollbar pb-20">
             {/* Form Header */}
@@ -570,192 +674,103 @@ const VideoForm = ({ onBack, onRequest, initialValues }: FormProps) => {
                     </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        {/* COLUMN 1: SERVICE TYPES */}
                         <div>
                             <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm mb-6">
                                 <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-6">Type de projet</label>
                                 <div className="space-y-4">
                                     {['birthday', 'wedding', 'funeral', 'digitization', 'grading', 'promo'].map((type) => (
-                                        <label key={type} className={`border-2 p-5 rounded-[2rem] flex items-start gap-4 cursor-pointer transition-all duration-300 hover:scale-[1.02] ${subService === type ? 'bg-[#fffcf5] border-[#B48646]' : 'bg-slate-50 hover:bg-white border-transparent'}`}>
-                                            <input type="radio" name="videoType" value={type} checked={subService === type} onChange={() => setSubService(type)} className="w-5 h-5 accent-[#B48646] mt-1" />
-                                            <div>
-                                                <span className="text-sm font-bold text-slate-800 block mb-2">
-                                                    {type === 'birthday' && 'Diaporama Anniversaire / Retraite'}
-                                                    {type === 'wedding' && 'Diaporama Mariage / Baptême'}
-                                                    {type === 'funeral' && 'Hommage & Obsèques'}
-                                                    {type === 'digitization' && 'Numérisation VHS'}
-                                                    {type === 'grading' && 'Retouche Colorimétrique'}
-                                                    {type === 'promo' && 'Montage Vidéo Promotionnel'}
-                                                </span>
-                                                <div className="space-y-1">
-                                                    {type === 'birthday' && [
-                                                        "Revivez vos souvenirs d'antan",
-                                                        "Vidéo émouvante",
-                                                        "Musique incluse (au choix)"
-                                                    ].map((item, i) => (
-                                                        <div key={i} className="flex items-center gap-2 text-[10px] text-slate-500">
-                                                            <Check size={10} className="text-[#B48646]" /> {item}
-                                                        </div>
-                                                    ))}
+                                        <React.Fragment key={type}>
+                                            <label className={`border-2 p-5 rounded-[2rem] flex items-start gap-4 cursor-pointer transition-all duration-300 hover:scale-[1.02] ${subService === type ? 'bg-[#fffcf5] border-[#B48646]' : 'bg-slate-50 hover:bg-white border-transparent'}`}>
+                                                <input type="radio" name="videoType" value={type} checked={subService === type} onChange={() => setSubService(type)} className="w-5 h-5 accent-[#B48646] mt-1" />
+                                                <div className="flex-1">
+                                                    <span className="text-sm font-bold text-slate-800 block mb-2">
+                                                        {type === 'birthday' && 'Diaporama Anniversaire / Retraite'}
+                                                        {type === 'wedding' && 'Diaporama Mariage / Baptême'}
+                                                        {type === 'funeral' && 'Hommage & Obsèques'}
+                                                        {type === 'digitization' && 'Numérisation VHS'}
+                                                        {type === 'grading' && 'Retouche Colorimétrique'}
+                                                        {type === 'promo' && 'Montage Vidéo Promotionnel'}
+                                                    </span>
+                                                    <div className="space-y-1">
+                                                        {type === 'birthday' && [
+                                                            "Revivez vos souvenirs d'antan",
+                                                            "Vidéo émouvante",
+                                                            "Musique incluse (au choix)"
+                                                        ].map((item, i) => (
+                                                            <div key={i} className="flex items-center gap-2 text-[10px] text-slate-500">
+                                                                <Check size={10} className="text-[#B48646]" /> {item}
+                                                            </div>
+                                                        ))}
 
-                                                    {type === 'wedding' && [
-                                                        "Revivez vos souvenirs d'antan",
-                                                        "Vidéo émouvante",
-                                                        "Musique incluse (au choix)"
-                                                    ].map((item, i) => (
-                                                        <div key={i} className="flex items-center gap-2 text-[10px] text-slate-500">
-                                                            <Check size={10} className="text-[#B48646]" /> {item}
-                                                        </div>
-                                                    ))}
+                                                        {type === 'wedding' && [
+                                                            "Revivez vos souvenirs d'antan",
+                                                            "Vidéo émouvante",
+                                                            "Musique incluse (au choix)"
+                                                        ].map((item, i) => (
+                                                            <div key={i} className="flex items-center gap-2 text-[10px] text-slate-500">
+                                                                <Check size={10} className="text-[#B48646]" /> {item}
+                                                            </div>
+                                                        ))}
 
-                                                    {type === 'funeral' && [
-                                                        "Hommage sobre et élégant",
-                                                        "Traitement prioritaire",
-                                                        "Musique douce incluse"
-                                                    ].map((item, i) => (
-                                                        <div key={i} className="flex items-center gap-2 text-[10px] text-slate-500">
-                                                            <Check size={10} className="text-[#B48646]" /> {item}
-                                                        </div>
-                                                    ))}
+                                                        {type === 'funeral' && [
+                                                            "Hommage sobre et élégant",
+                                                            "Traitement prioritaire",
+                                                            "Musique douce incluse"
+                                                        ].map((item, i) => (
+                                                            <div key={i} className="flex items-center gap-2 text-[10px] text-slate-500">
+                                                                <Check size={10} className="text-[#B48646]" /> {item}
+                                                            </div>
+                                                        ))}
 
-                                                    {type === 'digitization' && [
-                                                        "Transfert VHS vers Numérique",
-                                                        "Amélioration Qualité",
-                                                        "Livraison Clé USB / Cloud"
-                                                    ].map((item, i) => (
-                                                        <div key={i} className="flex items-center gap-2 text-[10px] text-slate-500">
-                                                            <Check size={10} className="text-[#B48646]" /> {item}
-                                                        </div>
-                                                    ))}
+                                                        {type === 'digitization' && [
+                                                            "Transfert VHS vers Numérique",
+                                                            "Amélioration Qualité",
+                                                            "Livraison Clé USB / Cloud"
+                                                        ].map((item, i) => (
+                                                            <div key={i} className="flex items-center gap-2 text-[10px] text-slate-500">
+                                                                <Check size={10} className="text-[#B48646]" /> {item}
+                                                            </div>
+                                                        ))}
 
-                                                    {type === 'grading' && [
-                                                        "Correction Luminosité & Contraste",
-                                                        "Harmonisation des couleurs",
-                                                        "Style Cinéma / Vintage / Noir & Blanc"
-                                                    ].map((item, i) => (
-                                                        <div key={i} className="flex items-center gap-2 text-[10px] text-slate-500">
-                                                            <Check size={10} className="text-[#B48646]" /> {item}
-                                                        </div>
-                                                    ))}
+                                                        {type === 'grading' && [
+                                                            "Correction Luminosité & Contraste",
+                                                            "Harmonisation des couleurs",
+                                                            "Style Cinéma / Vintage / Noir & Blanc"
+                                                        ].map((item, i) => (
+                                                            <div key={i} className="flex items-center gap-2 text-[10px] text-slate-500">
+                                                                <Check size={10} className="text-[#B48646]" /> {item}
+                                                            </div>
+                                                        ))}
 
-                                                    {type === 'promo' && [
-                                                         "Vidéo Promotionnelle (PME)",
-                                                         "Format Réseaux Sociaux",
-                                                         "Texte & Sous-titres"
-                                                    ].map((item, i) => (
-                                                        <div key={i} className="flex items-center gap-2 text-[10px] text-slate-500">
-                                                            <Check size={10} className="text-[#B48646]" /> {item}
-                                                        </div>
-                                                    ))}
+                                                        {type === 'promo' && [
+                                                            "Vidéo Promotionnelle (PME)",
+                                                            "Format Réseaux Sociaux",
+                                                            "Texte & Sous-titres"
+                                                        ].map((item, i) => (
+                                                            <div key={i} className="flex items-center gap-2 text-[10px] text-slate-500">
+                                                                <Check size={10} className="text-[#B48646]" /> {item}
+                                                            </div>
+                                                        ))}
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </label>
+                                            </label>
+
+                                            {/* MOBILE SIMULATOR ACCORDION (Hidden on LG) */}
+                                            {subService === type && (
+                                                <div className="lg:hidden mt-4 pl-4 border-l-2 border-[#B48646]/20">
+                                                    {(subService === 'promo') ? renderPromoForm() : renderPricingSimulator()}
+                                                </div>
+                                            )}
+                                        </React.Fragment>
                                     ))}
                                 </div>
                             </div>
                         </div>
 
-                        <div>
-                            {(subService === 'birthday' || subService === 'wedding' || subService === 'grading' || subService === 'funeral' || subService === 'digitization') && (
-                                <div className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-slate-100 space-y-8 animate-in fade-in duration-300">
-                                    <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                                        <Sliders size={14} /> Simulateur de tarif
-                                    </h3>
-                                    
-                                    {subService !== 'grading' && subService !== 'digitization' && (
-                                        <div>
-                                            <label className="flex justify-between text-sm font-bold text-slate-700 mb-3">
-                                                <span>Nombre de photos</span>
-                                                <span className="text-[#B48646] bg-[#B48646]/10 px-3 py-1 rounded-xl font-bold text-xs">{photos} photos</span>
-                                            </label>
-                                            <input type="range" min="10" max="500" step="10" value={photos} onChange={(e) => setPhotos(parseInt(e.target.value))} className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#B48646]" />
-                                        </div>
-                                    )}
-
-                                    {subService === 'digitization' && (
-                                        <div>
-                                            <label className="flex justify-between text-sm font-bold text-slate-700 mb-3">
-                                                <span>Nombre de cassettes</span>
-                                                <span className="text-[#B48646] bg-[#B48646]/10 px-3 py-1 rounded-xl font-bold text-xs">{tapes} cassette{tapes > 1 ? 's' : ''}</span>
-                                            </label>
-                                            <input type="range" min="1" max="20" step="1" value={tapes} onChange={(e) => setTapes(parseInt(e.target.value))} className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#B48646]" />
-                                            <p className="text-[10px] text-slate-400 mt-1">5€ par cassette</p>
-                                        </div>
-                                    )}
-
-                                    {(subService !== 'digitization' || subService === 'digitization') && (
-                                        <div>
-                                            <label className="flex justify-between text-sm font-bold text-slate-700 mb-3">
-                                                <span>{subService === 'digitization' ? 'Durée totale en minutes (estimée)' : 'Durée estimée (minutes)'}</span>
-                                                <span className="text-[#B48646] bg-[#B48646]/10 px-3 py-1 rounded-xl font-bold text-xs">{duration} min</span>
-                                            </label>
-                                            <input type="range" min="1" max="180" step="1" value={duration} onChange={(e) => setDuration(parseInt(e.target.value))} className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#B48646]" />
-                                            {subService === 'digitization' && <p className="text-[10px] text-slate-400 mt-1">5€ par tranche de 10 min</p>}
-                                            {subService === 'grading' && <p className="text-[10px] text-slate-400 mt-1">Forfait 20€ (10 min inclus) + 1€/min sup.</p>}
-                                        </div>
-                                    )}
-
-                                    {subService !== 'grading' && subService !== 'digitization' && (
-                                        <>
-                                            {(subService === 'birthday' || subService === 'wedding' || subService === 'funeral') ? (
-                                                <div className="flex items-center justify-between p-5 bg-slate-50 rounded-[1.5rem] border border-slate-100 cursor-default">
-                                                    <span className="text-sm font-bold text-slate-700">Montage musical</span>
-                                                    <span className="text-[#B48646] font-bold text-xs bg-[#B48646]/10 px-3 py-1 rounded-full border border-[#B48646]/20">INCLUS</span>
-                                                </div>
-                                            ) : (
-                                                <div className="flex items-center justify-between p-5 bg-slate-50 rounded-[1.5rem] border border-transparent hover:bg-white hover:shadow-md hover:border-slate-100 transition-all cursor-pointer" onClick={() => setMusicOption(!musicOption)}>
-                                                    <span className="text-sm font-bold text-slate-700">Montage musical (+15€)</span>
-                                                    <div className={`w-14 h-8 rounded-full p-1 transition-all duration-300 shadow-inner ${musicOption ? 'bg-[#B48646]' : 'bg-slate-300'}`}>
-                                                        <div className={`w-6 h-6 bg-white rounded-full shadow-md transform transition-transform duration-300 ${musicOption ? 'translate-x-6' : 'translate-x-0'}`} />
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </>
-                                    )}
-
-                                    <div className="bg-slate-900 p-8 rounded-[2.5rem] text-center border border-slate-800 text-white relative overflow-hidden shadow-inner">
-                                        <div className="absolute top-0 left-0 w-32 h-32 bg-[#B48646] blur-[60px] opacity-20"></div>
-                                        <span className="block text-xs text-slate-400 uppercase tracking-widest font-bold relative z-10">Total TTC</span>
-                                        <span className="block text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#B48646] to-[#F3C06B] mt-2 relative z-10 tracking-tight">{price}€</span>
-                                        <p className="text-[10px] text-slate-400 mt-2 font-medium relative z-10">Paiement uniquement à la fin</p>
-                                    </div>
-
-                                    <button onClick={handleOrder} className="w-full bg-gradient-to-r from-[#B48646] to-[#E5B066] hover:shadow-xl hover:shadow-[#B48646]/30 hover:-translate-y-1 text-white font-bold py-5 rounded-[2rem] transition-all active:scale-95 flex justify-center items-center gap-3">
-                                        <Eye size={20} /> Demander ce projet
-                                    </button>
-                                </div>
-                            )}
-
-                            {subService === 'promo' && (
-                                <div className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-slate-100 space-y-6 animate-in fade-in duration-300">
-                                    <p className="text-sm text-slate-600 bg-[#B48646]/5 p-6 rounded-2xl border border-[#B48646]/20 font-medium leading-relaxed">Pour les vidéos promotionnelles, nous réalisons un devis sur mesure après étude de votre scénario.</p>
-                                    <div>
-                                        <label className="block text-sm font-bold text-slate-700 mb-3">Objectif de la vidéo</label>
-                                        <input 
-                                            type="text" 
-                                            value={promoObjective}
-                                            onChange={(e) => setPromoObjective(e.target.value)}
-                                            className="w-full px-6 py-4 border-2 border-slate-100 rounded-2xl outline-none bg-slate-50 focus:bg-white focus:border-[#B48646] focus:ring-4 focus:ring-[#B48646]/10 transition-all text-sm" 
-                                            placeholder="Ex: Présentation produit..." 
-                                            autoComplete="off"
-                                            spellCheck="true"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-bold text-slate-700 mb-3">Description du projet</label>
-                                        <textarea 
-                                            value={promoDesc}
-                                            onChange={(e) => setPromoDesc(e.target.value)}
-                                            className="w-full px-6 py-4 border-2 border-slate-100 rounded-2xl outline-none text-sm bg-slate-50 focus:bg-white focus:border-[#B48646] focus:ring-4 focus:ring-[#B48646]/10 transition-all resize-none" 
-                                            rows={4} 
-                                            placeholder="Décrivez votre idea..."
-                                            spellCheck="true"
-                                        ></textarea>
-                                    </div>
-                                    <button onClick={handleOrder} className="w-full mt-2 bg-slate-900 text-white font-bold py-5 rounded-[2rem] shadow-lg hover:shadow-xl hover:bg-slate-800 transition-all active:scale-95">
-                                        Demander un devis
-                                    </button>
-                                </div>
-                            )}
+                        {/* COLUMN 2: SIMULATOR (DESKTOP ONLY) */}
+                        <div className="hidden lg:block sticky top-6">
+                            {(subService === 'promo') ? renderPromoForm() : renderPricingSimulator()}
                         </div>
                     </div>
                 </div>
