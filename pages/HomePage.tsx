@@ -1,5 +1,6 @@
+
 import React from 'react';
-import { ArrowRight, Video, PenTool, Info, LifeBuoy, Infinity as InfinityIcon, Sparkles, Briefcase, Check } from 'lucide-react';
+import { ArrowRight, Video, PenTool, Info, LifeBuoy, Infinity as InfinityIcon, Sparkles, Briefcase, Check, Gift, Snowflake } from 'lucide-react';
 import { ServiceType } from '../types';
 
 interface HomePageProps {
@@ -30,6 +31,57 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
       
       <div className="max-w-7xl mx-auto w-full pb-24 px-2 relative z-10 mt-2">
         
+        {/* PROMO NOEL SECTION */}
+        <section className="mt-2 px-4 mb-8">
+            <div 
+                className="bg-gradient-to-br from-red-700 via-red-800 to-slate-900 rounded-[2.5rem] p-8 flex flex-col md:flex-row items-center justify-between shadow-2xl shadow-red-900/20 relative overflow-hidden group cursor-pointer hover:scale-[1.01] active:scale-[0.99] transition-all duration-300 max-w-4xl mx-auto border border-red-600/30" 
+                onClick={() => onNavigate(2)}
+            >
+                {/* Background Effects */}
+                <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-white rounded-full blur-[120px] opacity-10 pointer-events-none"></div>
+                <div className="absolute top-4 right-8 text-white/10 group-hover:rotate-12 transition-transform duration-1000">
+                    <Snowflake size={120} />
+                </div>
+                <div className="absolute bottom-4 left-4 text-white/5">
+                    <Gift size={80} />
+                </div>
+                
+                <div className="relative z-10 flex-1 w-full md:w-auto mb-6 md:mb-0">
+                    <div className="flex items-center gap-3 mb-4">
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-white text-red-700 text-[10px] font-black rounded-full shadow-lg animate-pulse">
+                            <Sparkles size={10} fill="currentColor" /> OFFRE DE NOËL
+                        </span>
+                        <span className="text-[10px] font-bold text-red-200 uppercase tracking-wider">Limité au 11 Janvier</span>
+                    </div>
+
+                    <h3 className="font-extrabold text-white text-3xl md:text-5xl mb-4 leading-tight">
+                        Fêtez 2026 avec <br/>
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 to-yellow-500">-50% SUR TOUT !</span>
+                    </h3>
+                    
+                    <p className="text-red-100/80 text-sm mb-6 max-w-sm font-medium">
+                        C'est notre cadeau : profitez de la moitié du prix sur l'ensemble de nos services graphiques et vidéos.
+                    </p>
+
+                    <div className="flex items-center gap-4">
+                         <div className="px-4 py-2 bg-white/10 backdrop-blur-md rounded-2xl border border-white/10">
+                            <span className="text-white text-xs font-bold">Valable sur TOUS les services</span>
+                         </div>
+                    </div>
+                </div>
+                
+                {/* CTA Button */}
+                <div className="relative z-10 md:pl-8 flex justify-end md:block">
+                    <button 
+                        className="w-20 h-20 bg-white hover:bg-yellow-400 text-red-700 rounded-3xl flex flex-col items-center justify-center shadow-2xl transition-all duration-300 group-hover:scale-110 group-hover:-rotate-3"
+                    >
+                        <span className="text-2xl font-black">-50%</span>
+                        <ArrowRight size={20} strokeWidth={3} />
+                    </button>
+                </div>
+            </div>
+        </section>
+
         {/* Intro Text */}
         <div className="text-center max-w-md mx-auto animate-in slide-in-from-bottom duration-500 mb-8 px-4">
           <h2 className="text-2xl font-medium text-slate-800 leading-tight">
@@ -37,66 +89,6 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
             <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-slate-400 to-slate-600">communication visuelle.</span>
           </h2>
         </div>
-
-        {/* Banner / Carousel */}
-        <section className="mt-2 px-4">
-            <div 
-                className="bg-slate-900 rounded-[2.5rem] p-8 flex flex-col md:flex-row items-center justify-between shadow-xl shadow-slate-900/10 relative overflow-hidden group cursor-pointer hover:scale-[1.01] active:scale-[0.99] transition-all duration-300 max-w-4xl mx-auto border border-slate-800" 
-                onClick={() => onNavigate(2, ServiceType.GRAPHIC_DESIGN)}
-            >
-                {/* Background Effects */}
-                <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-[#B48646] rounded-full blur-[100px] opacity-10 group-hover:opacity-20 transition-opacity duration-700"></div>
-                <div className="absolute bottom-0 left-0 w-[200px] h-[200px] bg-[#F3C06B] rounded-full blur-[80px] opacity-5"></div>
-                
-                <div className="relative z-10 flex-1 w-full md:w-auto mb-6 md:mb-0">
-                    <div className="flex items-center gap-3 mb-4">
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#B48646] text-white text-[10px] font-bold rounded-full shadow-lg shadow-[#B48646]/20 animate-pulse">
-                            <Sparkles size={10} fill="currentColor" /> OFFRE SPÉCIALE
-                        </span>
-                        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Pack Premium</span>
-                    </div>
-
-                    <h3 className="font-extrabold text-white text-3xl md:text-4xl mb-6 leading-tight">
-                        Identité Visuelle <br/>
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#B48646] to-[#F3C06B]">Complète & Pro</span>
-                    </h3>
-                    
-                    <div className="space-y-3 mb-8">
-                         <div className="flex items-center gap-3 text-slate-300 text-sm">
-                            <div className="w-5 h-5 rounded-full bg-[#B48646]/20 flex items-center justify-center text-[#B48646] shrink-0">
-                                <Check size={10} strokeWidth={4} />
-                            </div>
-                            <span>Logo Unique + Bannière Réseaux</span>
-                         </div>
-                         <div className="flex items-center gap-3 text-white text-sm font-bold">
-                            <div className="w-5 h-5 rounded-full bg-[#B48646] flex items-center justify-center text-white shrink-0">
-                                <Check size={10} strokeWidth={4} />
-                            </div>
-                            <span>Design Cartes & Flyers <span className="text-[#F3C06B]">OFFERT</span></span>
-                         </div>
-                    </div>
-
-                    <div className="flex items-end gap-3">
-                         <div className="flex flex-col">
-                            <span className="text-slate-500 text-xs font-bold line-through mb-0.5">Valeur 370€</span>
-                            <span className="text-4xl font-extrabold text-white tracking-tight">320€</span>
-                         </div>
-                         <span className="mb-2 text-xs font-bold text-[#F3C06B] bg-[#F3C06B]/10 px-2 py-1 rounded-lg border border-[#F3C06B]/20">
-                            -50€
-                         </span>
-                    </div>
-                </div>
-                
-                {/* CTA Button */}
-                <div className="relative z-10 md:pl-8 flex justify-end md:block">
-                    <button 
-                        className="w-16 h-16 bg-white hover:bg-[#B48646] hover:text-white text-slate-900 rounded-2xl flex items-center justify-center shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:rotate-6"
-                    >
-                        <ArrowRight size={24} strokeWidth={2.5} />
-                    </button>
-                </div>
-            </div>
-        </section>
 
         {/* Quick Navigation Buttons */}
         <section className="mt-6 px-4 grid grid-cols-2 gap-4 max-w-4xl mx-auto w-full">
@@ -155,7 +147,13 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
                 </div>
 
                 <div className="mt-auto flex items-center justify-between pt-4 border-t border-slate-50">
-                    <span className="text-xs font-bold text-slate-400">À partir de 50€</span>
+                    <div className="flex flex-col">
+                        <span className="text-[10px] text-red-500 font-bold flex items-center gap-1"><Gift size={10} /> Promo Noël</span>
+                        <div className="flex items-center gap-1">
+                            <span className="text-xs font-bold text-slate-300 line-through">50€</span>
+                            <span className="text-sm font-black text-red-600">25€</span>
+                        </div>
+                    </div>
                     <div className="flex items-center gap-2 text-sm font-bold text-[#B48646] group-hover:translate-x-1 transition-transform">
                         Configurer <ArrowRight size={16} />
                     </div>
@@ -184,7 +182,13 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
                 </div>
 
                 <div className="mt-auto flex items-center justify-between pt-4 border-t border-slate-50">
-                    <span className="text-xs font-bold text-slate-400">À partir de 20€</span>
+                    <div className="flex flex-col">
+                        <span className="text-[10px] text-red-500 font-bold flex items-center gap-1"><Gift size={10} /> Promo Noël</span>
+                        <div className="flex items-center gap-1">
+                            <span className="text-xs font-bold text-slate-300 line-through">20€</span>
+                            <span className="text-sm font-black text-red-600">10€</span>
+                        </div>
+                    </div>
                     <div className="flex items-center gap-2 text-sm font-bold text-[#B48646] group-hover:translate-x-1 transition-transform">
                         Créer <ArrowRight size={16} />
                     </div>
@@ -213,7 +217,13 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
                 </div>
 
                 <div className="mt-auto flex items-center justify-between pt-4 border-t border-slate-50">
-                    <span className="text-xs font-bold text-slate-400">Dès 5€</span>
+                    <div className="flex flex-col">
+                        <span className="text-[10px] text-red-500 font-bold flex items-center gap-1"><Gift size={10} /> Promo Noël</span>
+                        <div className="flex items-center gap-1">
+                            <span className="text-xs font-bold text-slate-300 line-through">5€</span>
+                            <span className="text-sm font-black text-red-600">2.50€</span>
+                        </div>
+                    </div>
                     <div className="flex items-center gap-2 text-sm font-bold text-[#B48646] group-hover:translate-x-1 transition-transform">
                         Demander <ArrowRight size={16} />
                     </div>
