@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { ChevronLeft, Video, PenTool, LifeBuoy, Palette, Film, Lock, X, Check, ArrowRight, Phone, Mail, Eye, Sparkles, Calculator, ShieldCheck } from 'lucide-react';
+import { ChevronLeft, Video, PenTool, LifeBuoy, Palette, Lock, X, Check, ArrowRight, Mail, Eye, Calculator, ShieldCheck, HelpCircle } from 'lucide-react';
 import { ServiceType } from '../types';
 import toast from 'react-hot-toast';
 
@@ -70,7 +70,7 @@ Cordialement.`);
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div className="fixed inset-0 z-[120] flex items-end sm:items-center justify-center p-0 sm:p-4">
       <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-md" onClick={onClose}></div>
       <div className="relative bg-white sm:rounded-[2.5rem] rounded-t-[2.5rem] shadow-2xl w-full max-w-lg overflow-hidden animate-in slide-in-from-bottom duration-500 border border-white/20">
         <div className="border-b border-slate-100 p-6 flex items-center justify-between">
@@ -179,7 +179,7 @@ const GraphicDesignForm = ({ onBack, onRequest }: FormProps) => {
 
     const renderConfigPanel = () => (
         <div className="space-y-6 animate-in slide-in-from-top duration-300">
-            <div className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-slate-100 space-y-6">
+            <div className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-slate-100 space-y-6 overflow-visible">
                 <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2 mb-4">
                     <Palette size={14} /> Personnalisation
                 </h3>
@@ -217,7 +217,7 @@ const GraphicDesignForm = ({ onBack, onRequest }: FormProps) => {
             </header>
             <div className="max-w-5xl mx-auto px-6 w-full">
                 <form className="grid grid-cols-1 lg:grid-cols-2 gap-8" onSubmit={handleFormSubmit}>
-                    <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm">
+                    <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm overflow-visible">
                         <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-6">Nos Formules</label>
                         <div className="grid gap-5">
                             <label className={`relative border-2 p-6 rounded-[2rem] cursor-pointer transition-all ${subService === 'identity_complete' ? 'bg-[#B48646]/5 border-[#B48646]' : 'bg-slate-50 border-transparent'}`}>
@@ -249,10 +249,10 @@ const GraphicDesignForm = ({ onBack, onRequest }: FormProps) => {
                             </label>
                         </div>
                     </div>
-                    <div className="hidden lg:block sticky top-6">
+                    <div className="hidden lg:block sticky top-6 overflow-visible">
                         {renderConfigPanel()}
                     </div>
-                    <div className="lg:hidden">
+                    <div className="lg:hidden overflow-visible">
                         {renderConfigPanel()}
                     </div>
                 </form>
@@ -268,6 +268,14 @@ const VideoForm = ({ onBack, onRequest }: FormProps) => {
     const [duration, setDuration] = useState<number>(10);
     const [price, setPrice] = useState<number>(0);
 
+    // Calcul de la durée estimée basé sur 4.2s par photo
+    const estimatedDurationInSeconds = photos * 4.2;
+    const estMin = Math.floor(estimatedDurationInSeconds / 60);
+    const estSec = Math.round(estimatedDurationInSeconds % 60);
+
+    // CALCUL DYNAMIQUE DU NOMBRE DE MUSIQUES (Basé sur ~3min30 soit 210s par musique)
+    const musicsNeeded = Math.max(1, Math.ceil(estimatedDurationInSeconds / 210));
+
     useEffect(() => {
         let basePrice = subService === 'wedding' ? 60 : 40;
         let photoCost = photos * 0.5;
@@ -282,30 +290,71 @@ const VideoForm = ({ onBack, onRequest }: FormProps) => {
     }
 
     const renderPricingSimulator = () => (
-        <div className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-slate-100 space-y-8">
+        <div className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-slate-100 space-y-8 relative overflow-visible z-30">
             <h3 className="text-xs font-black text-[#B48646] uppercase tracking-widest flex items-center gap-2">
                 <Calculator size={14} /> Simulateur de Prix
             </h3>
-            <div>
-                <label className="flex justify-between text-sm font-bold text-slate-700 mb-3">
-                    <span>Nombre de photos</span>
-                    <span className="text-[#B48646] bg-[#B48646]/5 px-3 py-1 rounded-xl font-bold text-xs">{photos} photos</span>
-                </label>
-                <input type="range" min="10" max="500" step="10" value={photos} onChange={(e) => setPhotos(parseInt(e.target.value))} className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#B48646]" />
+            
+            <div className="space-y-6 overflow-visible">
+                <div className="flex items-center justify-between relative overflow-visible">
+                    <label className="flex items-center gap-2 text-sm font-bold text-slate-700">
+                        <span>Nombre de photos</span>
+                        <div className="group relative z-40">
+                            <HelpCircle size={18} className="text-[#B48646] cursor-help transition-all group-hover:scale-110 active:scale-90" />
+                            {/* 
+                                AMÉLIORATION UX INFO-BULLE :
+                                Z-INDEX MAXIMUM (9999) pour passer au dessus de tout.
+                                Positionnement absolu propre.
+                            */}
+                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-5 w-[280px] md:w-[340px] p-6 bg-slate-900 text-white text-[11px] leading-relaxed rounded-[2rem] opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-300 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.6)] z-[9999] border border-[#B48646]/40 backdrop-blur-md">
+                                <p className="font-medium text-slate-100 italic">
+                                    "Pour un montage dynamique et émouvant, nous recommandons une exposition de <span className="text-[#B48646] font-bold">4 à 5 secondes</span> par photo. 50 photos correspondent environ à une musique standard (3min30)."
+                                </p>
+                                <div className="absolute top-full left-1/2 -translate-x-1/2 border-[12px] border-transparent border-t-slate-900"></div>
+                            </div>
+                        </div>
+                    </label>
+                    <span className="text-[#B48646] bg-[#B48646]/10 px-4 py-1.5 rounded-xl font-black text-xs shadow-sm">{photos} photos</span>
+                </div>
+                
+                <div className="pt-2">
+                  <input 
+                      type="range" 
+                      min="10" 
+                      max="500" 
+                      step="10" 
+                      value={photos} 
+                      onChange={(e) => setPhotos(parseInt(e.target.value))} 
+                      className="w-full h-2.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#B48646] hover:accent-[#946d38] transition-all" 
+                  />
+                </div>
+
+                <div className="flex flex-col gap-1.5 pl-3 pt-2 border-l-4 border-[#B48646]">
+                    <p className="text-[13px] font-bold text-slate-700">
+                        Durée estimée : <span className="text-slate-900 text-base font-black">~{estMin}min {estSec.toString().padStart(2, '0')}s</span>
+                    </p>
+                    <p className="text-[11px] font-black uppercase tracking-widest text-[#B48646] flex items-center gap-1.5">
+                        <div className="w-1.5 h-1.5 rounded-full bg-[#B48646] animate-pulse"></div>
+                        Idéal pour {musicsNeeded} musique{musicsNeeded > 1 ? 's' : ''}
+                    </p>
+                </div>
             </div>
-            <div className="bg-slate-900 p-8 rounded-[2.5rem] text-center text-white">
-                <span className="block text-xs text-[#B48646] uppercase tracking-widest font-black mb-2">Total Estimé</span>
-                <span className="block text-6xl font-extrabold tracking-tight">{price}€</span>
+
+            <div className="bg-slate-900 p-8 rounded-[2.5rem] text-center text-white relative shadow-2xl border border-white/5">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-[#B48646] rounded-full blur-[70px] opacity-10 -mr-16 -mt-16 pointer-events-none"></div>
+                <span className="block text-xs text-[#B48646] uppercase tracking-widest font-black mb-3 relative z-10">Total de votre projet</span>
+                <span className="block text-6xl font-extrabold tracking-tighter relative z-10">{price}€</span>
             </div>
-            <button onClick={handleOrder} className="w-full bg-[#B48646] text-white font-bold py-5 rounded-[2rem] transition-all active:scale-95 flex justify-center items-center gap-3">
-                Lancer la création
+
+            <button onClick={handleOrder} className="w-full bg-[#B48646] hover:bg-[#946d38] text-white font-bold py-5 rounded-[2rem] transition-all active:scale-95 flex justify-center items-center gap-3 shadow-xl shadow-[#B48646]/20 group">
+                <Eye size={20} className="group-hover:scale-110 transition-transform"/> Lancer la création
             </button>
         </div>
     );
 
     return (
-        <div className="flex flex-col h-full overflow-y-auto no-scrollbar pb-20">
-            <header className="pt-14 pb-10 px-6 bg-white border-b border-slate-50 rounded-b-[3rem] mb-6 shrink-0 z-20 shadow-sm">
+        <div className="flex flex-col h-full overflow-y-auto no-scrollbar pb-20 overflow-x-visible">
+            <header className="pt-14 pb-10 px-6 bg-white border-b border-slate-50 rounded-b-[3rem] mb-6 shrink-0 z-20 shadow-sm relative">
                  <div className="flex items-center gap-4">
                     <button onClick={onBack} className="p-3 bg-white border border-slate-100 rounded-2xl text-slate-400 hover:text-[#B48646] transition-all">
                         <ChevronLeft size={20} />
@@ -316,22 +365,25 @@ const VideoForm = ({ onBack, onRequest }: FormProps) => {
                     </div>
                 </div>
             </header>
-            <div className="max-w-5xl mx-auto px-6 w-full">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm mb-6">
+            <div className="max-w-5xl mx-auto px-6 w-full overflow-visible">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 overflow-visible">
+                    <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm mb-6 overflow-visible">
                         <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-6">Type de projet</label>
                         <div className="space-y-4">
                             {['birthday', 'wedding', 'funeral'].map((type) => (
-                                <label key={type} className={`border-2 p-5 rounded-[2rem] flex items-start gap-4 cursor-pointer transition-all ${subService === type ? 'bg-[#B48646]/5 border-[#B48646]' : 'bg-slate-50 border-transparent'}`}>
-                                    <input type="radio" checked={subService === type} onChange={() => setSubService(type)} className="w-5 h-5 accent-[#B48646] mt-1" />
-                                    <span className="text-sm font-bold text-slate-800 block capitalize">
+                                <label key={type} className={`border-2 p-6 rounded-[2rem] flex items-center gap-4 cursor-pointer transition-all ${subService === type ? 'bg-[#B48646]/5 border-[#B48646] shadow-sm' : 'bg-slate-50 border-transparent hover:bg-white'}`}>
+                                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${subService === type ? 'border-[#B48646]' : 'border-slate-200'}`}>
+                                      {subService === type && <div className="w-3 h-3 rounded-full bg-[#B48646]" />}
+                                    </div>
+                                    <input type="radio" checked={subService === type} onChange={() => setSubService(type)} className="hidden" />
+                                    <span className="text-base font-bold text-slate-800 block capitalize">
                                         {type === 'birthday' ? 'Anniversaire / Retraite' : (type === 'wedding' ? 'Mariage / Baptême' : 'Hommage & Obsèques')}
                                     </span>
                                 </label>
                             ))}
                         </div>
                     </div>
-                    <div className="sticky top-6">
+                    <div className="sticky top-6 lg:mb-12 overflow-visible z-30">
                         {renderPricingSimulator()}
                     </div>
                 </div>
@@ -381,7 +433,7 @@ const AssistanceForm = ({ onBack, onRequest }: FormProps) => {
                             <span className="block text-xs text-[#B48646] uppercase tracking-widest font-black mb-2">Prix fixe : 5€ / unité</span>
                             <span className="text-6xl font-black">{price}€</span>
                         </div>
-                        <button type="submit" className="w-full bg-[#B48646] text-white font-bold py-5 rounded-[2rem] transition-all flex items-center justify-center gap-3">
+                        <button type="submit" className="w-full bg-[#B48646] text-white font-bold py-5 rounded-[2rem] transition-all flex items-center justify-center gap-3 shadow-lg shadow-[#B48646]/20">
                              Envoyer ma demande
                         </button>
                     </div>
@@ -420,18 +472,18 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
 
     return (
       <div className="flex flex-col h-full overflow-y-auto no-scrollbar">
-         <header className="pt-16 pb-12 px-8 bg-white border-b border-slate-50 rounded-b-[3rem] mb-8 shrink-0 z-10 shadow-sm">
+         <header className="pt-16 pb-12 px-8 bg-white border-b border-slate-50 rounded-b-[3rem] mb-8 shrink-0 z-10 shadow-sm relative">
             <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 leading-tight mb-2">Nos Services</h1>
             <p className="text-slate-500 font-medium text-sm md:text-base">Choisissez l'expertise dont vous avez besoin.</p>
          </header>
-         <div className="max-w-7xl mx-auto w-full px-6 pb-24 grid grid-cols-1 md:grid-cols-3 gap-6">
+         <div className="max-w-7xl mx-auto w-full px-6 pb-24 grid grid-cols-1 md:grid-cols-3 gap-6 overflow-visible">
             {[
                 { type: ServiceType.GRAPHIC_DESIGN, icon: PenTool, label: "Design Graphique", desc: "Logos & Identité" },
                 { type: ServiceType.VIDEO, icon: Video, label: "Vidéo & Souvenirs", desc: "Montages Pro" },
-                { type: ServiceType.ASSISTANCE, icon: LifeBuoy, label: "Assistance Rapide", desc: "Aide ponctuelles" }
+                { type: ServiceType.ASSISTANCE, icon: LifeBuoy, label: "Assistance Rapide", desc: "Aides ponctuelles" }
             ].map(s => (
                 <div key={s.type} onClick={() => setSelectedService(s.type)} className="group bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-50 hover:border-[#B48646]/30 transition-all cursor-pointer flex flex-col items-center text-center h-full">
-                    <div className="w-20 h-20 bg-slate-50 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#B48646] group-hover:text-white transition-all">
+                    <div className="w-20 h-20 bg-slate-50 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#B48646] group-hover:text-white transition-all duration-300">
                         <s.icon size={32} />
                     </div>
                     <h3 className="text-xl font-bold text-slate-900 mb-2">{s.label}</h3>

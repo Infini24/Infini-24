@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { ArrowRight, Video, PenTool, Info, LifeBuoy, Infinity as InfinityIcon, Sparkles, Briefcase, Check } from 'lucide-react';
+import { ArrowRight, Video, PenTool, Info, LifeBuoy, Infinity as InfinityIcon, Sparkles, Briefcase } from 'lucide-react';
 import { ServiceType } from '../types';
 
 interface HomePageProps {
