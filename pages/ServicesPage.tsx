@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { ChevronLeft, Video, PenTool, LifeBuoy, Palette, Lock, X, Check, ArrowRight, Mail, Eye, Calculator, ShieldCheck, HelpCircle } from 'lucide-react';
+import { ChevronLeft, Video, PenTool, LifeBuoy, Palette, Lock, X, Check, ArrowRight, Mail, Eye, Calculator, ShieldCheck, HelpCircle, Heart, Zap } from 'lucide-react';
 import { ServiceType } from '../types';
 import toast from 'react-hot-toast';
 
@@ -277,15 +277,16 @@ const VideoForm = ({ onBack, onRequest }: FormProps) => {
     const musicsNeeded = Math.max(1, Math.ceil(estimatedDurationInSeconds / 210));
 
     useEffect(() => {
-        let basePrice = subService === 'wedding' ? 60 : 40;
+        let basePrice = subService === 'wedding' ? 60 : (subService === 'valentine' ? 50 : 40);
         let photoCost = photos * 0.5;
         let durationCost = duration * 10;
         setPrice(basePrice + photoCost + durationCost);
     }, [photos, duration, subService]);
 
     const handleOrder = () => {
-        const name = `Montage Vidéo ${subService}`;
-        const details = `• Type : ${subService}\n• Photos : ${photos}\n• Durée : ${duration} min`;
+        const typeLabel = subService === 'valentine' ? 'Saint-Valentin (Coup de Foudre)' : (subService === 'birthday' ? 'Anniversaire' : (subService === 'wedding' ? 'Mariage' : 'Hommage'));
+        const name = `Montage Vidéo ${typeLabel}`;
+        const details = `• Type : ${typeLabel}\n• Photos : ${photos}\n• Durée : ${duration} min`;
         onRequest(name, price, details);
     }
 
@@ -301,15 +302,16 @@ const VideoForm = ({ onBack, onRequest }: FormProps) => {
                         <span>Nombre de photos</span>
                         <div className="group relative z-40">
                             <HelpCircle size={18} className="text-[#B48646] cursor-help transition-all group-hover:scale-110 active:scale-90" />
-                            {/* 
-                                AMÉLIORATION UX INFO-BULLE :
-                                Z-INDEX MAXIMUM (9999) pour passer au dessus de tout.
-                                Positionnement absolu propre.
-                            */}
                             <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-5 w-[280px] md:w-[340px] p-6 bg-slate-900 text-white text-[11px] leading-relaxed rounded-[2rem] opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-300 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.6)] z-[9999] border border-[#B48646]/40 backdrop-blur-md">
-                                <p className="font-medium text-slate-100 italic">
-                                    "Pour un montage dynamique et émouvant, nous recommandons une exposition de <span className="text-[#B48646] font-bold">4 à 5 secondes</span> par photo. 50 photos correspondent environ à une musique standard (3min30)."
-                                </p>
+                                {subService === 'valentine' ? (
+                                    <p className="font-medium text-slate-100 italic">
+                                        "Pour une vidéo <span className="text-rose-400 font-bold">Coup de Foudre</span>, privilégiez vos moments de complicité. 50 photos avec <span className="text-[#B48646]">votre musique préférée</span> créent un impact émotionnel garanti."
+                                    </p>
+                                ) : (
+                                    <p className="font-medium text-slate-100 italic">
+                                        "Pour un montage dynamique et émouvant, nous recommandons une exposition de <span className="text-[#B48646] font-bold">4 à 5 secondes</span> par photo. 50 photos correspondent environ à une musique standard (3min30)."
+                                    </p>
+                                )}
                                 <div className="absolute top-full left-1/2 -translate-x-1/2 border-[12px] border-transparent border-t-slate-900"></div>
                             </div>
                         </div>
@@ -333,21 +335,22 @@ const VideoForm = ({ onBack, onRequest }: FormProps) => {
                     <p className="text-[13px] font-bold text-slate-700">
                         Durée estimée : <span className="text-slate-900 text-base font-black">~{estMin}min {estSec.toString().padStart(2, '0')}s</span>
                     </p>
-                    <p className="text-[11px] font-black uppercase tracking-widest text-[#B48646] flex items-center gap-1.5">
-                        <div className="w-1.5 h-1.5 rounded-full bg-[#B48646] animate-pulse"></div>
+                    <p className={`text-[11px] font-black uppercase tracking-widest flex items-center gap-1.5 ${subService === 'valentine' ? 'text-rose-500' : 'text-[#B48646]'}`}>
+                        <div className={`w-1.5 h-1.5 rounded-full animate-pulse ${subService === 'valentine' ? 'bg-rose-500' : 'bg-[#B48646]'}`}></div>
                         Idéal pour {musicsNeeded} musique{musicsNeeded > 1 ? 's' : ''}
                     </p>
                 </div>
             </div>
 
-            <div className="bg-slate-900 p-8 rounded-[2.5rem] text-center text-white relative shadow-2xl border border-white/5">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-[#B48646] rounded-full blur-[70px] opacity-10 -mr-16 -mt-16 pointer-events-none"></div>
+            <div className={`p-8 rounded-[2.5rem] text-center text-white relative shadow-2xl border border-white/5 transition-all duration-500 ${subService === 'valentine' ? 'bg-gradient-to-br from-slate-900 via-rose-950 to-slate-900' : 'bg-slate-900'}`}>
+                <div className={`absolute top-0 right-0 w-32 h-32 rounded-full blur-[70px] opacity-10 -mr-16 -mt-16 pointer-events-none ${subService === 'valentine' ? 'bg-rose-500' : 'bg-[#B48646]'}`}></div>
                 <span className="block text-xs text-[#B48646] uppercase tracking-widest font-black mb-3 relative z-10">Total de votre projet</span>
                 <span className="block text-6xl font-extrabold tracking-tighter relative z-10">{price}€</span>
             </div>
 
-            <button onClick={handleOrder} className="w-full bg-[#B48646] hover:bg-[#946d38] text-white font-bold py-5 rounded-[2rem] transition-all active:scale-95 flex justify-center items-center gap-3 shadow-xl shadow-[#B48646]/20 group">
-                <Eye size={20} className="group-hover:scale-110 transition-transform"/> Lancer la création
+            <button onClick={handleOrder} className={`w-full text-white font-bold py-5 rounded-[2rem] transition-all active:scale-95 flex justify-center items-center gap-3 shadow-xl group ${subService === 'valentine' ? 'bg-rose-500 hover:bg-rose-600 shadow-rose-500/20' : 'bg-[#B48646] hover:bg-[#946d38] shadow-[#B48646]/20'}`}>
+                {subService === 'valentine' ? <Heart size={20} className="animate-pulse" /> : <Eye size={20} className="group-hover:scale-110 transition-transform"/>}
+                {subService === 'valentine' ? 'Lancer mon Coup de Foudre' : 'Lancer la création'}
             </button>
         </div>
     );
@@ -370,6 +373,21 @@ const VideoForm = ({ onBack, onRequest }: FormProps) => {
                     <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm mb-6 overflow-visible">
                         <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-6">Type de projet</label>
                         <div className="space-y-4">
+                            {/* --- OPTION SAINT VALENTIN --- */}
+                            <label className={`relative border-2 p-6 rounded-[2rem] flex items-center gap-4 cursor-pointer transition-all ${subService === 'valentine' ? 'bg-rose-500/5 border-rose-500 shadow-rose-500/10' : 'bg-slate-50 border-transparent hover:bg-white'}`}>
+                                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${subService === 'valentine' ? 'border-rose-500' : 'border-slate-200'}`}>
+                                    {subService === 'valentine' && <div className="w-3 h-3 rounded-full bg-rose-500" />}
+                                </div>
+                                <input type="radio" checked={subService === 'valentine'} onChange={() => setSubService('valentine')} className="hidden" />
+                                <div className="flex-1">
+                                    <span className="text-base font-bold text-slate-800 flex items-center gap-2">
+                                        Saint-Valentin <Heart size={14} className="text-rose-500 fill-rose-500" />
+                                    </span>
+                                    <span className="text-[10px] font-black uppercase text-rose-500 tracking-widest">Offre Coup de Foudre</span>
+                                </div>
+                                {subService === 'valentine' && <Zap size={18} className="text-rose-500 animate-pulse" />}
+                            </label>
+
                             {['birthday', 'wedding', 'funeral'].map((type) => (
                                 <label key={type} className={`border-2 p-6 rounded-[2rem] flex items-center gap-4 cursor-pointer transition-all ${subService === type ? 'bg-[#B48646]/5 border-[#B48646] shadow-sm' : 'bg-slate-50 border-transparent hover:bg-white'}`}>
                                     <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${subService === type ? 'border-[#B48646]' : 'border-slate-200'}`}>

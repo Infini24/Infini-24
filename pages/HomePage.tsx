@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { ArrowRight, Video, PenTool, Info, LifeBuoy, Infinity as InfinityIcon, Sparkles, Briefcase } from 'lucide-react';
+import { ArrowRight, Video, PenTool, Info, LifeBuoy, Infinity as InfinityIcon, Sparkles, Briefcase, Heart, Zap } from 'lucide-react';
 import { ServiceType } from '../types';
 
 interface HomePageProps {
@@ -31,6 +31,37 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
       
       <div className="max-w-7xl mx-auto w-full pb-24 px-2 relative z-10 mt-2">
         
+        {/* --- OPÉRATION COUP DE FOUDRE (SAINT-VALENTIN) --- */}
+        <section className="px-4 mb-12 animate-in fade-in zoom-in duration-700">
+            <div className="relative overflow-hidden bg-slate-900 rounded-[3rem] p-8 md:p-12 shadow-2xl border-t border-white/10 group cursor-pointer" onClick={() => onNavigate(2, ServiceType.VIDEO)}>
+                {/* Effets de fond */}
+                <div className="absolute top-0 right-0 w-96 h-96 bg-rose-500/20 rounded-full blur-[100px] -mr-20 -mt-20 group-hover:bg-rose-500/30 transition-colors duration-700"></div>
+                <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#B48646]/10 rounded-full blur-[80px] -ml-20 -mb-20"></div>
+                
+                <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
+                    <div className="flex-1 text-center md:text-left">
+                        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-400 text-[10px] font-black uppercase tracking-[0.2em] mb-6 animate-pulse">
+                            <Zap size={14} /> Opération Coup de Foudre
+                        </div>
+                        <h2 className="text-3xl md:text-5xl font-extrabold text-white leading-tight mb-4 font-['Poppins'] tracking-tight">
+                            Messieurs, la <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-400 to-[#B48646]">Saint-Valentin</span> approche.
+                        </h2>
+                        <p className="text-slate-400 text-sm md:text-lg font-medium mb-8 max-w-xl">
+                            Ne vous contentez pas d'un cadeau classique. Offrez-lui l'émotion pure d'une vidéo retraçant vos plus beaux moments. <span className="text-white font-bold">Rapide, élégant, inoubliable.</span>
+                        </p>
+                        <button className="bg-white text-slate-900 px-8 py-4 rounded-2xl font-black text-sm uppercase tracking-widest flex items-center gap-3 hover:bg-[#B48646] hover:text-white transition-all shadow-xl hover:scale-105 active:scale-95 group/btn">
+                            Lancer ma vidéo <Heart size={18} className="text-rose-500 group-hover/btn:scale-125 transition-transform animate-pulse" />
+                        </button>
+                    </div>
+                    <div className="hidden lg:flex w-72 h-72 bg-white/5 rounded-[3rem] border border-white/10 items-center justify-center relative rotate-3 group-hover:rotate-6 transition-transform duration-500">
+                         <div className="absolute inset-4 rounded-[2rem] border-2 border-dashed border-white/10"></div>
+                         <Video size={80} className="text-[#B48646] opacity-40" />
+                         <Heart size={40} className="absolute -top-4 -right-4 text-rose-500 animate-bounce" />
+                    </div>
+                </div>
+            </div>
+        </section>
+
         {/* Intro Text */}
         <div className="text-center max-w-md mx-auto animate-in slide-in-from-bottom duration-500 mb-12 px-4">
           <h2 className="text-3xl font-medium text-slate-800 leading-tight">
