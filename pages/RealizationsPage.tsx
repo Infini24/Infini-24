@@ -1,11 +1,12 @@
+
 import React, { useState } from 'react';
-import { Image as ImageIcon, Instagram, Facebook, Maximize2, ExternalLink, X } from 'lucide-react';
+import { Image as ImageIcon, Instagram, Facebook, Maximize2, ExternalLink, X, Play, Film } from 'lucide-react';
 
 // --- TYPES ---
 interface ProjectImage {
   url: string;
   caption: string;
-  isWide?: boolean; // Pour l'affiche 210x90
+  isWide?: boolean; 
 }
 
 interface Project {
@@ -14,12 +15,23 @@ interface Project {
   category: 'Identité Visuelle' | 'Vidéo' | 'Print' | 'Autre';
   description: string;
   date: string;
-  images: ProjectImage[];
-  link?: string; // Lien externe (Facebook, Site web...)
+  images?: ProjectImage[];
+  videoUrl?: string; // Support pour les exemples vidéo (URL YouTube ID ou MP4)
+  videoPoster?: string; // Image d'aperçu pour la vidéo
+  link?: string; 
 }
 
 // --- DATA (VOS PROJETS) ---
 const projects: Project[] = [
+  {
+    id: 'hommage-souvenirs',
+    title: 'Hommage & Obsèques',
+    category: 'Vidéo',
+    date: 'Janvier 2025',
+    description: "La création d'un montage vidéo pour un hommage est un exercice de sensibilité et de respect. Chez Infini 24, nous sélectionnons avec soin vos photos et musiques pour créer une œuvre digne, retraçant une vie avec émotion. Ce projet d'exemple illustre notre capacité à transformer des souvenirs statiques en un récit cinématographique poignant, idéal pour les cérémonies d'obsèques ou les commémorations familiales.",
+    videoUrl: 'jN30d1i963M', // ID de votre vidéo YouTube
+    videoPoster: 'https://images.unsplash.com/photo-1464692805480-a69dfaafdb0d?q=80&w=2070&auto=format&fit=crop',
+  },
   {
     id: 'confiserie-parizel',
     title: 'Confiserie Parizel',
@@ -29,17 +41,14 @@ const projects: Project[] = [
     description: "Pour la Confiserie Parizel, nous avons assuré la conception complète de leur logo original, établissant une identité de marque visuellement chaleureuse et distinctive. Afin d'optimiser leur présence sur les évènements, nous avons également géré le design d'une bâche publicitaire grand format (210cm sur 90cm). Cette bâche a été conçue en garantissant une visibilité maximale et renforçant l'attractivité du point de vente durant l'événement.",
     images: [
       {
-        // PHOTO 1 : LE LOGO (Gauche)
         url: 'https://i.postimg.cc/x8JhDKhN/Confiserie1.png', 
         caption: 'Logo Original'
       },
       {
-        // PHOTO 2 : LE STAND (Droite)
         url: 'https://i.postimg.cc/L5YwKz7W/595632468_881895807702564_2191728216735661234_n.jpg', 
         caption: 'Mise en situation sur le stand'
       },
       {
-        // PHOTO 3 : LA BÂCHE (En dessous, pleine largeur)
         url: 'https://i.postimg.cc/L4J86GF7/bache_confiserie_parizel3.png', 
         caption: 'Design Bâche (210x90cm)',
         isWide: true
@@ -62,7 +71,6 @@ const ImageModal = ({ image, onClose }: { image: ProjectImage | null, onClose: (
             src={image.url} 
             alt={image.caption} 
             className="w-auto h-auto max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl animate-in zoom-in-95 duration-300" 
-            style={{ imageRendering: 'auto' }} // Assure le meilleur rendu possible
         />
         <p className="mt-6 text-white/90 font-medium text-xl tracking-wide">{image.caption}</p>
       </div>
@@ -83,7 +91,7 @@ const RealizationsPage: React.FC = () => {
         
         <div className="relative z-10">
            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#B48646]/5 text-[#B48646] text-[10px] font-bold uppercase tracking-widest mb-4 border border-[#B48646]/10">
-              <ImageIcon size={12} /> Portfolio
+              <Film size={12} /> Portfolio
            </div>
            <h1 className="text-3xl md:text-4xl font-extrabold font-['Poppins'] text-slate-900 leading-tight mb-2">
              Nos Réalisations
@@ -97,46 +105,65 @@ const RealizationsPage: React.FC = () => {
       <div className="flex-1 px-4 lg:px-8 pb-24 max-w-7xl mx-auto w-full space-y-12">
         
         {/* --- PROJECTS GALLERY --- */}
-        {projects.length > 0 ? (
-          <div className="space-y-12">
-            {projects.map((project) => (
-              <div key={project.id} className="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
-                
-                {/* Project Header */}
-                <div className="p-8 pb-4">
-                  <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
-                    <span className="px-3 py-1 rounded-full bg-slate-100 text-slate-500 text-[10px] font-bold uppercase tracking-widest">
-                      {project.category}
-                    </span>
-                    <span className="text-xs font-bold text-slate-400">{project.date}</span>
-                  </div>
-                  
-                  {project.link ? (
-                    <a 
-                        href={project.link} 
-                        target="_blank" 
-                        rel="noopener noreferrer" 
-                        className="inline-flex items-center gap-2 text-2xl font-bold text-slate-900 mb-3 hover:text-[#1877F2] hover:underline decoration-2 underline-offset-4 transition-all group"
-                        title="Voir la page Facebook"
-                    >
-                        {project.title}
-                        <ExternalLink size={18} className="text-slate-300 group-hover:text-[#1877F2] transition-colors" />
-                    </a>
-                  ) : (
-                    <h2 className="text-2xl font-bold text-slate-900 mb-3">{project.title}</h2>
-                  )}
-
-                  <p className="text-slate-600 leading-relaxed text-sm max-w-3xl whitespace-pre-line">
-                    {project.description}
-                  </p>
+        <div className="space-y-12">
+          {projects.map((project) => (
+            <div key={project.id} className="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-visible group">
+              
+              {/* Project Header */}
+              <div className="p-8 pb-4">
+                <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
+                  <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest ${project.category === 'Vidéo' ? 'bg-[#B48646]/10 text-[#B48646]' : 'bg-slate-100 text-slate-500'}`}>
+                    {project.category}
+                  </span>
+                  <span className="text-xs font-bold text-slate-400">{project.date}</span>
                 </div>
+                
+                <h2 className="text-2xl font-bold text-slate-900 mb-3 flex items-center gap-2">
+                  {project.title}
+                  {project.link && (
+                    <a href={project.link} target="_blank" rel="noopener noreferrer" className="hover:text-[#1877F2] transition-colors">
+                      <ExternalLink size={18} className="opacity-30 hover:opacity-100" />
+                    </a>
+                  )}
+                </h2>
 
-                {/* Images Grid Optimisée pour le centrage (2 colonnes) */}
+                <p className="text-slate-600 leading-relaxed text-sm max-w-3xl whitespace-pre-line">
+                  {project.description}
+                </p>
+              </div>
+
+              {/* VIDEO PLAYER (Support YouTube ou MP4) */}
+              {project.videoUrl && (
+                <div className="p-4 pt-2">
+                  <div className="relative rounded-[2rem] overflow-hidden bg-slate-900 aspect-video shadow-2xl border border-slate-100 group/video">
+                    {/* Détection si c'est un ID YouTube (longueur classique d'un ID) */}
+                    {project.videoUrl.length === 11 ? (
+                      <iframe
+                        src={`https://www.youtube-nocookie.com/embed/${project.videoUrl}?rel=0&modestbranding=1`}
+                        title={project.title}
+                        className="w-full h-full"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      ></iframe>
+                    ) : (
+                      <video 
+                        src={project.videoUrl} 
+                        poster={project.videoPoster}
+                        controls 
+                        className="w-full h-full object-cover"
+                      />
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* IMAGES GRID (Si images disponibles) */}
+              {project.images && (
                 <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                   {project.images.map((img, idx) => (
                     <div 
                       key={idx} 
-                      className={`relative group rounded-2xl overflow-hidden cursor-pointer bg-slate-50 border border-slate-100 shadow-sm transition-all duration-300 hover:shadow-md 
+                      className={`relative group/img rounded-2xl overflow-hidden cursor-pointer bg-slate-50 border border-slate-100 shadow-sm transition-all duration-300 hover:shadow-md 
                         ${img.isWide ? 'md:col-span-2 aspect-[21/9] md:aspect-[3/1]' : 'aspect-square md:col-span-1'}
                       `}
                       onClick={() => setSelectedImage(img)}
@@ -145,31 +172,26 @@ const RealizationsPage: React.FC = () => {
                          <img 
                             src={img.url} 
                             alt={img.caption} 
-                            className={`transition-transform duration-700 group-hover:scale-[1.02] ${img.isWide ? 'w-full h-full object-contain' : 'w-full h-full object-cover'}`}
+                            className={`transition-transform duration-700 group-hover/img:scale-[1.02] ${img.isWide ? 'w-full h-full object-contain' : 'w-full h-full object-cover'}`}
                          />
                       </div>
                       
-                      <div className="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/10 transition-colors duration-300 flex items-center justify-center pointer-events-none">
-                         <div className="bg-white/90 p-4 rounded-full opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 shadow-xl text-slate-800">
+                      <div className="absolute inset-0 bg-slate-900/0 group-hover/img:bg-slate-900/10 transition-colors duration-300 flex items-center justify-center pointer-events-none">
+                         <div className="bg-white/90 p-4 rounded-full opacity-0 group-hover/img:opacity-100 transform translate-y-4 group-hover/img:translate-y-0 transition-all duration-300 shadow-xl text-slate-800">
                             <Maximize2 size={24} />
                          </div>
                       </div>
-                      <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                      <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover/img:opacity-100 transition-opacity duration-300 pointer-events-none">
                         <span className="text-white text-xs font-bold">{img.caption}</span>
                       </div>
                     </div>
                   ))}
                 </div>
+              )}
 
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-12 text-slate-400 italic">
-            Aucun projet publié pour le moment.
-          </div>
-        )}
-
+            </div>
+          ))}
+        </div>
 
         {/* --- SOCIAL CTA (Footer) --- */}
         <div className="pt-8 border-t border-slate-100 flex flex-col items-center justify-center text-center">
