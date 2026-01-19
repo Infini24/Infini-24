@@ -132,18 +132,20 @@ const RealizationsPage: React.FC = () => {
                 </p>
               </div>
 
-              {/* VIDEO PLAYER (Optimisé pour lecture sur site) */}
+              {/* VIDEO PLAYER (Optimisé avec No-Cookie pour compatibilité maximale) */}
               {project.videoUrl && (
                 <div className="p-4 pt-2">
                   <div className="relative rounded-[2rem] overflow-hidden bg-slate-900 aspect-video shadow-2xl border border-slate-100 group/video">
-                    {/* Détection si c'est un ID YouTube */}
+                    {/* Détection si c'est un ID YouTube classique */}
                     {project.videoUrl.length === 11 ? (
                       <iframe
-                        src={`https://www.youtube.com/embed/${project.videoUrl}?rel=0&playsinline=1&modestbranding=1&showinfo=0`}
+                        src={`https://www.youtube-nocookie.com/embed/${project.videoUrl}?rel=0&playsinline=1&modestbranding=1&enablejsapi=1&origin=${window.location.origin}`}
                         title={project.title}
-                        className="w-full h-full"
+                        className="w-full h-full border-0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                         allowFullScreen
+                        loading="lazy"
+                        referrerPolicy="strict-origin-when-cross-origin"
                       ></iframe>
                     ) : (
                       <video 
@@ -157,7 +159,7 @@ const RealizationsPage: React.FC = () => {
                   </div>
                   {project.category === 'Vidéo' && (
                     <p className="mt-3 px-4 text-[10px] text-slate-400 font-medium italic text-center">
-                      Appuyez sur "Play" pour lancer l'exemple directement sur cette page.
+                      Lecture directe activée. Profitez de la vidéo sans quitter l'application.
                     </p>
                   )}
                 </div>
