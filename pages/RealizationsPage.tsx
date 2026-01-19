@@ -132,20 +132,17 @@ const RealizationsPage: React.FC = () => {
                 </p>
               </div>
 
-              {/* VIDEO PLAYER (Optimisé avec No-Cookie pour compatibilité maximale) */}
+              {/* VIDEO PLAYER (Rétabli à la version stable) */}
               {project.videoUrl && (
                 <div className="p-4 pt-2">
                   <div className="relative rounded-[2rem] overflow-hidden bg-slate-900 aspect-video shadow-2xl border border-slate-100 group/video">
-                    {/* Détection si c'est un ID YouTube classique */}
                     {project.videoUrl.length === 11 ? (
                       <iframe
-                        src={`https://www.youtube-nocookie.com/embed/${project.videoUrl}?rel=0&playsinline=1&modestbranding=1&enablejsapi=1&origin=${window.location.origin}`}
+                        src={`https://www.youtube-nocookie.com/embed/${project.videoUrl}?rel=0&modestbranding=1&playsinline=1`}
                         title={project.title}
                         className="w-full h-full border-0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowFullScreen
-                        loading="lazy"
-                        referrerPolicy="strict-origin-when-cross-origin"
                       ></iframe>
                     ) : (
                       <video 
@@ -159,7 +156,7 @@ const RealizationsPage: React.FC = () => {
                   </div>
                   {project.category === 'Vidéo' && (
                     <p className="mt-3 px-4 text-[10px] text-slate-400 font-medium italic text-center">
-                      Lecture directe activée. Profitez de la vidéo sans quitter l'application.
+                      Lecture directe activée.
                     </p>
                   )}
                 </div>
