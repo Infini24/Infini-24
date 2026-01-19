@@ -132,17 +132,17 @@ const RealizationsPage: React.FC = () => {
                 </p>
               </div>
 
-              {/* VIDEO PLAYER (Support YouTube ou MP4) */}
+              {/* VIDEO PLAYER (Optimisé pour lecture sur site) */}
               {project.videoUrl && (
                 <div className="p-4 pt-2">
                   <div className="relative rounded-[2rem] overflow-hidden bg-slate-900 aspect-video shadow-2xl border border-slate-100 group/video">
-                    {/* Détection si c'est un ID YouTube (longueur classique d'un ID) */}
+                    {/* Détection si c'est un ID YouTube */}
                     {project.videoUrl.length === 11 ? (
                       <iframe
-                        src={`https://www.youtube-nocookie.com/embed/${project.videoUrl}?rel=0&modestbranding=1`}
+                        src={`https://www.youtube.com/embed/${project.videoUrl}?rel=0&playsinline=1&modestbranding=1&showinfo=0`}
                         title={project.title}
                         className="w-full h-full"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                         allowFullScreen
                       ></iframe>
                     ) : (
@@ -150,10 +150,16 @@ const RealizationsPage: React.FC = () => {
                         src={project.videoUrl} 
                         poster={project.videoPoster}
                         controls 
+                        playsInline
                         className="w-full h-full object-cover"
                       />
                     )}
                   </div>
+                  {project.category === 'Vidéo' && (
+                    <p className="mt-3 px-4 text-[10px] text-slate-400 font-medium italic text-center">
+                      Appuyez sur "Play" pour lancer l'exemple directement sur cette page.
+                    </p>
+                  )}
                 </div>
               )}
 
