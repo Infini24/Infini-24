@@ -1,18 +1,15 @@
+
 import React, { useState, useEffect } from 'react';
-import { Home, Calculator, Mail, Infinity as InfinityIcon, Image as ImageIcon } from 'lucide-react';
+import { Home, Calculator, Mail, Infinity as InfinityIcon, Image as ImageIcon, Trophy } from 'lucide-react';
 import { Toaster } from 'react-hot-toast';
 
-// IMPORT STATIQUE (Vitesse Instantanée)
-// On charge tout d'un coup pour qu'il n'y ait aucun délai au clic
 import HomePage from './pages/HomePage';
 import ServicesPage from './pages/ServicesPage';
 import RealizationsPage from './pages/RealizationsPage';
 import ContactPage from './pages/ContactPage';
+import ContestPage from './pages/ContestPage';
 import { ServiceType } from './types';
 
-// --- COMPONENTS ---
-
-// --- SIDEBAR COMPONENT (DESKTOP) ---
 const DesktopSidebar = ({ 
   activeTab, 
   onNavigate
@@ -22,12 +19,9 @@ const DesktopSidebar = ({
 }) => {
 
   return (
-    // Optimisation: backdrop-blur-md au lieu de xl pour performance PC
     <aside className="hidden md:flex flex-col w-72 h-screen fixed left-0 top-0 bg-white/90 backdrop-blur-md border-r border-slate-100 shadow-[4px_0_24px_rgba(0,0,0,0.02)] z-50 overflow-y-auto">
-      {/* Sidebar Header / Logo */}
       <div className="p-8 pb-4 flex flex-col items-start">
         <div className="flex items-center gap-3 mb-1 group cursor-pointer" onClick={() => onNavigate(0)}>
-            {/* Logo sans fond (modifié) */}
             <InfinityIcon size={40} strokeWidth={1.5} className="text-[#B48646] group-hover:scale-110 transition-transform duration-300" />
             <div className="flex flex-col">
                 <span className="font-bold text-2xl text-slate-900 leading-none tracking-tight">INFINI<span className="text-[#B48646]">24</span></span>
@@ -36,10 +30,10 @@ const DesktopSidebar = ({
         </div>
       </div>
 
-      {/* Navigation Links */}
       <nav className="flex-1 px-4 py-8 space-y-2">
          {[
            { icon: Home, label: "Accueil", index: 0 },
+           { icon: Trophy, label: "Jeu Concours", index: 4 },
            { icon: ImageIcon, label: "Nos Réalisations", index: 1 },
            { icon: Calculator, label: "Nos Services", index: 2 },
            { icon: Mail, label: "Contact", index: 3 }
@@ -60,7 +54,6 @@ const DesktopSidebar = ({
          ))}
       </nav>
 
-      {/* Sidebar Footer - Contact Rapide */}
       <div className="p-6 border-t border-slate-50 text-center">
            <a 
              href="mailto:Wendy.toussaint@icloud.com"
@@ -73,12 +66,12 @@ const DesktopSidebar = ({
   );
 };
 
-// --- MOBILE NAVIGATION ---
 const MobileNavigation = ({ activeTab, onNavigate }: { activeTab: number; onNavigate: (index: number) => void }) => {
   return (
     <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-100 px-6 py-4 flex justify-between items-center z-50 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
       {[
         { icon: Home, index: 0 },
+        { icon: Trophy, index: 4 },
         { icon: ImageIcon, index: 1 },
         { icon: Calculator, index: 2 },
         { icon: Mail, index: 3 }
@@ -99,47 +92,40 @@ const MobileNavigation = ({ activeTab, onNavigate }: { activeTab: number; onNavi
   );
 };
 
-// --- MAIN APP COMPONENT ---
 const App = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [initialService, setInitialService] = useState<ServiceType | null>(null);
-  
-  // Keep track of which tabs have been visited to render them
-  // This allows instant switching while keeping state (forms don't reset)
   const [mountedTabs, setMountedTabs] = useState<number[]>([0]);
 
-  // Gestion initiale de l'URL et nettoyage
   useEffect(() => {
     try {
-        // 1. Nettoyage URL sale (fbclid)
         const url = new URL(window.location.href);
         if (url.searchParams.has('fbclid')) {
             url.searchParams.delete('fbclid');
             window.history.replaceState({}, document.title, url.pathname);
         }
 
-        // 2. Routing initial
         const path = window.location.pathname;
         let initialTab = 0;
-        if (path.includes('nos-realisations') || path.includes('realisations')) initialTab = 1;
+        if (path.includes('concours')) initialTab = 4;
+        else if (path.includes('nos-realisations') || path.includes('realisations')) initialTab = 1;
         else if (path.includes('nos-services') || path.includes('services')) initialTab = 2;
         else if (path.includes('contact')) initialTab = 3;
 
         if (initialTab !== 0) {
             setActiveTab(initialTab);
-            setMountedTabs(prev => [...prev, initialTab]);
+            setMountedTabs(prev => Array.from(new Set([...prev, initialTab])));
         }
     } catch (e) {
-        // Ignore errors in sandboxed environments where history API might be restricted
-        console.warn("Navigation history update failed (harmless in preview)", e);
+        console.warn("Navigation history update failed", e);
     }
   }, []);
 
-  // Gestion du bouton "Précédent" du navigateur (Back Button)
   useEffect(() => {
     const handlePopState = () => {
         const path = window.location.pathname;
-        if (path.includes('contact')) setActiveTab(3);
+        if (path.includes('concours')) setActiveTab(4);
+        else if (path.includes('contact')) setActiveTab(3);
         else if (path.includes('services')) setActiveTab(2);
         else if (path.includes('realisations')) setActiveTab(1);
         else setActiveTab(0);
@@ -151,18 +137,15 @@ const App = () => {
 
   const handleNavigate = (index: number, serviceType?: ServiceType) => {
     setActiveTab(index);
-    
-    // Add to mounted tabs if not already present (Instant Render)
     if (!mountedTabs.includes(index)) {
         setMountedTabs(prev => [...prev, index]);
     }
-
     if (serviceType) {
       setInitialService(serviceType);
     }
 
-    // Mise à jour URL sans rechargement
     let path = '/';
+    if (index === 4) path = '/concours';
     if (index === 1) path = '/nos-realisations';
     if (index === 2) path = '/nos-services';
     if (index === 3) path = '/contact';
@@ -171,7 +154,7 @@ const App = () => {
         try {
             window.history.pushState({}, '', path);
         } catch (e) {
-             console.warn("PushState failed (harmless in preview)", e);
+             console.warn("PushState failed", e);
         }
     }
   };
@@ -187,10 +170,6 @@ const App = () => {
         }}
       />
 
-      {/* 
-          OPTIMISATION PERFORMANCE PC & MOBILE : 
-          Gradient statique (GPU accelerated) pour éviter les calculs de flou coûteux.
-      */}
       <div 
         className="fixed inset-0 z-0 pointer-events-none transform-gpu will-change-transform"
         style={{
@@ -209,36 +188,32 @@ const App = () => {
       
       <main className="flex-1 h-full relative flex flex-col md:pl-72 z-10">
         
-        {/* 
-            NAVIGATION INSTANTANÉE (0 latence)
-            Toutes les pages sont chargées statiquement.
-            On utilise 'display: none' pour masquer celles inactives.
-            Cela garantit une vitesse de 0.00s au changement d'onglet.
-        */}
-        
-        {/* Page 0: Home */}
         <div className={`flex-1 h-full overflow-hidden ${activeTab === 0 ? 'block' : 'hidden'}`}>
              <HomePage onNavigate={handleNavigate} />
         </div>
         
-        {/* Page 1: Realizations */}
+        {mountedTabs.includes(4) && (
+            <div className={`flex-1 h-full overflow-hidden ${activeTab === 4 ? 'block' : 'hidden'}`}>
+                <ContestPage onNavigate={handleNavigate} />
+            </div>
+        )}
+
         {mountedTabs.includes(1) && (
             <div className={`flex-1 h-full overflow-hidden ${activeTab === 1 ? 'block' : 'hidden'}`}>
                 <RealizationsPage />
             </div>
         )}
 
-        {/* Page 2: Services */}
         {mountedTabs.includes(2) && (
             <div className={`flex-1 h-full overflow-hidden ${activeTab === 2 ? 'block' : 'hidden'}`}>
                 <ServicesPage 
                     initialService={initialService} 
                     onClearInitial={() => setInitialService(null)} 
+                    onNavigateToContest={() => handleNavigate(4)}
                 />
             </div>
         )}
 
-        {/* Page 3: Contact */}
         {mountedTabs.includes(3) && (
             <div className={`flex-1 h-full overflow-hidden ${activeTab === 3 ? 'block' : 'hidden'}`}>
                 <ContactPage />
