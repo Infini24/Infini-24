@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Trophy, Gift, Check, Send, Sparkles, Share2, Info, X, ChevronRight, AlertCircle, Film, Music, Star, Home, Facebook } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -22,7 +21,7 @@ const ContestPage: React.FC<ContestPageProps> = ({ onNavigate }) => {
     const subject = encodeURIComponent(`[PARTICIPATION CONCOURS] ${formData.name}`);
     const body = encodeURIComponent(`Bonjour Infini 24,
 
-Je souhaite participer au Grand Jeu Concours "Souvenirs Infinis" !
+Je souhaite participer au Jeu Concours d'Infini 24 !
 
 NOM : ${formData.name}
 EMAIL : ${formData.email}
@@ -56,7 +55,7 @@ Bonne chance à tous !`);
             <div className="p-8 overflow-y-auto no-scrollbar space-y-8 text-sm leading-relaxed text-slate-600">
                 <section>
                     <h4 className="font-bold text-slate-900 mb-3 flex items-center gap-2">1. Organisateur</h4>
-                    <p>Le jeu "Souvenirs Infinis" est organisé par Infini 24 via le site Infini24.fr.</p>
+                    <p>Le Jeu Concours est organisé par Infini 24 via le site Infini24.fr.</p>
                 </section>
                 <section>
                     <h4 className="font-bold text-slate-900 mb-3 flex items-center gap-2">2. Durée</h4>
@@ -148,7 +147,7 @@ Bonne chance à tous !`);
                         <div className="flex items-center gap-3 pt-4 border-t border-white/10">
                             <div className="w-2 h-2 rounded-full bg-yellow-400 animate-pulse"></div>
                             <p className="text-white font-bold italic tracking-wide">
-                                Un résultat mémorable, prêt à émouvoir et à durer toute une vie.
+                                Résultat : Une vidéo mémorable, prête à émouvoir et à durer toute une vie.
                             </p>
                         </div>
                     </div>
@@ -225,7 +224,7 @@ Bonne chance à tous !`);
              
              <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-6">Félicitations, vous êtes en lice ! ✨</h2>
              
-             <div className="bg-white p-8 md:p-10 rounded-[3rem] border border-slate-100 shadow-xl space-y-8 mb-10">
+             <div className="bg-white p-8 md:p-10 rounded-[3rem] border border-slate-100 shadow-xl space-y-8 mb-10 text-left md:text-center">
                 <p className="text-slate-600 text-lg md:text-xl font-medium leading-relaxed">
                     Votre participation à <span className="text-[#B48646] font-bold">L'Expérience du jeu concours d'Infini24</span> a bien été enregistrée. Nous avons hâte de découvrir, peut-être, vos plus beaux souvenirs pour les transformer en cinéma.
                 </p>
@@ -233,20 +232,20 @@ Bonne chance à tous !`);
                 <div className="p-6 bg-slate-50 rounded-2xl border border-slate-100 text-left space-y-4">
                     <div className="flex gap-4 items-center text-[#B48646]">
                         <Facebook size={24} />
-                        <h4 className="font-black text-xs uppercase tracking-widest">Le petit plus (Engagement)</h4>
+                        <h4 className="font-black text-xs uppercase tracking-widest">Restez connecté !</h4>
                     </div>
                     <p className="text-sm text-slate-500 font-medium leading-relaxed">
-                        Restez connecté ! Le gagnant sera annoncé sur <strong>facebook</strong> le <strong>8 mars</strong>. En attendant, suivez nos dernières créations sur nos réseaux sociaux pour vous inspirer.
+                        Le gagnant sera annoncé sur <strong>facebook</strong> le <strong>8 mars</strong>. En attendant, suivez nos dernières créations sur nos réseaux sociaux pour vous inspirer.
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
                     <button 
                         onClick={() => {
                             if (navigator.share) {
                                 navigator.share({
                                     title: 'Infini 24 - Jeu Concours',
-                                    text: 'Je viens de participer au concours Souvenirs Infinis ! Tente ta chance aussi.',
+                                    text: 'Je viens de participer au Jeu Concours d\'Infini 24 ! Tente ta chance aussi.',
                                     url: window.location.origin + '/concours'
                                 });
                             } else {
