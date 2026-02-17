@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { ChevronLeft, Video, PenTool, LifeBuoy, Palette, Lock, X, Check, ArrowRight, Mail, Eye, Calculator, ShieldCheck, HelpCircle, Trophy } from 'lucide-react';
+import { ChevronLeft, Video, PenTool, LifeBuoy, Palette, Lock, X, Check, ArrowRight, Mail, Eye, Calculator, ShieldCheck, HelpCircle, Trophy, Smartphone, Zap } from 'lucide-react';
 import { ServiceType } from '../types';
 import toast from 'react-hot-toast';
 
@@ -104,6 +104,7 @@ Cordialement.`);
                       <li className="font-bold">3. IMPORTANT : Ajoutez vos photos/logos en pièce jointe dans le mail qui va s'ouvrir.</li>
                   </ul>
               </div>
+              <button onClick={() => setStep('info')} className="hidden" /> {/* Fix: ensures no direct skip */}
               <button onClick={() => setStep('contact')} className="w-full mt-4 bg-slate-900 text-white font-bold py-5 rounded-[1.5rem] transition-all active:scale-95 text-lg flex items-center justify-center gap-2 group">
                   Suivant <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform"/>
               </button>
@@ -268,23 +269,46 @@ const VideoForm = ({ onBack, onRequest }: FormProps) => {
     const [duration, setDuration] = useState<number>(10);
     const [price, setPrice] = useState<number>(0);
 
-    const estimatedDurationInSeconds = photos * 4.2;
+    const isProFormat = subService === 'short' || subService === 'ads';
+
+    const estimatedDurationInSeconds = isProFormat ? (subService === 'short' ? 60 : 30) : (photos * 4.2);
     const estMin = Math.floor(estimatedDurationInSeconds / 60);
     const estSec = Math.round(estimatedDurationInSeconds % 60);
 
-    const musicsNeeded = Math.max(1, Math.ceil(estimatedDurationInSeconds / 210));
+    const musicsNeeded = isProFormat ? 1 : Math.max(1, Math.ceil(estimatedDurationInSeconds / 210));
 
     useEffect(() => {
-        let basePrice = subService === 'wedding' ? 60 : 40;
-        let photoCost = photos * 0.5;
-        let durationCost = duration * 10;
+        let basePrice = 0;
+        let photoCost = 0;
+        let durationCost = 0;
+
+        if (subService === 'short') {
+            basePrice = 20; // Montage Short / TikTok
+            photoCost = Math.max(0, (photos - 5) * 2); // Supplément au delà de 5 rushes
+        } else if (subService === 'ads') {
+            basePrice = 50; // Publicité Express
+            photoCost = Math.max(0, (photos - 10) * 3); // Supplément au delà de 10 rushes
+        } else {
+            basePrice = subService === 'wedding' ? 60 : 40;
+            photoCost = photos * 0.5;
+            durationCost = duration * 10;
+        }
+        
         setPrice(basePrice + photoCost + durationCost);
     }, [photos, duration, subService]);
 
     const handleOrder = () => {
-        const typeLabel = subService === 'birthday' ? 'Anniversaire' : (subService === 'wedding' ? 'Mariage' : 'Hommage');
+        let typeLabel = '';
+        switch(subService) {
+            case 'birthday': typeLabel = 'Anniversaire'; break;
+            case 'wedding': typeLabel = 'Mariage'; break;
+            case 'funeral': typeLabel = 'Hommage'; break;
+            case 'short': typeLabel = 'Short / TikTok / Réel'; break;
+            case 'ads': typeLabel = 'Publicité Express'; break;
+        }
         const name = `Montage Vidéo ${typeLabel}`;
-        const details = `• Type : ${typeLabel}\n• Photos : ${photos}\n• Durée : ${duration} min`;
+        const inputLabel = isProFormat ? 'Rushes/Médias' : 'Photos';
+        const details = `• Type : ${typeLabel}\n• ${inputLabel} : ${photos}\n• Durée : ${duration} min`;
         onRequest(name, price, details);
     }
 
@@ -297,26 +321,29 @@ const VideoForm = ({ onBack, onRequest }: FormProps) => {
             <div className="space-y-6 overflow-visible">
                 <div className="flex items-center justify-between relative overflow-visible">
                     <label className="flex items-center gap-2 text-sm font-bold text-slate-700">
-                        <span>Nombre de photos</span>
+                        <span>{isProFormat ? 'Nombre de rushes / clips' : 'Nombre de photos'}</span>
                         <div className="group relative z-40">
                             <HelpCircle size={18} className="text-[#B48646] cursor-help transition-all group-hover:scale-110 active:scale-90" />
                             <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-5 w-[280px] md:w-[340px] p-6 bg-slate-900 text-white text-[11px] leading-relaxed rounded-[2rem] opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-300 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.6)] z-[9999] border border-[#B48646]/40 backdrop-blur-md">
                                 <p className="font-medium text-slate-100 italic">
-                                    "Pour un montage dynamique et émouvant, nous recommandons une exposition de <span className="text-[#B48646] font-bold">4 à 5 secondes</span> par photo. 50 photos correspondent environ à une musique standard (3min30)."
+                                    {isProFormat 
+                                        ? "Pour les formats réseaux, nous optimisons vos rushes pour un montage ultra-dynamique. Les prix de base incluent un nombre limité de sources pour garantir la rapidité."
+                                        : "\"Pour un montage dynamique et émouvant, nous recommandons une exposition de 4 à 5 secondes par photo. 50 photos correspondent environ à une musique standard (3min30).\""
+                                    }
                                 </p>
                                 <div className="absolute top-full left-1/2 -translate-x-1/2 border-[12px] border-transparent border-t-slate-900"></div>
                             </div>
                         </div>
                     </label>
-                    <span className="text-[#B48646] bg-[#B48646]/10 px-4 py-1.5 rounded-xl font-black text-xs shadow-sm">{photos} photos</span>
+                    <span className="text-[#B48646] bg-[#B48646]/10 px-4 py-1.5 rounded-xl font-black text-xs shadow-sm">{photos} {isProFormat ? 'fichiers' : 'photos'}</span>
                 </div>
                 
                 <div className="pt-2">
                   <input 
                       type="range" 
-                      min="10" 
-                      max="500" 
-                      step="10" 
+                      min={isProFormat ? "1" : "10"} 
+                      max={isProFormat ? "50" : "500"} 
+                      step={isProFormat ? "1" : "10"} 
                       value={photos} 
                       onChange={(e) => setPhotos(parseInt(e.target.value))} 
                       className="w-full h-2.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#B48646] hover:accent-[#946d38] transition-all" 
@@ -329,7 +356,7 @@ const VideoForm = ({ onBack, onRequest }: FormProps) => {
                     </p>
                     <p className="text-[11px] font-black uppercase tracking-widest flex items-center gap-1.5 text-[#B48646]">
                         <div className="w-1.5 h-1.5 rounded-full animate-pulse bg-[#B48646]"></div>
-                        Idéal pour {musicsNeeded} musique{musicsNeeded > 1 ? 's' : ''}
+                        {isProFormat ? 'Format vertical optimisé' : `Idéal pour ${musicsNeeded} musique${musicsNeeded > 1 ? 's' : ''}`}
                     </p>
                 </div>
             </div>
@@ -365,15 +392,24 @@ const VideoForm = ({ onBack, onRequest }: FormProps) => {
                     <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm mb-6 overflow-visible">
                         <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-6">Type de projet</label>
                         <div className="space-y-4">
-                            {['birthday', 'wedding', 'funeral'].map((type) => (
-                                <label key={type} className={`border-2 p-6 rounded-[2rem] flex items-center gap-4 cursor-pointer transition-all ${subService === type ? 'bg-[#B48646]/5 border-[#B48646] shadow-sm' : 'bg-slate-50 border-transparent hover:bg-white'}`}>
-                                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${subService === type ? 'border-[#B48646]' : 'border-slate-200'}`}>
-                                      {subService === type && <div className="w-3 h-3 rounded-full bg-[#B48646]" />}
+                            {[
+                                { id: 'birthday', icon: Zap, label: 'Anniversaire / Retraite' },
+                                { id: 'wedding', icon: Zap, label: 'Mariage / Baptême' },
+                                { id: 'funeral', icon: Zap, label: 'Hommage & Obsèques' },
+                                { id: 'short', icon: Smartphone, label: 'Montage Short / TikTok / Réel' },
+                                { id: 'ads', icon: Zap, label: 'Publicité Express' }
+                            ].map((type) => (
+                                <label key={type.id} className={`border-2 p-6 rounded-[2rem] flex items-center gap-4 cursor-pointer transition-all ${subService === type.id ? 'bg-[#B48646]/5 border-[#B48646] shadow-sm' : 'bg-slate-50 border-transparent hover:bg-white'}`}>
+                                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${subService === type.id ? 'border-[#B48646]' : 'border-slate-200'}`}>
+                                      {subService === type.id && <div className="w-3 h-3 rounded-full bg-[#B48646]" />}
                                     </div>
-                                    <input type="radio" checked={subService === type} onChange={() => setSubService(type)} className="hidden" />
-                                    <span className="text-base font-bold text-slate-800 block capitalize">
-                                        {type === 'birthday' ? 'Anniversaire / Retraite' : (type === 'wedding' ? 'Mariage / Baptême' : 'Hommage & Obsèques')}
-                                    </span>
+                                    <input type="radio" checked={subService === type.id} onChange={() => { setSubService(type.id); setPhotos(type.id === 'short' ? 5 : (type.id === 'ads' ? 10 : 50)); }} className="hidden" />
+                                    <div className="flex-1">
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-base font-bold text-slate-800 block">{type.label}</span>
+                                            {type.id === 'short' && <Smartphone size={14} className="text-[#B48646]" />}
+                                        </div>
+                                    </div>
                                 </label>
                             ))}
                         </div>
