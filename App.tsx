@@ -8,6 +8,7 @@ import ServicesPage from './pages/ServicesPage';
 import RealizationsPage from './pages/RealizationsPage';
 import ContactPage from './pages/ContactPage';
 import ContestPage from './pages/ContestPage';
+import CookieBanner from './components/CookieBanner';
 import { ServiceType } from './types';
 
 const DesktopSidebar = ({ 
@@ -222,6 +223,8 @@ const App = () => {
 
         <MobileNavigation activeTab={activeTab} onNavigate={handleNavigate} />
       </main>
+
+      <CookieBanner />
     </div>
   );
 };
