@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { ArrowRight, Video, PenTool, Info, LifeBuoy, Infinity as InfinityIcon, Sparkles, Briefcase, Trophy, Gift, Share2, Users } from 'lucide-react';
+import { ArrowRight, Video, PenTool, Info, LifeBuoy, Infinity as InfinityIcon, Sparkles, Briefcase, Trophy, Gift, Share2, Users, Shield } from 'lucide-react';
 import { ServiceType } from '../types';
 
 interface HomePageProps {
@@ -240,6 +240,16 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
             </div>
             </div>
         </section>
+
+        {/* Discrete Legal Link for Mobile */}
+        <div className="mt-8 mb-4 flex justify-center md:hidden">
+          <button 
+            onClick={() => onNavigate(5)}
+            className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest hover:text-[#B48646] transition-colors"
+          >
+            <Shield size={12} /> Politique de Confidentialité
+          </button>
+        </div>
       </div>
     </div>
   );

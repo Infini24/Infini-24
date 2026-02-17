@@ -1,8 +1,12 @@
 
 import React, { useState, useEffect } from 'react';
-import { ShieldCheck, X } from 'lucide-react';
+import { ShieldCheck, X, ExternalLink } from 'lucide-react';
 
-const CookieBanner: React.FC = () => {
+interface CookieBannerProps {
+  onShowPrivacy?: () => void;
+}
+
+const CookieBanner: React.FC<CookieBannerProps> = ({ onShowPrivacy }) => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -37,7 +41,15 @@ const CookieBanner: React.FC = () => {
           <div className="flex-1 text-center md:text-left">
             <h4 className="text-white font-bold text-lg mb-1 font-['Poppins']">Respect de votre vie privée</h4>
             <p className="text-slate-400 text-xs leading-relaxed">
-              Infini 24 utilise des cookies pour améliorer votre expérience et diffuser des publicités personnalisées via Google AdSense. En cliquant sur "Accepter", vous consentez à l'utilisation de ces technologies.
+              Infini 24 utilise des cookies pour améliorer votre expérience et diffuser des publicités personnalisées via Google AdSense. 
+              {onShowPrivacy && (
+                <button 
+                  onClick={onShowPrivacy}
+                  className="inline-flex items-center gap-1 text-[#B48646] hover:underline ml-1 font-bold"
+                >
+                  Voir la politique <ExternalLink size={10} />
+                </button>
+              )}
             </p>
           </div>
           

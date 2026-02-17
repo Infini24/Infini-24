@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Home, Calculator, Mail, Infinity as InfinityIcon, Image as ImageIcon, Trophy } from 'lucide-react';
+import { Home, Calculator, Mail, Infinity as InfinityIcon, Image as ImageIcon, Trophy, Shield } from 'lucide-react';
 import { Toaster } from 'react-hot-toast';
 
 import HomePage from './pages/HomePage';
@@ -8,6 +8,7 @@ import ServicesPage from './pages/ServicesPage';
 import RealizationsPage from './pages/RealizationsPage';
 import ContactPage from './pages/ContactPage';
 import ContestPage from './pages/ContestPage';
+import PrivacyPage from './pages/PrivacyPage';
 import CookieBanner from './components/CookieBanner';
 import { ServiceType } from './types';
 
@@ -55,7 +56,13 @@ const DesktopSidebar = ({
          ))}
       </nav>
 
-      <div className="p-6 border-t border-slate-50 text-center">
+      <div className="p-6 border-t border-slate-50 flex flex-col gap-4">
+           <button 
+             onClick={() => onNavigate(5)}
+             className={`flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest transition-colors ${activeTab === 5 ? 'text-[#B48646]' : 'text-slate-400 hover:text-slate-600'}`}
+           >
+             <Shield size={14} /> Mentions Légales
+           </button>
            <a 
              href="mailto:Wendy.toussaint@icloud.com"
              className="w-full bg-slate-900 text-white p-4 rounded-2xl flex items-center justify-center gap-2 font-bold shadow-lg hover:bg-[#B48646] hover:shadow-[#B48646]/30 transition-all group text-sm"
@@ -112,6 +119,7 @@ const App = () => {
         else if (path.includes('nos-realisations') || path.includes('realisations')) initialTab = 1;
         else if (path.includes('nos-services') || path.includes('services')) initialTab = 2;
         else if (path.includes('contact')) initialTab = 3;
+        else if (path.includes('confidentialite') || path.includes('privacy')) initialTab = 5;
 
         if (initialTab !== 0) {
             setActiveTab(initialTab);
@@ -129,6 +137,7 @@ const App = () => {
         else if (path.includes('contact')) setActiveTab(3);
         else if (path.includes('services')) setActiveTab(2);
         else if (path.includes('realisations')) setActiveTab(1);
+        else if (path.includes('confidentialite')) setActiveTab(5);
         else setActiveTab(0);
     };
     
@@ -150,6 +159,7 @@ const App = () => {
     if (index === 1) path = '/nos-realisations';
     if (index === 2) path = '/nos-services';
     if (index === 3) path = '/contact';
+    if (index === 5) path = '/confidentialite';
     
     if (window.location.pathname !== path) {
         try {
@@ -221,10 +231,16 @@ const App = () => {
             </div>
         )}
 
+        {mountedTabs.includes(5) && (
+            <div className={`flex-1 h-full overflow-hidden ${activeTab === 5 ? 'block' : 'hidden'}`}>
+                <PrivacyPage onBack={() => handleNavigate(0)} />
+            </div>
+        )}
+
         <MobileNavigation activeTab={activeTab} onNavigate={handleNavigate} />
       </main>
 
-      <CookieBanner />
+      <CookieBanner onShowPrivacy={() => handleNavigate(5)} />
     </div>
   );
 };
