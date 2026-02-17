@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Trophy, Gift, Check, Send, Sparkles, Share2, Info, X, ChevronRight, AlertCircle, Film, Music, Star, Home, Facebook } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -33,7 +34,7 @@ Bonne chance à tous !`);
     toast.success("Envoi de votre participation...", { icon: '✨' });
     
     setTimeout(() => {
-        window.location.href = `mailto:Wendy.toussaint@icloud.com?subject=${subject}&body=${body}`;
+        window.location.href = `mailto:dywen.officiel7@gmail.com?subject=${subject}&body=${body}`;
         setStep('success');
     }, 1000);
   };

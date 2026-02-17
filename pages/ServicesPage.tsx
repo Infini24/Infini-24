@@ -58,7 +58,7 @@ Dans l'attente de votre validation,
 Cordialement.`);
 
     setTimeout(() => {
-        window.location.href = `mailto:Wendy.toussaint@icloud.com?subject=${subject}&body=${body}`;
+        window.location.href = `mailto:dywen.officiel7@gmail.com?subject=${subject}&body=${body}`;
     }, 1000);
 
     setTimeout(() => {
@@ -241,7 +241,7 @@ const GraphicDesignForm = ({ onBack, onRequest }: FormProps) => {
                             </label>
                             <label className={`relative border-2 p-5 rounded-[2rem] cursor-pointer transition-all ${subService === 'print' ? 'bg-[#B48646]/5 border-[#B48646]' : 'bg-slate-50 border-transparent'}`}>
                                 <div className="flex items-start gap-4">
-                                    <input type="radio" checked={subService === 'print'} onChange={() => setSubService('print')} className="w-5 h-5 accent-[#B48646] mt-1" />
+                                    <input type="radio" checked={subService === 'logo_creation'} onChange={() => setSubService('logo_creation')} className="w-5 h-5 accent-[#B48646] mt-1" />
                                     <div>
                                         <span className="font-bold text-slate-900 block text-base">Cartes de Visite & Flyers</span>
                                         <span className="text-[#B48646] font-black text-sm">50€</span>
