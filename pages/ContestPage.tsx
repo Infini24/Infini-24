@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
-import { Trophy, Gift, Check, Send, Sparkles, Share2, Info, X, ChevronRight, AlertCircle, Film, Music, Star, Home, Facebook } from 'lucide-react';
+import { Trophy, Gift, Check, Send, Sparkles, Share2, Info, X, ChevronRight, AlertCircle, Film, Music, Home, Facebook, Loader2 } from 'lucide-react';
+import { GoogleGenAI } from "@google/genai";
 import toast from 'react-hot-toast';
 
 interface ContestPageProps {
@@ -8,17 +9,37 @@ interface ContestPageProps {
 }
 
 const ContestPage: React.FC<ContestPageProps> = ({ onNavigate }) => {
-  const [step, setStep] = useState<'form' | 'success'>('form');
+  const [step, setStep] = useState<'form' | 'loading' | 'success'>('form');
   const [showRules, setShowRules] = useState(false);
+  const [aiMessage, setAiMessage] = useState<string>("");
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: ''
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const generateAiConfirmation = async (userName: string) => {
+    try {
+      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+      const response = await ai.models.generateContent({
+        model: 'gemini-3-flash-preview',
+        contents: `Tu es l'esprit créatif d'Infini 24. Un utilisateur nommé "${userName}" vient de s'inscrire au jeu concours pour gagner une vidéo souvenir premium (valeur 190€). 
+        Rédige un message de confirmation court (2 phrases maximum), très chaleureux, un peu poétique, qui lui souhaite bonne chance et qui mentionne que ses souvenirs sont précieux. Tutoie l'utilisateur.`,
+      });
+      setAiMessage(response.text || "Tes souvenirs sont des étoiles, et nous avons hâte de les faire briller. Bonne chance pour le tirage !");
+    } catch (error) {
+      console.error("Gemini Error:", error);
+      setAiMessage("Tes souvenirs sont précieux et méritent de briller. Bonne chance pour le tirage au sort !");
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setStep('loading');
     
+    // On lance la génération IA en parallèle
+    await generateAiConfirmation(formData.name);
+
     const subject = encodeURIComponent(`[PARTICIPATION CONCOURS] ${formData.name}`);
     const body = encodeURIComponent(`Bonjour Infini 24,
 
@@ -31,12 +52,11 @@ TEL : ${formData.phone}
 J'ai bien pris connaissance du règlement.
 Bonne chance à tous !`);
 
-    toast.success("Envoi de votre participation...", { icon: '✨' });
-    
     setTimeout(() => {
         window.location.href = `mailto:dywen.officiel7@gmail.com?subject=${subject}&body=${body}`;
         setStep('success');
-    }, 1000);
+        toast.success("IA : Participation analysée avec succès !", { icon: '✨' });
+    }, 1500);
   };
 
   const RulesModal = () => (
@@ -101,12 +121,11 @@ Bonne chance à tous !`);
       </header>
 
       <div className="flex-1 px-4 lg:px-8 pb-24 max-w-4xl mx-auto w-full">
-        {step === 'form' ? (
+        {step === 'form' && (
           <div className="space-y-10 animate-in fade-in slide-in-from-bottom duration-500">
-            {/* Lot Preview Improved */}
+            {/* Lot Preview */}
             <div className="bg-slate-900 rounded-[3rem] p-10 md:p-14 text-white relative overflow-hidden shadow-2xl border border-white/5 group">
                 <div className="absolute top-0 right-0 w-96 h-96 bg-blue-600/20 rounded-full blur-[100px] -mr-20 -mt-20"></div>
-                <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#B48646]/10 rounded-full blur-[80px] -ml-20 -mb-20"></div>
                 
                 <div className="relative z-10 space-y-8">
                     <div className="flex flex-col items-center md:items-start gap-4">
@@ -127,28 +146,10 @@ Bonne chance à tous !`);
                         <p className="text-slate-300 text-lg md:text-xl font-medium leading-relaxed">
                             Le grand gagnant recevra notre <span className="text-white font-bold">Pack Vidéo Premium</span> : une création magistrale regroupant vos 100 plus beaux souvenirs.
                         </p>
-                        
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
-                            <div className="flex gap-4 items-start p-4 rounded-2xl bg-white/5 border border-white/5">
-                                <Film className="text-[#B48646] shrink-0" size={24} />
-                                <div>
-                                    <h4 className="font-bold text-white text-sm mb-1 uppercase tracking-wide">Réalisation Pro</h4>
-                                    <p className="text-slate-400 text-xs leading-relaxed">Effets cinématographiques, transitions fluides et étalonnage professionnel.</p>
-                                </div>
-                            </div>
-                            <div className="flex gap-4 items-start p-4 rounded-2xl bg-white/5 border border-white/5">
-                                <Music className="text-[#B48646] shrink-0" size={24} />
-                                <div>
-                                    <h4 className="font-bold text-white text-sm mb-1 uppercase tracking-wide">Ambiance Sonore</h4>
-                                    <p className="text-slate-400 text-xs leading-relaxed">Choisissez votre musique préférée ou laissez nos experts sublimer votre surprise.</p>
-                                </div>
-                            </div>
-                        </div>
-
                         <div className="flex items-center gap-3 pt-4 border-t border-white/10">
                             <div className="w-2 h-2 rounded-full bg-yellow-400 animate-pulse"></div>
                             <p className="text-white font-bold italic tracking-wide">
-                                Résultat : Une vidéo mémorable, prête à émouvoir et à durer toute une vie.
+                                Une création mémorable pour toute une vie.
                             </p>
                         </div>
                     </div>
@@ -216,30 +217,51 @@ Bonne chance à tous !`);
                 </form>
             </div>
           </div>
-        ) : (
+        )}
+
+        {step === 'loading' && (
+            <div className="flex flex-col items-center justify-center py-24 text-center space-y-8 animate-pulse">
+                <div className="relative">
+                    <Loader2 size={80} className="text-[#B48646] animate-spin" />
+                    <Sparkles size={24} className="absolute -top-2 -right-2 text-yellow-400 animate-bounce" />
+                </div>
+                <div>
+                    <h2 className="text-2xl font-bold text-slate-900">L'IA Infini 24 analyse votre profil...</h2>
+                    <p className="text-slate-500 mt-2 font-medium">Préparation de votre message de bienvenue personnalisé.</p>
+                </div>
+            </div>
+        )}
+
+        {step === 'success' && (
           <div className="flex flex-col items-center justify-center py-10 md:py-20 text-center animate-in zoom-in duration-500 max-w-2xl mx-auto">
              <div className="w-32 h-32 bg-green-50 text-green-600 rounded-full flex items-center justify-center mb-8 shadow-2xl shadow-green-500/10 relative">
                 <Check size={64} strokeWidth={3} />
                 <Sparkles size={24} className="absolute top-2 right-2 text-yellow-400 animate-pulse" />
              </div>
              
-             <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-6">Félicitations, vous êtes en lice ! ✨</h2>
+             <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-4">C'est validé ! ✨</h2>
              
+             {/* AI MESSAGE BLOCK */}
+             <div className="w-full mb-8 animate-in slide-in-from-top duration-700 delay-300">
+                <div className="bg-gradient-to-br from-slate-900 to-blue-950 p-1 border-2 border-blue-500/30 rounded-[2.5rem] shadow-[0_0_30px_rgba(59,130,246,0.2)]">
+                    <div className="bg-slate-900 rounded-[2.3rem] p-8 relative overflow-hidden">
+                        <div className="absolute top-0 left-0 w-20 h-20 bg-blue-500/10 blur-2xl"></div>
+                        <div className="flex items-center gap-3 mb-4">
+                            <Sparkles size={16} className="text-blue-400" />
+                            <span className="text-[10px] font-black text-blue-400 uppercase tracking-[0.3em]">Le mot de l'IA Infini 24</span>
+                        </div>
+                        <p className="text-white text-lg md:text-xl font-medium leading-relaxed italic">
+                           "{aiMessage}"
+                        </p>
+                    </div>
+                </div>
+             </div>
+
              <div className="bg-white p-8 md:p-10 rounded-[3rem] border border-slate-100 shadow-xl space-y-8 mb-10 text-left md:text-center">
-                <p className="text-slate-600 text-lg md:text-xl font-medium leading-relaxed">
-                    Votre participation à <span className="text-[#B48646] font-bold">L'Expérience du jeu concours d'Infini24</span> a bien été enregistrée. Nous avons hâte de découvrir, peut-être, vos plus beaux souvenirs pour les transformer en cinéma.
+                <p className="text-sm text-slate-500 font-medium leading-relaxed">
+                    Le gagnant sera annoncé sur <strong>facebook</strong> le <strong>8 mars</strong>. N'oublie pas de bien envoyer le mail qui vient de s'ouvrir pour finaliser ton inscription !
                 </p>
                 
-                <div className="p-6 bg-slate-50 rounded-2xl border border-slate-100 text-left space-y-4">
-                    <div className="flex gap-4 items-center text-[#B48646]">
-                        <Facebook size={24} />
-                        <h4 className="font-black text-xs uppercase tracking-widest">Restez connecté !</h4>
-                    </div>
-                    <p className="text-sm text-slate-500 font-medium leading-relaxed">
-                        Le gagnant sera annoncé sur <strong>facebook</strong> le <strong>8 mars</strong>. En attendant, suivez nos dernières créations sur nos réseaux sociaux pour vous inspirer.
-                    </p>
-                </div>
-
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
                     <button 
                         onClick={() => {
@@ -249,8 +271,6 @@ Bonne chance à tous !`);
                                     text: 'Je viens de participer au Jeu Concours d\'Infini 24 ! Tente ta chance aussi.',
                                     url: window.location.origin + '/concours'
                                 });
-                            } else {
-                                toast.success("Lien copié !");
                             }
                         }}
                         className="w-full bg-slate-100 text-slate-900 font-bold py-4 rounded-2xl hover:bg-slate-200 transition-all flex items-center justify-center gap-2"
@@ -262,7 +282,7 @@ Bonne chance à tous !`);
                         onClick={() => onNavigate && onNavigate(0)}
                         className="w-full bg-[#B48646] text-white font-bold py-4 rounded-2xl hover:bg-slate-900 transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#B48646]/20"
                     >
-                        <Home size={18} /> Retour à l'accueil
+                        <Home size={18} /> Accueil
                     </button>
                 </div>
              </div>
