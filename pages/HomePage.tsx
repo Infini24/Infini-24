@@ -258,7 +258,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
             </button>
           </div>
           <a 
-             href="mailto:dywen.officiel7@gmail.com"
+             href="mailto:dywen.officiel7@gmail.com?subject=[Infini24] Demande de contact"
              className="flex items-center gap-2 text-[10px] font-bold text-[#B48646] uppercase tracking-widest border border-[#B48646]/20 px-6 py-3 rounded-full hover:bg-[#B48646]/5 transition-all active:scale-95"
           >
             <Mail size={14} /> Nous écrire

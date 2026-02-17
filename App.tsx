@@ -71,7 +71,7 @@ const DesktopSidebar = ({
              <Scale size={14} /> Mentions Légales
            </button>
            <a 
-             href="mailto:dywen.officiel7@gmail.com"
+             href="mailto:dywen.officiel7@gmail.com?subject=[Infini24] Demande de contact"
              className="w-full bg-slate-900 text-white p-4 rounded-2xl flex items-center justify-center gap-2 font-bold shadow-lg hover:bg-[#B48646] hover:shadow-[#B48646]/30 transition-all group text-sm mt-2"
            >
              <Mail size={18} className="group-hover:-translate-y-1 transition-transform" /> Nous écrire
