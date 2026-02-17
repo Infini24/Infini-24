@@ -55,7 +55,7 @@ Bonne chance à tous !`);
     setTimeout(() => {
         window.location.href = `mailto:dywen.officiel7@gmail.com?subject=${subject}&body=${body}`;
         setStep('success');
-        toast.success("IA : Participation analysée avec succès !", { icon: '✨' });
+        toast.success("Participation analysée avec succès !", { icon: '✨' });
     }, 1500);
   };
 
@@ -226,7 +226,7 @@ Bonne chance à tous !`);
                     <Sparkles size={24} className="absolute -top-2 -right-2 text-yellow-400 animate-bounce" />
                 </div>
                 <div>
-                    <h2 className="text-2xl font-bold text-slate-900">L'IA Infini 24 analyse votre profil...</h2>
+                    <h2 className="text-2xl font-bold text-slate-900">Infini 24 analyse votre profil...</h2>
                     <p className="text-slate-500 mt-2 font-medium">Préparation de votre message de bienvenue personnalisé.</p>
                 </div>
             </div>
@@ -248,7 +248,7 @@ Bonne chance à tous !`);
                         <div className="absolute top-0 left-0 w-20 h-20 bg-blue-500/10 blur-2xl"></div>
                         <div className="flex items-center gap-3 mb-4">
                             <Sparkles size={16} className="text-blue-400" />
-                            <span className="text-[10px] font-black text-blue-400 uppercase tracking-[0.3em]">Le mot de l'IA Infini 24</span>
+                            <span className="text-[10px] font-black text-blue-400 uppercase tracking-[0.3em]">Le mot d'Infini 24</span>
                         </div>
                         <p className="text-white text-lg md:text-xl font-medium leading-relaxed italic">
                            "{aiMessage}"
