@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { ArrowRight, Video, PenTool, Info, LifeBuoy, Infinity as InfinityIcon, Sparkles, Briefcase, Trophy, Gift, Share2, Users, Shield } from 'lucide-react';
+import { ArrowRight, Video, PenTool, Info, LifeBuoy, Infinity as InfinityIcon, Sparkles, Briefcase, Trophy, Gift, Share2, Users, Shield, Scale, Mail } from 'lucide-react';
 import { ServiceType } from '../types';
 
 interface HomePageProps {
@@ -241,14 +241,28 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
             </div>
         </section>
 
-        {/* Discrete Legal Link for Mobile */}
-        <div className="mt-8 mb-4 flex justify-center md:hidden">
-          <button 
-            onClick={() => onNavigate(5)}
-            className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest hover:text-[#B48646] transition-colors"
+        {/* Mobile-only Footer Links (Expanded) */}
+        <div className="mt-12 mb-8 flex flex-col items-center gap-6 md:hidden border-t border-slate-100 pt-10">
+          <div className="flex flex-wrap justify-center gap-x-8 gap-y-4">
+            <button 
+              onClick={() => onNavigate(5)}
+              className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest hover:text-[#B48646] transition-colors"
+            >
+              <Shield size={14} /> Confidentialité
+            </button>
+            <button 
+              onClick={() => onNavigate(6)}
+              className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest hover:text-[#B48646] transition-colors"
+            >
+              <Scale size={14} /> Mentions Légales
+            </button>
+          </div>
+          <a 
+             href="mailto:dywen.officiel7@gmail.com"
+             className="flex items-center gap-2 text-[10px] font-bold text-[#B48646] uppercase tracking-widest border border-[#B48646]/20 px-6 py-3 rounded-full hover:bg-[#B48646]/5 transition-all active:scale-95"
           >
-            <Shield size={12} /> Politique de Confidentialité
-          </button>
+            <Mail size={14} /> Nous écrire
+          </a>
         </div>
       </div>
     </div>

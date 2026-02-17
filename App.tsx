@@ -22,8 +22,8 @@ const DesktopSidebar = ({
 }) => {
 
   return (
-    <aside className="hidden md:flex flex-col w-72 h-screen fixed left-0 top-0 bg-white/90 backdrop-blur-md border-r border-slate-100 shadow-[4px_0_24px_rgba(0,0,0,0.02)] z-50 overflow-y-auto">
-      <div className="p-8 pb-4 flex flex-col items-start">
+    <aside className="hidden md:flex flex-col w-72 h-screen h-[100dvh] fixed left-0 top-0 bg-white/90 backdrop-blur-md border-r border-slate-100 shadow-[4px_0_24px_rgba(0,0,0,0.02)] z-50 overflow-y-auto no-scrollbar">
+      <div className="p-8 pb-4 flex flex-col items-start shrink-0">
         <div className="flex items-center gap-3 mb-1 group cursor-pointer" onClick={() => onNavigate(0)}>
             <InfinityIcon size={40} strokeWidth={1.5} className="text-[#B48646] group-hover:scale-110 transition-transform duration-300" />
             <div className="flex flex-col">
@@ -57,7 +57,7 @@ const DesktopSidebar = ({
          ))}
       </nav>
 
-      <div className="p-6 border-t border-slate-50 flex flex-col gap-3">
+      <div className="p-6 border-t border-slate-50 flex flex-col gap-3 shrink-0 mb-4">
            <button 
              onClick={() => onNavigate(5)}
              className={`flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest transition-colors ${activeTab === 5 ? 'text-[#B48646]' : 'text-slate-400 hover:text-slate-600'}`}
@@ -181,7 +181,7 @@ const App = () => {
   };
 
   return (
-    <div className="flex bg-[#FDFCF8] h-screen w-screen overflow-hidden text-slate-900 font-['Inter'] selection:bg-[#B48646]/20 selection:text-[#B48646]">
+    <div className="flex bg-[#FDFCF8] h-screen h-[100dvh] w-screen overflow-hidden text-slate-900 font-['Inter'] selection:bg-[#B48646]/20 selection:text-[#B48646]">
       <Toaster 
         position="top-center" 
         toastOptions={{
