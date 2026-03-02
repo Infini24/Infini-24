@@ -36,7 +36,7 @@ const DesktopSidebar = ({
       <nav className="flex-1 px-4 py-8 space-y-2">
          {[
            { icon: Home, label: "Accueil", index: 0 },
-           { icon: Trophy, label: "Jeu Concours", index: 4 },
+           { icon: Trophy, label: "Concours", index: 4 },
            { icon: ImageIcon, label: "Nos Réalisations", index: 1 },
            { icon: Calculator, label: "Nos Services", index: 2 },
            { icon: Mail, label: "Contact", index: 3 }
