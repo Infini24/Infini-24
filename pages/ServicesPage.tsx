@@ -503,17 +503,6 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
 
     return (
       <div className="flex flex-col h-full overflow-y-auto no-scrollbar relative">
-         {/* FLOATY CONTEST BADGE */}
-         <div 
-            onClick={onNavigateToContest}
-            className="fixed bottom-24 right-6 md:right-8 z-40 animate-bounce cursor-pointer group"
-         >
-            <div className="bg-slate-900 text-white px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 border border-white/10 group-hover:bg-[#B48646] transition-all">
-                <Trophy size={18} className="text-[#B48646] group-hover:text-white" />
-                <span className="text-[10px] font-black uppercase tracking-widest">Jeu Gratuit</span>
-            </div>
-         </div>
-
          <header className="pt-16 pb-12 px-8 bg-white border-b border-slate-50 rounded-b-[3rem] mb-8 shrink-0 z-10 shadow-sm relative">
             <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 leading-tight mb-2">Nos Services</h1>
             <p className="text-slate-500 font-medium text-sm md:text-base">Choisissez l'expertise dont vous avez besoin.</p>

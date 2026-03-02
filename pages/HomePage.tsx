@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { ArrowRight, Video, PenTool, Info, LifeBuoy, Infinity as InfinityIcon, Sparkles, Briefcase, Trophy, Gift, Share2, Users, Shield, Scale, Mail } from 'lucide-react';
+import { ArrowRight, Video, PenTool, Info, LifeBuoy, Infinity as InfinityIcon, Sparkles, Briefcase, Trophy, Gift, Share2, Users, Shield, Scale, Mail, Facebook, Lock, Calendar } from 'lucide-react';
 import { ServiceType } from '../types';
 
 interface HomePageProps {
@@ -62,13 +62,13 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
             </div>
         </section>
 
-        {/* --- HOW TO PARTICIPATE --- */}
+        {/* --- CONTEST STEPS --- */}
         <section className="mt-8 mb-16 px-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {[
-                    { icon: PenTool, title: "1. Inscrivez-vous", desc: "Remplissez le formulaire en 30 secondes." },
-                    { icon: Share2, title: "2. Partagez", desc: "Parlez-en autour de vous pour doubler vos chances." },
-                    { icon: Trophy, title: "3. Gagnez", desc: "Une création vidéo premium offerte au gagnant." }
+                    { icon: Lock, title: "1. Inscriptions closes", desc: "Le formulaire est désormais fermé." },
+                    { icon: Calendar, title: "2. Tirage au sort", desc: "Prévu pour le 8 Mars prochain." },
+                    { icon: Facebook, title: "3. Résultat", desc: "Annonce du gagnant sur Facebook." }
                 ].map((step, i) => (
                     <div key={i} className="bg-white p-6 rounded-3xl border border-slate-50 shadow-sm flex items-start gap-4 hover:shadow-md transition-shadow">
                         <div className="w-12 h-12 rounded-2xl bg-[#B48646]/10 flex items-center justify-center text-[#B48646] shrink-0">
