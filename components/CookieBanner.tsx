@@ -36,20 +36,33 @@ const CookieBanner: React.FC<CookieBannerProps> = ({ onShowPrivacy }) => {
   }, []);
 
   const loadScripts = () => {
-    // Fonction pour charger dynamiquement les scripts tiers (AdSense / Analytics)
-    // Uniquement après consentement explicite
-    
-    // Google AdSense
+    // --- GOOGLE ADSENSE ---
     if (!document.querySelector('script[src*="adsbygoogle"]')) {
       const adsenseScript = document.createElement('script');
-      adsenseScript.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6658392090726583";
+      adsenseScript.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6658392090726583"; // Remplacez par votre ID ca-pub-XXXXX
       adsenseScript.async = true;
       adsenseScript.crossOrigin = "anonymous";
       document.head.appendChild(adsenseScript);
     }
 
-    // Google Analytics pourrait être ajouté ici de la même manière
-    // console.log("Scripts marketing activés.");
+    // --- GOOGLE ANALYTICS (GA4) ---
+    if (!document.querySelector('script[src*="googletagmanager"]')) {
+      const gaId = "G-XXXXX"; // Remplacez par votre ID G-XXXXX
+      
+      const gaScript = document.createElement('script');
+      gaScript.src = `https://www.googletagmanager.com/gtag/js?id=${gaId}`;
+      gaScript.async = true;
+      document.head.appendChild(gaScript);
+
+      const gaConfigScript = document.createElement('script');
+      gaConfigScript.innerHTML = `
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', '${gaId}');
+      `;
+      document.head.appendChild(gaConfigScript);
+    }
   };
 
   const handleAcceptAll = () => {
