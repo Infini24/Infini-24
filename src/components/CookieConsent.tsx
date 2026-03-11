@@ -1,18 +1,17 @@
-
 import React, { useState, useEffect } from 'react';
 import { ShieldCheck, X, Settings, Check, ArrowRight } from 'lucide-react';
 
-interface CookieBannerProps {
-  onShowPrivacy?: () => void;
+interface CookieConsentProps {
+  onNavigateToPrivacy: () => void;
 }
 
-const CookieBanner: React.FC<CookieBannerProps> = ({ onShowPrivacy }) => {
+const CookieConsent: React.FC<CookieConsentProps> = ({ onNavigateToPrivacy }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
 
   useEffect(() => {
-    // Vérification du consentement stocké (version 2 pour forcer le nouveau bandeau)
-    const storedConsent = localStorage.getItem('cookie-consent-v2');
+    // Check if consent is already stored
+    const storedConsent = localStorage.getItem('cookie-consent');
     if (storedConsent) {
       try {
         const { value, expiry } = JSON.parse(storedConsent);
@@ -23,11 +22,11 @@ const CookieBanner: React.FC<CookieBannerProps> = ({ onShowPrivacy }) => {
           return;
         }
       } catch (e) {
-        localStorage.removeItem('cookie-consent-v2');
+        localStorage.removeItem('cookie-consent');
       }
     }
 
-    // Apparition fluide après 1.5 secondes
+    // Show banner after 1.5s delay
     const timer = setTimeout(() => {
       setIsVisible(true);
     }, 1500);
@@ -36,10 +35,7 @@ const CookieBanner: React.FC<CookieBannerProps> = ({ onShowPrivacy }) => {
   }, []);
 
   const loadScripts = () => {
-    // Fonction pour charger dynamiquement les scripts tiers (AdSense / Analytics)
-    // Uniquement après consentement explicite
-    
-    // Google AdSense
+    // Load Google AdSense
     if (!document.querySelector('script[src*="adsbygoogle"]')) {
       const adsenseScript = document.createElement('script');
       adsenseScript.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6658392090726583";
@@ -48,8 +44,8 @@ const CookieBanner: React.FC<CookieBannerProps> = ({ onShowPrivacy }) => {
       document.head.appendChild(adsenseScript);
     }
 
-    // Google Analytics pourrait être ajouté ici de la même manière
-    // console.log("Scripts marketing activés.");
+    // Load Google Analytics (Placeholder for future use)
+    // console.log("Scripts Analytics & AdSense chargés après consentement.");
   };
 
   const handleAcceptAll = () => {
@@ -64,8 +60,8 @@ const CookieBanner: React.FC<CookieBannerProps> = ({ onShowPrivacy }) => {
   };
 
   const saveConsent = (value: 'accepted' | 'refused') => {
-    const expiry = new Date().getTime() + 180 * 24 * 60 * 60 * 1000; // 6 mois
-    localStorage.setItem('cookie-consent-v2', JSON.stringify({ value, expiry }));
+    const expiry = new Date().getTime() + 180 * 24 * 60 * 60 * 1000; // 6 months
+    localStorage.setItem('cookie-consent', JSON.stringify({ value, expiry }));
   };
 
   if (!isVisible) return null;
@@ -73,7 +69,7 @@ const CookieBanner: React.FC<CookieBannerProps> = ({ onShowPrivacy }) => {
   return (
     <div className="fixed bottom-6 left-6 right-6 md:left-auto md:right-8 md:max-w-md z-[200] animate-in fade-in slide-in-from-bottom-10 duration-700">
       <div className="bg-slate-900 border border-white/10 rounded-[2.5rem] p-6 md:p-8 shadow-2xl shadow-black/50 backdrop-blur-xl relative overflow-hidden group">
-        {/* Décoration de fond style "Design & Vidéo" */}
+        {/* Decorative background */}
         <div className="absolute top-0 right-0 w-32 h-32 bg-[#B48646]/10 rounded-full blur-[50px] -mr-16 -mt-16"></div>
         
         <div className="relative z-10 space-y-6">
@@ -82,7 +78,7 @@ const CookieBanner: React.FC<CookieBannerProps> = ({ onShowPrivacy }) => {
               <ShieldCheck size={24} />
             </div>
             <div className="space-y-1">
-              <h3 className="text-lg font-bold text-white font-['Poppins'] tracking-tight">On ajuste les réglages ?</h3>
+              <h3 className="text-lg font-bold text-white font-['Poppins']">On ajuste les réglages ?</h3>
               <p className="text-slate-400 text-sm leading-relaxed font-medium">
                 Nos cookies aident à cadrer votre expérience. Ils nous permettent d'analyser l'audience et de diffuser des annonces pertinentes pour soutenir nos créations.
               </p>
@@ -149,7 +145,7 @@ const CookieBanner: React.FC<CookieBannerProps> = ({ onShowPrivacy }) => {
 
           <div className="text-center">
             <button 
-                onClick={onShowPrivacy}
+                onClick={onNavigateToPrivacy}
                 className="text-[10px] text-slate-500 hover:text-[#B48646] transition-colors flex items-center justify-center gap-1 mx-auto group"
             >
                 Politique de confidentialité <ArrowRight size={10} className="group-hover:translate-x-0.5 transition-transform" />
@@ -161,4 +157,4 @@ const CookieBanner: React.FC<CookieBannerProps> = ({ onShowPrivacy }) => {
   );
 };
 
-export default CookieBanner;
+export default CookieConsent;
