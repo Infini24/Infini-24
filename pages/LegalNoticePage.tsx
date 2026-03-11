@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { FileText, Building2, Server, Copyright, Tag, ShieldCheck, ChevronLeft } from 'lucide-react';
+import { Building2, Server, Copyright, Tag, ShieldCheck, ChevronLeft, Scale, MessageSquare } from 'lucide-react';
 
 interface LegalNoticePageProps {
   onBack: () => void;
@@ -41,9 +41,13 @@ const LegalNoticePage: React.FC<LegalNoticePageProps> = ({ onBack }) => {
             </div>
             <div className="text-slate-600 space-y-2 text-sm md:text-base">
               <p>Le site <strong>https://infini24.fr</strong> est édité par :</p>
-              <p className="font-bold text-slate-900">Toussaint Wendy de Infini24</p>
-              <p><strong>Domiciliation :</strong> Ville-sur-Lumes, Ardennes, France</p>
+              <p><strong>Nom :</strong> Wendy Toussaint (Nom commercial : Infini 24)</p>
+              <p><strong>Statut :</strong> Entrepreneur Individuel (EI)</p>
+              <p><strong>Siège social :</strong> 41 RUE des Charmes, 08440 Ville-sur-Lumes, France</p>
+              <p><strong>SIRET :</strong> 994 527 976 00017</p>
+              <p><strong>Code APE :</strong> 74.10Z (Activités spécialisées de design)</p>
               <p><strong>Contact :</strong> dywen.officiel7@gmail.com</p>
+              <p><strong>TVA :</strong> TVA non applicable, article 293 B du Code Général des Impôts (CGI).</p>
             </div>
           </section>
 
@@ -56,7 +60,7 @@ const LegalNoticePage: React.FC<LegalNoticePageProps> = ({ onBack }) => {
             </div>
             <div className="text-slate-600 space-y-2 text-sm md:text-base">
               <p>Le site est hébergé par Google Cloud France / Firebase :</p>
-              <p className="font-bold text-slate-900">Société : Google Ireland Limited</p>
+              <p><strong>Société :</strong> Google Ireland Limited</p>
               <p><strong>Adresse :</strong> Gordon House, Barrow Street, Dublin 4, Irlande.</p>
             </div>
           </section>
@@ -69,7 +73,7 @@ const LegalNoticePage: React.FC<LegalNoticePageProps> = ({ onBack }) => {
               <h2 className="text-xl font-bold text-slate-900">3. Propriété intellectuelle</h2>
             </div>
             <p className="text-slate-600 leading-relaxed text-sm md:text-base">
-              Tous les contenus présents sur le site (logos, textes, simulateur de prix, éléments graphiques des services "Montage Short/TikTok" et "Publicité Express") sont la propriété exclusive de <strong>Infini 24</strong>. Toute reproduction, même partielle, est interdite sans autorisation préalable.
+              L'ensemble des contenus (textes, logos, simulateur de prix, éléments graphiques des services "Montage Short/TikTok" et "Publicité Express") est la propriété exclusive de <strong>Infini 24</strong>. Toute reproduction, représentation, modification ou adaptation totale ou partielle de ces éléments est interdite sans l'autorisation écrite préalable de l'éditeur.
             </p>
           </section>
 
@@ -78,10 +82,10 @@ const LegalNoticePage: React.FC<LegalNoticePageProps> = ({ onBack }) => {
               <div className="p-2 bg-[#B48646]/10 rounded-lg">
                 <Tag size={20} />
               </div>
-              <h2 className="text-xl font-bold text-slate-900">4. Services et Tarifs</h2>
+              <h2 className="text-xl font-bold text-slate-900">4. Services et Simulateur de tarifs</h2>
             </div>
             <p className="text-slate-600 leading-relaxed text-sm md:text-base">
-              Les tarifs affichés sur le site (ex: Montage dès 20€, Publicité dès 50€) sont donnés à titre indicatif et peuvent varier selon la complexité du projet via notre simulateur de prix. <strong>Infini 24</strong> se réserve le droit de modifier ses tarifs à tout moment.
+              Les tarifs affichés sur le site (ex: Montage dès 20€, Publicité dès 50€) sont donnés à titre indicatif. Les résultats issus du simulateur de prix ne constituent pas un devis contractuel définitif mais une estimation. <strong>Infini 24</strong> se réserve le droit de valider ou de réviser le tarif final après analyse précise du projet.
             </p>
           </section>
 
@@ -90,16 +94,48 @@ const LegalNoticePage: React.FC<LegalNoticePageProps> = ({ onBack }) => {
               <div className="p-2 bg-[#B48646]/10 rounded-lg">
                 <ShieldCheck size={20} />
               </div>
-              <h2 className="text-xl font-bold text-slate-900">5. Protection des données (RGPD)</h2>
+              <h2 className="text-xl font-bold text-slate-900">5. Protection des données personnelles (RGPD)</h2>
+            </div>
+            <div className="text-slate-600 space-y-4 text-sm md:text-base">
+              <p>Conformément au Règlement Général sur la Protection des Données (RGPD) :</p>
+              <ul className="list-disc ml-6 space-y-2">
+                <li><strong>Données collectées :</strong> Nous collectons uniquement les données nécessaires au traitement de vos commandes et à l'analyse d'audience via Google Analytics.</li>
+                <li><strong>Finalité :</strong> Gestion de la relation client et amélioration de l'expérience utilisateur.</li>
+                <li><strong>Cookies :</strong> Ce site utilise des cookies (Google AdSense et Analytics). Vous pouvez gérer vos préférences via le bandeau de consentement présent sur le site.</li>
+                <li><strong>Vos droits :</strong> Vous disposez d'un droit d'accès, de rectification et de suppression de vos données personnelles. Pour l'exercer, contactez-nous à : <strong>dywen.officiel7@gmail.com</strong>.</li>
+              </ul>
+            </div>
+          </section>
+
+          <section className="space-y-4">
+            <div className="flex items-center gap-3 text-[#B48646]">
+              <div className="p-2 bg-[#B48646]/10 rounded-lg">
+                <MessageSquare size={20} />
+              </div>
+              <h2 className="text-xl font-bold text-slate-900">6. Médiation de la consommation</h2>
             </div>
             <p className="text-slate-600 leading-relaxed text-sm md:text-base">
-              Conformément au Règlement Général sur la Protection des Données (RGPD), Infini 24 s'engage à protéger la vie privée de ses utilisateurs.
+              Conformément aux articles L.616-1 et R.616-1 du code de la consommation, en cas de litige, vous pouvez déposer une réclamation auprès de notre service client par mail. Si aucune solution n'est trouvée, vous avez le droit de recourir gratuitement à un médiateur de la consommation.
             </p>
-            <ul className="list-disc ml-6 space-y-2 text-sm text-slate-600">
-              <li><strong>Données collectées :</strong> Nous collectons uniquement les données nécessaires au traitement de vos projets vidéo et à l'analyse de l'audience via Google Analytics.</li>
-              <li><strong>Cookies :</strong> Ce site utilise des cookies via Google AdSense pour l'affichage de publicités personnalisées.</li>
-              <li><strong>Droit d'accès :</strong> Vous disposez d'un droit d'accès, de rectification et de suppression de vos données en nous contactant à : <strong>dywen.officiel7@gmail.com</strong></li>
-            </ul>
+          </section>
+
+          <section className="space-y-4">
+            <div className="flex items-center gap-3 text-[#B48646]">
+              <div className="p-2 bg-[#B48646]/10 rounded-lg">
+                <Scale size={20} />
+              </div>
+              <h2 className="text-xl font-bold text-slate-900">7. Clause de Limitation de Responsabilité – Simulateur de prix</h2>
+            </div>
+            <div className="text-slate-600 space-y-4 text-sm md:text-base">
+              <p><strong>Responsabilité relative au simulateur de prix :</strong></p>
+              <p>Le simulateur de prix disponible sur le site <strong>https://infini24.fr</strong> est mis à disposition des utilisateurs à titre purement informatif et indicatif. Les estimations de tarifs générées par cet outil ne constituent en aucun cas une offre contractuelle ferme ou un devis définitif engageant l'éditeur.</p>
+              <p>Infini 24 ne saurait être tenu responsable des conséquences liées à :</p>
+              <ul className="list-disc ml-6 space-y-2">
+                <li>Toute erreur de calcul, bug technique ou dysfonctionnement informatique affichant un tarif manifestement erroné ou dérisoire.</li>
+                <li>Une mauvaise configuration des options choisies par l'utilisateur ne reflétant pas la réalité technique de son projet.</li>
+              </ul>
+              <p>L'éditeur se réserve le droit de rectifier tout tarif erroné issu du simulateur et de proposer un devis ferme après analyse humaine et technique de la demande du client. Seul le devis signé par les deux parties fait foi et engage la responsabilité de Infini 24.</p>
+            </div>
           </section>
 
           <div className="pt-8 border-t border-slate-50 text-center">
