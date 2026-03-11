@@ -39,7 +39,7 @@ const CookieBanner: React.FC<CookieBannerProps> = ({ onShowPrivacy }) => {
     // --- GOOGLE ADSENSE ---
     if (!document.querySelector('script[src*="adsbygoogle"]')) {
       const adsenseScript = document.createElement('script');
-      adsenseScript.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6658392090726583"; // Remplacez par votre ID ca-pub-XXXXX
+      adsenseScript.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6658392090726583";
       adsenseScript.async = true;
       adsenseScript.crossOrigin = "anonymous";
       document.head.appendChild(adsenseScript);
