@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Trophy, Gift, Info, X, AlertCircle, Home, Facebook } from 'lucide-react';
+import { Trophy, Gift, Info, X, AlertCircle, Home, Facebook, Hourglass, Timer } from 'lucide-react';
 
 interface ContestPageProps {
   onNavigate?: (index: number) => void;
@@ -29,12 +29,12 @@ const ContestPage: React.FC<ContestPageProps> = ({ onNavigate }) => {
                     <p>Le Jeu Concours est organisé par Infini 24 via le site Infini24.fr.</p>
                 </section>
                 <section>
-                    <h4 className="font-bold text-slate-900 mb-3 flex items-center gap-2">2. Durée</h4>
-                    <p>Le jeu commence le 14 Février 2025 et se terminera le 1er Mars 2025 à minuit. Le tirage au sort aura lieu le 08 Mars 2025.</p>
+                    <h4 className="font-bold text-slate-900 mb-3 flex items-center gap-2">2. Prochain Concours</h4>
+                    <p>Restez connectés pour découvrir les dates de notre prochain événement exclusif.</p>
                 </section>
                 <section>
                     <h4 className="font-bold text-slate-900 mb-3 flex items-center gap-2">3. Lot à gagner</h4>
-                    <p>Le gagnant remportera la création d'une vidéo souvenir personnalisée "Premium", d'une valeur de 190€.</p>
+                    <p>Le lot sera dévoilé lors du lancement du prochain concours.</p>
                 </section>
                 <section>
                     <h4 className="font-bold text-slate-900 mb-3 flex items-center gap-2">4. Conditions</h4>
@@ -58,42 +58,42 @@ const ContestPage: React.FC<ContestPageProps> = ({ onNavigate }) => {
         <div className="absolute bottom-0 left-0 w-48 h-48 bg-[#B48646]/5 rounded-full blur-[60px] -ml-10 -mb-10 pointer-events-none"></div>
         
         <div className="relative z-10">
-           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-50 text-red-600 text-[10px] font-bold uppercase tracking-widest mb-4 border border-red-100">
-              <Trophy size={12} /> Terminé
+           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-[10px] font-bold uppercase tracking-widest mb-4 border border-blue-100">
+              <Timer size={12} /> Prochainement
            </div>
            <h1 className="text-3xl md:text-4xl font-extrabold font-['Poppins'] text-slate-900 leading-tight mb-2">
-             Jeu Concours
+             Espace Concours
            </h1>
            <p className="text-slate-500 font-medium max-w-md text-sm md:text-base">
-             Le tirage au sort approche !
+             De nouvelles surprises arrivent très bientôt !
            </p>
         </div>
       </header>
 
       <div className="flex-1 px-4 lg:px-8 pb-24 max-w-4xl mx-auto w-full">
         <div className="space-y-10 animate-in fade-in slide-in-from-bottom duration-500">
-          {/* Contest Over Message */}
+          {/* Coming Soon Message */}
           <div className="bg-slate-900 rounded-[3rem] p-10 md:p-14 text-white relative overflow-hidden shadow-2xl border border-white/5 group">
-              <div className="absolute top-0 right-0 w-96 h-96 bg-blue-600/20 rounded-full blur-[100px] -mr-20 -mt-20"></div>
+              <div className="absolute top-0 right-0 w-96 h-96 bg-[#B48646]/20 rounded-full blur-[100px] -mr-20 -mt-20"></div>
               
               <div className="relative z-10 space-y-8 text-center md:text-left">
                   <div className="flex flex-col items-center md:items-start gap-4">
                       <div className="w-20 h-20 bg-gradient-to-br from-[#B48646] to-[#E5B066] rounded-3xl flex items-center justify-center text-white shadow-2xl transform group-hover:rotate-6 transition-transform duration-500">
-                          <Trophy size={40} strokeWidth={1.5} />
+                          <Hourglass size={40} strokeWidth={1.5} className="animate-pulse" />
                       </div>
                       <div className="space-y-1">
                           <h2 className="text-2xl md:text-4xl font-black tracking-tight text-[#B48646]">
-                              Le concours est terminé !
+                              Un nouveau concours approche...
                           </h2>
                           <p className="text-white/60 font-black text-xl md:text-2xl tracking-widest uppercase">
-                              Merci à tous les participants
+                              Restez à l'écoute
                           </p>
                       </div>
                   </div>
 
                   <div className="space-y-6">
                       <p className="text-slate-300 text-lg md:text-xl font-medium leading-relaxed">
-                          Les inscriptions sont désormais closes. Rendez-vous le <span className="text-white font-bold">8 Mars</span> sur notre page <span className="text-blue-400 font-bold">Facebook</span> pour découvrir le grand gagnant de la vidéo souvenir Premium !
+                          Nous préparons actuellement notre prochain événement pour vous remercier de votre fidélité. Suivez-nous sur nos réseaux sociaux pour ne rien manquer du lancement !
                       </p>
                       
                       <div className="flex flex-col md:flex-row items-center gap-4 pt-6">
@@ -116,14 +116,14 @@ const ContestPage: React.FC<ContestPageProps> = ({ onNavigate }) => {
               </div>
           </div>
 
-          {/* Lot Reminder */}
+          {/* Lot Reminder Placeholder */}
           <div className="bg-white rounded-[2.5rem] p-8 md:p-12 shadow-xl border border-slate-100 text-center">
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#B48646]/10 text-[#B48646] text-[10px] font-black uppercase tracking-widest mb-6">
-                  <Gift size={14} /> Rappel du lot
+                  <Gift size={14} /> À gagner prochainement
               </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-4">Une vidéo souvenir "Premium" (190€)</h3>
+              <h3 className="text-xl font-bold text-slate-900 mb-4">Des créations exclusives Infini 24</h3>
               <p className="text-slate-500 text-sm leading-relaxed max-w-md mx-auto">
-                  Une création magistrale regroupant vos 100 plus beaux souvenirs pour éterniser vos émotions.
+                  Nous mettons tout en œuvre pour vous proposer des lots qui sublimeront vos souvenirs les plus précieux.
               </p>
           </div>
         </div>

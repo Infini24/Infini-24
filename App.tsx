@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Home, Calculator, Mail, Infinity as InfinityIcon, Image as ImageIcon, Trophy, Shield, Scale } from 'lucide-react';
+import { Home, Calculator, Mail, Infinity as InfinityIcon, Image as ImageIcon, Trophy, Shield, Scale, Timer } from 'lucide-react';
 import { Toaster } from 'react-hot-toast';
 
 import HomePage from './pages/HomePage';
@@ -36,7 +36,7 @@ const DesktopSidebar = ({
       <nav className="flex-1 px-4 py-8 space-y-2">
          {[
            { icon: Home, label: "Accueil", index: 0 },
-           { icon: Trophy, label: "Concours", index: 4 },
+           { icon: Timer, label: "Concours", index: 4 },
            { icon: ImageIcon, label: "Nos Réalisations", index: 1 },
            { icon: Calculator, label: "Nos Services", index: 2 },
            { icon: Mail, label: "Contact", index: 3 }
@@ -86,7 +86,7 @@ const MobileNavigation = ({ activeTab, onNavigate }: { activeTab: number; onNavi
     <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-100 px-6 py-4 flex justify-between items-center z-50 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
       {[
         { icon: Home, index: 0 },
-        { icon: Trophy, index: 4 },
+        { icon: Timer, index: 4 },
         { icon: ImageIcon, index: 1 },
         { icon: Calculator, index: 2 },
         { icon: Mail, index: 3 }

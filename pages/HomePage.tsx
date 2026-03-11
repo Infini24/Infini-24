@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { ArrowRight, Video, PenTool, Info, LifeBuoy, Infinity as InfinityIcon, Sparkles, Briefcase, Trophy, Gift, Share2, Users, Shield, Scale, Mail, Facebook, Lock, Calendar } from 'lucide-react';
+import { ArrowRight, Video, PenTool, Info, LifeBuoy, Infinity as InfinityIcon, Sparkles, Briefcase, Share2, Users, Shield, Scale, Mail, Facebook } from 'lucide-react';
 import { ServiceType } from '../types';
 
 interface HomePageProps {
@@ -31,58 +31,6 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
       
       <div className="max-w-7xl mx-auto w-full pb-24 px-2 relative z-10 mt-2">
         
-        {/* --- JEU CONCOURS BANNER (CONCOURS TERMINÉ) --- */}
-        <section className="px-4 mb-12 animate-in fade-in zoom-in duration-700">
-            <div className="relative overflow-hidden bg-white rounded-[3rem] p-8 md:p-12 shadow-2xl shadow-[#B48646]/10 border border-[#B48646]/20 group cursor-pointer" onClick={() => onNavigate(4)}>
-                {/* Effets de fond optimisés */}
-                <div className="absolute top-0 right-0 w-96 h-96 bg-red-500/10 rounded-full blur-[100px] -mr-20 -mt-20 group-hover:bg-red-500/15 transition-colors duration-700"></div>
-                <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#B48646]/15 rounded-full blur-[80px] -ml-20 -mb-20"></div>
-                
-                <div className="relative z-10 flex flex-col md:flex-row items-center gap-10">
-                    <div className="flex-1 text-center md:text-left">
-                        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-50 border border-red-100 text-red-600 text-[10px] font-black uppercase tracking-[0.2em] mb-6">
-                            <Trophy size={14} /> Concours Terminé
-                        </div>
-                        <h2 className="text-3xl md:text-5xl font-extrabold text-slate-900 leading-tight mb-4 font-['Poppins'] tracking-tight">
-                            Le tirage au sort <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#B48646] to-[#E5B066]">approche...</span> ✨
-                        </h2>
-                        <p className="text-slate-500 text-sm md:text-lg font-medium mb-8 max-w-xl">
-                            Merci à tous pour vos participations ! Rendez-vous le 8 Mars sur Facebook pour l'annonce du gagnant.
-                        </p>
-                        <button className="bg-slate-900 text-white px-8 py-4 rounded-2xl font-black text-sm uppercase tracking-widest flex items-center gap-3 hover:bg-[#B48646] transition-all shadow-xl hover:scale-105 active:scale-95 group/btn">
-                            Voir les détails <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-                        </button>
-                    </div>
-                    <div className="hidden lg:flex w-72 h-72 bg-slate-50 rounded-[3rem] border border-slate-100 items-center justify-center relative rotate-3 group-hover:rotate-6 transition-transform duration-500 shadow-inner">
-                         <div className="absolute inset-4 rounded-[2rem] border-2 border-dashed border-[#B48646]/20"></div>
-                         <Trophy size={80} className="text-[#B48646] opacity-40 animate-pulse" />
-                         <Sparkles size={40} className="absolute -top-4 -right-4 text-yellow-500" />
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        {/* --- CONTEST STEPS --- */}
-        <section className="mt-8 mb-16 px-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {[
-                    { icon: Lock, title: "1. Inscriptions closes", desc: "Le formulaire est désormais fermé." },
-                    { icon: Calendar, title: "2. Tirage au sort", desc: "Prévu pour le 8 Mars prochain." },
-                    { icon: Facebook, title: "3. Résultat", desc: "Annonce du gagnant sur Facebook." }
-                ].map((step, i) => (
-                    <div key={i} className="bg-white p-6 rounded-3xl border border-slate-50 shadow-sm flex items-start gap-4 hover:shadow-md transition-shadow">
-                        <div className="w-12 h-12 rounded-2xl bg-[#B48646]/10 flex items-center justify-center text-[#B48646] shrink-0">
-                            <step.icon size={20} />
-                        </div>
-                        <div>
-                            <h4 className="font-bold text-slate-900 text-sm">{step.title}</h4>
-                            <p className="text-slate-500 text-xs font-medium mt-1">{step.desc}</p>
-                        </div>
-                    </div>
-                ))}
-            </div>
-        </section>
-
         {/* Intro Text */}
         <div className="text-center max-w-md mx-auto animate-in slide-in-from-bottom duration-500 mb-12 px-4">
           <h2 className="text-3xl font-medium text-slate-800 leading-tight">
