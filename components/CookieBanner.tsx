@@ -84,76 +84,76 @@ const CookieBanner: React.FC<CookieBannerProps> = ({ onShowPrivacy }) => {
   if (!isVisible) return null;
 
   return (
-    <div className="fixed bottom-6 left-6 right-6 md:left-auto md:right-8 md:max-w-md z-[200] animate-in fade-in slide-in-from-bottom-10 duration-700">
-      <div className="bg-slate-900 border border-white/10 rounded-[2.5rem] p-6 md:p-8 shadow-2xl shadow-black/50 backdrop-blur-xl relative overflow-hidden group">
+    <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-8 md:max-w-sm z-[200] animate-in fade-in slide-in-from-bottom-10 duration-700">
+      <div className="bg-slate-900/95 border border-white/10 rounded-[2rem] p-5 md:p-8 shadow-2xl shadow-black/50 backdrop-blur-xl relative overflow-hidden group">
         {/* Décoration de fond style "Design & Vidéo" */}
-        <div className="absolute top-0 right-0 w-32 h-32 bg-[#B48646]/10 rounded-full blur-[50px] -mr-16 -mt-16"></div>
+        <div className="absolute top-0 right-0 w-24 h-24 bg-[#B48646]/10 rounded-full blur-[40px] -mr-12 -mt-12"></div>
         
-        <div className="relative z-10 space-y-6">
-          <div className="flex items-start gap-4">
-            <div className="w-12 h-12 bg-[#B48646]/20 rounded-2xl flex items-center justify-center text-[#B48646] shrink-0">
-              <ShieldCheck size={24} />
+        <div className="relative z-10 space-y-4 md:space-y-6">
+          <div className="flex items-start gap-3 md:gap-4">
+            <div className="w-10 h-10 md:w-12 md:h-12 bg-[#B48646]/20 rounded-xl md:rounded-2xl flex items-center justify-center text-[#B48646] shrink-0">
+              <ShieldCheck size={20} className="md:w-6 md:h-6" />
             </div>
-            <div className="space-y-1">
-              <h3 className="text-lg font-bold text-white font-['Poppins'] tracking-tight">On ajuste les réglages ?</h3>
-              <p className="text-slate-400 text-sm leading-relaxed font-medium">
-                Nos cookies aident à cadrer votre expérience. Ils nous permettent d'analyser l'audience et de diffuser des annonces pertinentes pour soutenir nos créations.
+            <div className="space-y-0.5 md:space-y-1">
+              <h3 className="text-base md:text-lg font-bold text-white font-['Poppins'] tracking-tight">On ajuste les réglages ?</h3>
+              <p className="text-slate-400 text-[11px] md:text-sm leading-relaxed font-medium">
+                Nos cookies aident à cadrer votre expérience. Ils nous permettent d'analyser l'audience et de diffuser des annonces pertinentes.
               </p>
             </div>
           </div>
 
           {!showSettings ? (
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-2 md:gap-3">
               <button 
                 onClick={handleAcceptAll}
-                className="w-full bg-[#B48646] text-white py-4 rounded-2xl font-bold text-sm uppercase tracking-widest hover:bg-[#E5B066] transition-all shadow-lg shadow-[#B48646]/20 flex items-center justify-center gap-2 group/btn"
+                className="w-full bg-[#B48646] text-white py-3 md:py-4 rounded-xl md:rounded-2xl font-bold text-xs md:text-sm uppercase tracking-widest hover:bg-[#E5B066] transition-all shadow-lg shadow-[#B48646]/20 flex items-center justify-center gap-2 group/btn"
               >
-                <Check size={18} /> Tout accepter
+                <Check size={16} className="md:w-[18px] md:h-[18px]" /> Tout accepter
               </button>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-2 md:gap-3">
                 <button 
                   onClick={handleRefuseAll}
-                  className="bg-white/5 text-white/70 py-3.5 rounded-2xl font-bold text-[10px] uppercase tracking-widest hover:bg-white/10 transition-all border border-white/5"
+                  className="bg-white/5 text-white/70 py-3 md:py-3.5 rounded-xl md:rounded-2xl font-bold text-[9px] md:text-[10px] uppercase tracking-widest hover:bg-white/10 transition-all border border-white/5"
                 >
                   Refuser
                 </button>
                 <button 
                   onClick={() => setShowSettings(true)}
-                  className="bg-white/5 text-white/70 py-3.5 rounded-2xl font-bold text-[10px] uppercase tracking-widest hover:bg-white/10 transition-all border border-white/5 flex items-center justify-center gap-2"
+                  className="bg-white/5 text-white/70 py-3 md:py-3.5 rounded-xl md:rounded-2xl font-bold text-[9px] md:text-[10px] uppercase tracking-widest hover:bg-white/10 transition-all border border-white/5 flex items-center justify-center gap-1.5 md:gap-2"
                 >
-                  <Settings size={14} /> Personnaliser
+                  <Settings size={12} className="md:w-[14px] md:h-[14px]" /> Personnaliser
                 </button>
               </div>
             </div>
           ) : (
-            <div className="space-y-4 animate-in fade-in duration-300">
-                <div className="space-y-3">
-                    <div className="flex items-center justify-between p-3 bg-white/5 rounded-xl border border-white/5">
-                        <div className="text-xs font-bold text-white">Essentiels</div>
-                        <div className="text-[10px] text-[#B48646] font-black uppercase">Toujours actif</div>
+            <div className="space-y-3 md:space-y-4 animate-in fade-in duration-300">
+                <div className="space-y-2 md:space-y-3">
+                    <div className="flex items-center justify-between p-2.5 md:p-3 bg-white/5 rounded-lg md:rounded-xl border border-white/5">
+                        <div className="text-[10px] md:text-xs font-bold text-white">Essentiels</div>
+                        <div className="text-[8px] md:text-[10px] text-[#B48646] font-black uppercase">Toujours actif</div>
                     </div>
-                    <div className="flex items-center justify-between p-3 bg-white/5 rounded-xl border border-white/5">
-                        <div className="text-xs font-bold text-white">Analytiques</div>
-                        <div className="w-10 h-5 bg-[#B48646] rounded-full relative">
-                            <div className="absolute right-1 top-1 w-3 h-3 bg-white rounded-full"></div>
+                    <div className="flex items-center justify-between p-2.5 md:p-3 bg-white/5 rounded-lg md:rounded-xl border border-white/5">
+                        <div className="text-[10px] md:text-xs font-bold text-white">Analytiques</div>
+                        <div className="w-8 h-4 md:w-10 md:h-5 bg-[#B48646] rounded-full relative">
+                            <div className="absolute right-0.5 top-0.5 w-3 h-3 bg-white rounded-full"></div>
                         </div>
                     </div>
-                    <div className="flex items-center justify-between p-3 bg-white/5 rounded-xl border border-white/5">
-                        <div className="text-xs font-bold text-white">Publicitaires</div>
-                        <div className="w-10 h-5 bg-[#B48646] rounded-full relative">
-                            <div className="absolute right-1 top-1 w-3 h-3 bg-white rounded-full"></div>
+                    <div className="flex items-center justify-between p-2.5 md:p-3 bg-white/5 rounded-lg md:rounded-xl border border-white/5">
+                        <div className="text-[10px] md:text-xs font-bold text-white">Publicitaires</div>
+                        <div className="w-8 h-4 md:w-10 md:h-5 bg-[#B48646] rounded-full relative">
+                            <div className="absolute right-0.5 top-0.5 w-3 h-3 bg-white rounded-full"></div>
                         </div>
                     </div>
                 </div>
                 <button 
                     onClick={handleAcceptAll}
-                    className="w-full bg-white text-slate-900 py-3 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-slate-100 transition-all"
+                    className="w-full bg-white text-slate-900 py-2.5 md:py-3 rounded-lg md:rounded-xl font-bold text-[10px] md:text-xs uppercase tracking-widest hover:bg-slate-100 transition-all"
                 >
-                    Enregistrer mes choix
+                    Enregistrer
                 </button>
                 <button 
                     onClick={() => setShowSettings(false)}
-                    className="w-full text-slate-500 text-[10px] font-bold uppercase hover:text-slate-300 transition-colors"
+                    className="w-full text-slate-500 text-[9px] md:text-[10px] font-bold uppercase hover:text-slate-300 transition-colors"
                 >
                     Retour
                 </button>
@@ -163,9 +163,9 @@ const CookieBanner: React.FC<CookieBannerProps> = ({ onShowPrivacy }) => {
           <div className="text-center">
             <button 
                 onClick={onShowPrivacy}
-                className="text-[10px] text-slate-500 hover:text-[#B48646] transition-colors flex items-center justify-center gap-1 mx-auto group"
+                className="text-[9px] md:text-[10px] text-slate-500 hover:text-[#B48646] transition-colors flex items-center justify-center gap-1 mx-auto group"
             >
-                Politique de confidentialité <ArrowRight size={10} className="group-hover:translate-x-0.5 transition-transform" />
+                Politique de confidentialité <ArrowRight size={9} className="md:w-[10px] md:h-[10px] group-hover:translate-x-0.5 transition-transform" />
             </button>
           </div>
         </div>

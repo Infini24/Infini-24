@@ -72,8 +72,8 @@ Cordialement.`);
   return (
     <div className="fixed inset-0 z-[120] flex items-end sm:items-center justify-center p-0 sm:p-4">
       <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-md" onClick={onClose}></div>
-      <div className="relative bg-white sm:rounded-[2.5rem] rounded-t-[2.5rem] shadow-2xl w-full max-w-lg overflow-hidden animate-in slide-in-from-bottom duration-500 border border-white/20">
-        <div className="border-b border-slate-100 p-6 flex items-center justify-between">
+      <div className="relative bg-white sm:rounded-[2.5rem] rounded-t-[2rem] sm:rounded-t-[2.5rem] shadow-2xl w-full max-w-lg overflow-hidden animate-in slide-in-from-bottom duration-500 border border-white/20">
+        <div className="border-b border-slate-100 p-5 sm:p-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="bg-[#B48646]/10 p-2.5 rounded-xl text-[#B48646]">
                  <ShieldCheck size={18} />
@@ -85,11 +85,11 @@ Cordialement.`);
           </button>
         </div>
 
-        <div className="p-6 sm:p-8">
+        <div className="p-5 sm:p-8">
           {step === 'info' && (
             <div className="space-y-6">
               <div className="text-center mb-6">
-                <h3 className="text-2xl font-bold text-slate-900 mb-2">Récapitulatif</h3>
+                <h3 className="text-xl sm:text-2xl font-bold text-slate-900 mb-2">Récapitulatif</h3>
                 <p className="text-slate-500 text-sm font-medium">
                     Vous avez configuré <span className="text-[#B48646] font-bold">"{serviceName}"</span>.
                 </p>
@@ -105,7 +105,7 @@ Cordialement.`);
                   </ul>
               </div>
               <button onClick={() => setStep('info')} className="hidden" /> {/* Fix: ensures no direct skip */}
-              <button onClick={() => setStep('contact')} className="w-full mt-4 bg-slate-900 text-white font-bold py-5 rounded-[1.5rem] transition-all active:scale-95 text-lg flex items-center justify-center gap-2 group">
+              <button onClick={() => setStep('contact')} className="w-full mt-4 bg-slate-900 text-white font-bold py-4 sm:py-5 rounded-2xl sm:rounded-[1.5rem] transition-all active:scale-95 text-lg flex items-center justify-center gap-2 group">
                   Suivant <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform"/>
               </button>
             </div>
@@ -131,7 +131,7 @@ Cordialement.`);
                         <input type={contactMethod === 'email' ? 'email' : 'tel'} required value={contactInfo} onChange={(e) => setContactInfo(e.target.value)} className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:border-[#B48646] outline-none text-sm font-medium" placeholder={contactMethod === 'email' ? 'votre@email.com' : '06 00 00 00 00'} />
                     </div>
                 </div>
-                <button type="submit" className="w-full bg-[#B48646] text-white font-bold py-5 rounded-[1.5rem] transition-all active:scale-95 text-lg flex items-center justify-center gap-2 group">
+                <button type="submit" className="w-full bg-[#B48646] text-white font-bold py-4 sm:py-5 rounded-2xl sm:rounded-[1.5rem] transition-all active:scale-95 text-lg flex items-center justify-center gap-2 group">
                     Envoyer ma demande <Mail size={20} />
                 </button>
             </form>
@@ -180,7 +180,7 @@ const GraphicDesignForm = ({ onBack, onRequest }: FormProps) => {
 
     const renderConfigPanel = () => (
         <div className="space-y-6 animate-in slide-in-from-top duration-300">
-            <div className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-slate-100 space-y-6 overflow-visible">
+            <div className="bg-white p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] shadow-xl border border-slate-100 space-y-6 overflow-visible">
                 <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2 mb-4">
                     <Palette size={14} /> Personnalisation
                 </h3>
@@ -197,7 +197,7 @@ const GraphicDesignForm = ({ onBack, onRequest }: FormProps) => {
                 <span className="block text-xs text-[#B48646] uppercase tracking-widest font-black mb-2">Tarif Estimé</span>
                 <span className="text-6xl font-extrabold tracking-tight">{price}€</span>
             </div>
-            <button type="submit" className="w-full bg-[#B48646] text-white font-bold text-lg py-5 rounded-[2rem] shadow-xl shadow-[#B48646]/20 hover:-translate-y-1 transition-all active:scale-95 flex items-center justify-center gap-3">
+            <button type="submit" className="w-full bg-[#B48646] text-white font-bold text-lg py-4 sm:py-5 rounded-2xl sm:rounded-[2rem] shadow-xl shadow-[#B48646]/20 hover:-translate-y-1 transition-all active:scale-95 flex items-center justify-center gap-3">
                 Valider la configuration
             </button>
         </div>
@@ -205,23 +205,23 @@ const GraphicDesignForm = ({ onBack, onRequest }: FormProps) => {
 
     return (
         <div className="flex flex-col h-full overflow-y-auto no-scrollbar pb-20">
-            <header className="pt-14 pb-10 px-6 bg-white border-b border-slate-50 rounded-b-[3rem] mb-6 shrink-0 z-20 shadow-sm">
-                 <div className="flex items-center gap-4">
-                    <button onClick={onBack} className="p-3 bg-white border border-slate-100 rounded-2xl text-slate-400 hover:text-[#B48646] transition-all">
-                        <ChevronLeft size={20} />
+            <header className="pt-8 pb-6 px-4 sm:pt-14 sm:pb-10 sm:px-6 bg-white border-b border-slate-50 rounded-b-[1.5rem] sm:rounded-b-[3rem] mb-4 sm:mb-6 shrink-0 z-20 shadow-sm">
+                 <div className="flex items-center gap-3 sm:gap-4">
+                    <button onClick={onBack} className="p-2.5 sm:p-3 bg-white border border-slate-100 rounded-xl sm:rounded-2xl text-slate-400 hover:text-[#B48646] transition-all">
+                        <ChevronLeft size={18} className="sm:w-5 sm:h-5" />
                     </button>
                     <div>
-                        <h1 className="text-2xl font-bold text-slate-900 leading-none mb-1">Logos & Design</h1>
-                        <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Identité visuelle sur-mesure</p>
+                        <h1 className="text-lg sm:text-2xl font-bold text-slate-900 leading-none mb-1">Logos & Design</h1>
+                        <p className="text-slate-400 text-[9px] sm:text-[10px] font-bold uppercase tracking-widest">Identité visuelle sur-mesure</p>
                     </div>
                 </div>
             </header>
             <div className="max-w-5xl mx-auto px-6 w-full">
                 <form className="grid grid-cols-1 lg:grid-cols-2 gap-8" onSubmit={handleFormSubmit}>
-                    <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm overflow-visible">
+                    <div className="bg-white p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] border border-slate-100 shadow-sm overflow-visible">
                         <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-6">Nos Formules</label>
                         <div className="grid gap-5">
-                            <label className={`relative border-2 p-6 rounded-[2rem] cursor-pointer transition-all ${subService === 'identity_complete' ? 'bg-[#B48646]/5 border-[#B48646]' : 'bg-slate-50 border-transparent'}`}>
+                            <label className={`relative border-2 p-5 sm:p-6 rounded-[1.5rem] sm:rounded-[2rem] cursor-pointer transition-all ${subService === 'identity_complete' ? 'bg-[#B48646]/5 border-[#B48646]' : 'bg-slate-50 border-transparent'}`}>
                                 <div className="flex items-start gap-4">
                                     <input type="radio" checked={subService === 'identity_complete'} onChange={() => setSubService('identity_complete')} className="w-5 h-5 accent-[#B48646] mt-1" />
                                     <div>
@@ -313,7 +313,7 @@ const VideoForm = ({ onBack, onRequest }: FormProps) => {
     }
 
     const renderPricingSimulator = () => (
-        <div className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-slate-100 space-y-8 relative overflow-visible z-30">
+        <div className="bg-white p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] shadow-xl border border-slate-100 space-y-8 relative overflow-visible z-30">
             <h3 className="text-xs font-black text-[#B48646] uppercase tracking-widest flex items-center gap-2">
                 <Calculator size={14} /> Simulateur de Prix
             </h3>
@@ -361,13 +361,13 @@ const VideoForm = ({ onBack, onRequest }: FormProps) => {
                 </div>
             </div>
 
-            <div className="p-8 rounded-[2.5rem] text-center text-white relative shadow-2xl border border-white/5 transition-all duration-500 bg-slate-900">
+            <div className="p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] text-center text-white relative shadow-2xl border border-white/5 transition-all duration-500 bg-slate-900">
                 <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-[70px] opacity-10 -mr-16 -mt-16 pointer-events-none bg-[#B48646]"></div>
                 <span className="block text-xs text-[#B48646] uppercase tracking-widest font-black mb-3 relative z-10">Total de votre projet</span>
-                <span className="block text-6xl font-extrabold tracking-tighter relative z-10">{price}€</span>
+                <span className="block text-5xl sm:text-6xl font-extrabold tracking-tighter relative z-10">{price}€</span>
             </div>
 
-            <button onClick={handleOrder} className="w-full text-white font-bold py-5 rounded-[2rem] transition-all active:scale-95 flex justify-center items-center gap-3 shadow-xl group bg-[#B48646] hover:bg-[#946d38] shadow-[#B48646]/20">
+            <button onClick={handleOrder} className="w-full text-white font-bold py-4 sm:py-5 rounded-2xl sm:rounded-[2rem] transition-all active:scale-95 flex justify-center items-center gap-3 shadow-xl group bg-[#B48646] hover:bg-[#946d38] shadow-[#B48646]/20">
                 <Eye size={20} className="group-hover:scale-110 transition-transform"/>
                 Lancer la création
             </button>
@@ -376,20 +376,20 @@ const VideoForm = ({ onBack, onRequest }: FormProps) => {
 
     return (
         <div className="flex flex-col h-full overflow-y-auto no-scrollbar pb-20 overflow-x-visible">
-            <header className="pt-14 pb-10 px-6 bg-white border-b border-slate-50 rounded-b-[3rem] mb-6 shrink-0 z-20 shadow-sm relative">
-                 <div className="flex items-center gap-4">
-                    <button onClick={onBack} className="p-3 bg-white border border-slate-100 rounded-2xl text-slate-400 hover:text-[#B48646] transition-all">
-                        <ChevronLeft size={20} />
+            <header className="pt-8 pb-6 px-4 sm:pt-14 sm:pb-10 sm:px-6 bg-white border-b border-slate-50 rounded-b-[1.5rem] sm:rounded-b-[3rem] mb-4 sm:mb-6 shrink-0 z-20 shadow-sm relative">
+                 <div className="flex items-center gap-3 sm:gap-4">
+                    <button onClick={onBack} className="p-2.5 sm:p-3 bg-white border border-slate-100 rounded-xl sm:rounded-2xl text-slate-400 hover:text-[#B48646] transition-all">
+                        <ChevronLeft size={18} className="sm:w-5 sm:h-5" />
                     </button>
                     <div>
-                        <h1 className="text-2xl font-bold text-slate-900 leading-none mb-1">Vidéos & Souvenirs</h1>
-                        <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Montage pro de vos moments</p>
+                        <h1 className="text-lg sm:text-2xl font-bold text-slate-900 leading-none mb-1">Vidéos & Souvenirs</h1>
+                        <p className="text-slate-400 text-[9px] sm:text-[10px] font-bold uppercase tracking-widest">Montage pro de vos moments</p>
                     </div>
                 </div>
             </header>
             <div className="max-w-5xl mx-auto px-6 w-full overflow-visible">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 overflow-visible">
-                    <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm mb-6 overflow-visible">
+                    <div className="bg-white p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] border border-slate-100 shadow-sm mb-6 overflow-visible">
                         <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-6">Type de projet</label>
                         <div className="space-y-4">
                             {[
@@ -399,7 +399,7 @@ const VideoForm = ({ onBack, onRequest }: FormProps) => {
                                 { id: 'short', icon: Smartphone, label: 'Montage Short / TikTok / Réel' },
                                 { id: 'ads', icon: Zap, label: 'Publicité Express' }
                             ].map((type) => (
-                                <label key={type.id} className={`border-2 p-6 rounded-[2rem] flex items-center gap-4 cursor-pointer transition-all ${subService === type.id ? 'bg-[#B48646]/5 border-[#B48646] shadow-sm' : 'bg-slate-50 border-transparent hover:bg-white'}`}>
+                                <label key={type.id} className={`border-2 p-5 sm:p-6 rounded-[1.5rem] sm:rounded-[2rem] flex items-center gap-4 cursor-pointer transition-all ${subService === type.id ? 'bg-[#B48646]/5 border-[#B48646] shadow-sm' : 'bg-slate-50 border-transparent hover:bg-white'}`}>
                                     <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${subService === type.id ? 'border-[#B48646]' : 'border-slate-200'}`}>
                                       {subService === type.id && <div className="w-3 h-3 rounded-full bg-[#B48646]" />}
                                     </div>
@@ -436,20 +436,20 @@ const AssistanceForm = ({ onBack, onRequest }: FormProps) => {
 
     return (
         <div className="flex flex-col h-full overflow-y-auto no-scrollbar pb-20">
-             <header className="pt-14 pb-10 px-6 bg-white border-b border-slate-50 rounded-b-[3rem] mb-6 shrink-0 z-20 shadow-sm">
-                 <div className="flex items-center gap-4">
-                    <button onClick={onBack} className="p-3 bg-white border border-slate-100 rounded-2xl text-slate-400 hover:text-[#B48646] transition-all">
-                        <ChevronLeft size={20} />
+             <header className="pt-8 pb-6 px-4 sm:pt-14 sm:pb-10 sm:px-6 bg-white border-b border-slate-50 rounded-b-[1.5rem] sm:rounded-b-[3rem] mb-4 sm:mb-6 shrink-0 z-20 shadow-sm">
+                 <div className="flex items-center gap-3 sm:gap-4">
+                    <button onClick={onBack} className="p-2.5 sm:p-3 bg-white border border-slate-100 rounded-xl sm:rounded-2xl text-slate-400 hover:text-[#B48646] transition-all">
+                        <ChevronLeft size={18} className="sm:w-5 sm:h-5" />
                     </button>
                     <div>
-                        <h1 className="text-2xl font-bold text-slate-900 leading-none mb-1">Assistance</h1>
-                        <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Support graphique immédiat</p>
+                        <h1 className="text-lg sm:text-2xl font-bold text-slate-900 leading-none mb-1">Assistance</h1>
+                        <p className="text-slate-400 text-[9px] sm:text-[10px] font-bold uppercase tracking-widest">Support graphique immédiat</p>
                     </div>
                 </div>
             </header>
             <div className="max-w-5xl mx-auto px-6 w-full">
                 <form className="grid grid-cols-1 lg:grid-cols-2 gap-8" onSubmit={handleFormSubmit}>
-                    <div className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100 space-y-6">
+                    <div className="bg-white p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] shadow-sm border border-slate-100 space-y-6">
                          <div>
                             <label className="flex justify-between text-sm font-bold text-slate-700 mb-3">
                                 <span>Nombre de photos</span>
@@ -460,11 +460,11 @@ const AssistanceForm = ({ onBack, onRequest }: FormProps) => {
                         <textarea value={details} onChange={(e) => setDetails(e.target.value)} className="w-full px-6 py-4 border-2 border-slate-100 rounded-2xl outline-none text-sm bg-slate-50 focus:border-[#B48646] transition-all" rows={5} placeholder="Expliquez votre besoin..." required></textarea>
                     </div>
                     <div className="space-y-6">
-                        <div className="bg-slate-900 p-8 rounded-[2.5rem] text-center text-white">
+                        <div className="bg-slate-900 p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] text-center text-white">
                             <span className="block text-xs text-[#B48646] uppercase tracking-widest font-black mb-2">Prix fixe : 5€ / unité</span>
                             <span className="text-6xl font-black">{price}€</span>
                         </div>
-                        <button type="submit" className="w-full bg-[#B48646] text-white font-bold py-5 rounded-[2rem] transition-all flex items-center justify-center gap-3 shadow-lg shadow-[#B48646]/20">
+                        <button type="submit" className="w-full bg-[#B48646] text-white font-bold py-4 sm:py-5 rounded-2xl sm:rounded-[2rem] transition-all flex items-center justify-center gap-3 shadow-lg shadow-[#B48646]/20">
                              Envoyer ma demande
                         </button>
                     </div>
@@ -503,25 +503,30 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
 
     return (
       <div className="flex flex-col h-full overflow-y-auto no-scrollbar relative">
-         <header className="pt-16 pb-12 px-8 bg-white border-b border-slate-50 rounded-b-[3rem] mb-8 shrink-0 z-10 shadow-sm relative">
-            <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 leading-tight mb-2">Nos Services</h1>
-            <p className="text-slate-500 font-medium text-sm md:text-base">Choisissez l'expertise dont vous avez besoin.</p>
+         <header className="pt-8 pb-6 px-4 sm:pt-14 sm:pb-10 sm:px-6 bg-white border-b border-slate-50 rounded-b-[1.5rem] sm:rounded-b-[3rem] mb-6 sm:mb-8 shrink-0 z-10 shadow-sm relative">
+            <h1 className="text-xl sm:text-4xl font-extrabold text-slate-900 leading-tight mb-1 sm:mb-2">Nos Services</h1>
+            <p className="text-slate-500 font-medium text-[10px] sm:text-base">Choisissez l'expertise dont vous avez besoin.</p>
          </header>
          
-         <div className="max-w-7xl mx-auto w-full px-6 pb-24 grid grid-cols-1 md:grid-cols-3 gap-6 overflow-visible">
+         <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 pb-24 grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-6 overflow-visible">
             {[
                 { type: ServiceType.GRAPHIC_DESIGN, icon: PenTool, label: "Design Graphique", desc: "Logos & Identité" },
                 { type: ServiceType.VIDEO, icon: Video, label: "Vidéo & Souvenirs", desc: "Montages Pro" },
                 { type: ServiceType.ASSISTANCE, icon: LifeBuoy, label: "Assistance Rapide", desc: "Aides ponctuelles" }
             ].map(s => (
-                <div key={s.type} onClick={() => setSelectedService(s.type)} className="group bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-50 hover:border-[#B48646]/30 transition-all cursor-pointer flex flex-col items-center text-center h-full">
-                    <div className="w-20 h-20 bg-slate-50 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#B48646] group-hover:text-white transition-all duration-300">
-                        <s.icon size={32} />
+                <div key={s.type} onClick={() => setSelectedService(s.type)} className="group bg-white p-4 sm:p-8 rounded-[1.5rem] sm:rounded-[2.5rem] shadow-sm border border-slate-50 hover:border-[#B48646]/30 transition-all cursor-pointer flex flex-row sm:flex-col items-center sm:text-center gap-4 sm:gap-0 h-full active:scale-[0.98]">
+                    <div className="w-12 h-12 sm:w-20 sm:h-20 bg-slate-50 rounded-xl sm:rounded-2xl flex items-center justify-center sm:mb-6 group-hover:bg-[#B48646] group-hover:text-white transition-all duration-300 shrink-0">
+                        <s.icon size={20} className="sm:w-8 sm:h-8" />
                     </div>
-                    <h3 className="text-xl font-bold text-slate-900 mb-2">{s.label}</h3>
-                    <p className="text-slate-400 text-sm mb-6">{s.desc}</p>
-                    <div className="mt-auto">
+                    <div className="flex-1 text-left sm:text-center">
+                        <h3 className="text-base sm:text-xl font-bold text-slate-900 sm:mb-2">{s.label}</h3>
+                        <p className="text-slate-400 text-[11px] sm:text-sm sm:mb-6">{s.desc}</p>
+                    </div>
+                    <div className="hidden sm:block mt-auto">
                         <span className="text-xs font-bold text-[#B48646] group-hover:underline">Configurer mon projet</span>
+                    </div>
+                    <div className="sm:hidden text-[#B48646]/40 group-hover:text-[#B48646] transition-colors">
+                        <ArrowRight size={18} />
                     </div>
                 </div>
             ))}
