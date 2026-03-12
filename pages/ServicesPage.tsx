@@ -180,19 +180,21 @@ const GraphicDesignForm = ({ onBack, onRequest }: FormProps) => {
 
     const renderConfigPanel = () => (
         <div className="space-y-6 animate-in slide-in-from-top duration-300">
-            <div className="bg-white p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] shadow-xl border border-slate-100 space-y-6 overflow-visible">
-                <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2 mb-4">
-                    <Palette size={14} /> Personnalisation
-                </h3>
-                <div>
-                    <label className="block text-sm font-bold text-slate-700 mb-3">Nom de l'entreprise</label>
-                    <input type="text" value={companyName} onChange={(e) => setCompanyName(e.target.value)} className="w-full px-6 py-4 border-2 border-slate-100 rounded-2xl focus:border-[#B48646] outline-none transition-all bg-slate-50 text-sm" placeholder="Ex: Boulangerie Durand" required />
+                <div className="bg-white p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] shadow-xl border border-slate-100 space-y-6 overflow-visible">
+                    <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2 mb-4">
+                        <Palette size={14} /> Personnalisation
+                    </h3>
+                    <div className="space-y-4">
+                        <div>
+                            <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider ml-1 mb-2">Nom de l'entreprise</label>
+                            <input type="text" value={companyName} onChange={(e) => setCompanyName(e.target.value)} className="w-full px-5 py-4 border-2 border-slate-100 rounded-2xl focus:border-[#B48646] outline-none transition-all bg-slate-50 text-sm font-medium" placeholder="Ex: Boulangerie Durand" required />
+                        </div>
+                        <div>
+                            <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider ml-1 mb-2">Détails de votre vision</label>
+                            <textarea value={details} onChange={(e) => setDetails(e.target.value)} className="w-full px-5 py-4 border-2 border-slate-100 rounded-2xl outline-none text-sm font-medium focus:border-[#B48646] bg-slate-50 transition-all resize-none" rows={3} placeholder="Couleurs, ambiance, préférences..."></textarea>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <label className="block text-sm font-bold text-slate-700 mb-3">Détails de votre vision</label>
-                    <textarea value={details} onChange={(e) => setDetails(e.target.value)} className="w-full px-6 py-4 border-2 border-slate-100 rounded-2xl outline-none text-sm focus:border-[#B48646] bg-slate-50 transition-all resize-none" rows={3} placeholder="Couleurs, ambiance, préférences..."></textarea>
-                </div>
-            </div>
             <div className="bg-slate-900 p-8 rounded-[2.5rem] border border-slate-800 text-center text-white shadow-2xl">
                 <span className="block text-xs text-[#B48646] uppercase tracking-widest font-black mb-2">Tarif Estimé</span>
                 <span className="text-6xl font-extrabold tracking-tight">{price}€</span>
@@ -216,38 +218,34 @@ const GraphicDesignForm = ({ onBack, onRequest }: FormProps) => {
                     </div>
                 </div>
             </header>
-            <div className="max-w-5xl mx-auto px-6 w-full">
-                <form className="grid grid-cols-1 lg:grid-cols-2 gap-8" onSubmit={handleFormSubmit}>
-                    <div className="bg-white p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] border border-slate-100 shadow-sm overflow-visible">
-                        <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-6">Nos Formules</label>
-                        <div className="grid gap-5">
-                            <label className={`relative border-2 p-5 sm:p-6 rounded-[1.5rem] sm:rounded-[2rem] cursor-pointer transition-all ${subService === 'identity_complete' ? 'bg-[#B48646]/5 border-[#B48646]' : 'bg-slate-50 border-transparent'}`}>
-                                <div className="flex items-start gap-4">
-                                    <input type="radio" checked={subService === 'identity_complete'} onChange={() => setSubService('identity_complete')} className="w-5 h-5 accent-[#B48646] mt-1" />
-                                    <div>
-                                        <span className="font-bold block text-lg text-slate-900">Pack Identité Complète</span>
-                                        <span className="text-[#B48646] font-black text-sm">370€</span>
+            <div className="max-w-5xl mx-auto px-4 sm:px-6 w-full">
+                <form className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8" onSubmit={handleFormSubmit}>
+                    <div className="bg-white p-5 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] border border-slate-100 shadow-sm overflow-visible">
+                        <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-6">Choisissez votre formule</label>
+                        <div className="grid gap-3 md:gap-5">
+                            {[
+                                { id: 'identity_complete', label: 'Pack Identité Complète', price: '370€', desc: 'Logo + Charte + Réseaux' },
+                                { id: 'logo_creation', label: 'Création & Refonte Logo', price: '200€', desc: 'Logo vectoriel haute qualité' },
+                                { id: 'print', label: 'Cartes de Visite & Flyers', price: '50€', desc: 'Design prêt pour impression' },
+                                { id: 'social_kit', label: 'Kit Réseaux Sociaux', price: '120€', desc: 'Bannières et avatars pro' }
+                            ].map((item) => (
+                                <label 
+                                    key={item.id}
+                                    onClick={() => setSubService(item.id)}
+                                    className={`relative border-2 p-4 md:p-6 rounded-2xl md:rounded-[2rem] cursor-pointer transition-all flex items-center justify-between group ${subService === item.id ? 'bg-[#B48646]/5 border-[#B48646] shadow-md' : 'bg-slate-50 border-transparent hover:bg-white hover:border-slate-200'}`}
+                                >
+                                    <div className="flex items-center gap-4">
+                                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${subService === item.id ? 'border-[#B48646]' : 'border-slate-300'}`}>
+                                            {subService === item.id && <div className="w-2.5 h-2.5 rounded-full bg-[#B48646]" />}
+                                        </div>
+                                        <div>
+                                            <span className={`font-bold block text-sm md:text-lg transition-colors ${subService === item.id ? 'text-slate-900' : 'text-slate-600'}`}>{item.label}</span>
+                                            <span className="text-[10px] md:text-xs text-slate-400 font-medium">{item.desc}</span>
+                                        </div>
                                     </div>
-                                </div>
-                            </label>
-                            <label className={`relative border-2 p-5 rounded-[2rem] cursor-pointer transition-all ${subService === 'logo_creation' ? 'bg-[#B48646]/5 border-[#B48646]' : 'bg-slate-50 border-transparent'}`}>
-                                <div className="flex items-start gap-4">
-                                    <input type="radio" checked={subService === 'logo_creation'} onChange={() => setSubService('logo_creation')} className="w-5 h-5 accent-[#B48646] mt-1" />
-                                    <div>
-                                        <span className="font-bold text-slate-900 block text-base">Création & Refonte Logo</span>
-                                        <span className="text-[#B48646] font-black text-sm">200€</span>
-                                    </div>
-                                </div>
-                            </label>
-                            <label className={`relative border-2 p-5 rounded-[2rem] cursor-pointer transition-all ${subService === 'print' ? 'bg-[#B48646]/5 border-[#B48646]' : 'bg-slate-50 border-transparent'}`}>
-                                <div className="flex items-start gap-4">
-                                    <input type="radio" checked={subService === 'logo_creation'} onChange={() => setSubService('logo_creation')} className="w-5 h-5 accent-[#B48646] mt-1" />
-                                    <div>
-                                        <span className="font-bold text-slate-900 block text-base">Cartes de Visite & Flyers</span>
-                                        <span className="text-[#B48646] font-black text-sm">50€</span>
-                                    </div>
-                                </div>
-                            </label>
+                                    <span className={`font-black text-sm md:text-lg ${subService === item.id ? 'text-[#B48646]' : 'text-slate-400'}`}>{item.price}</span>
+                                </label>
+                            ))}
                         </div>
                     </div>
                     <div className="hidden lg:block sticky top-6 overflow-visible">
@@ -354,10 +352,10 @@ const VideoForm = ({ onBack, onRequest }: FormProps) => {
                     <p className="text-[13px] font-bold text-slate-700">
                         Durée estimée : <span className="text-slate-900 text-base font-black">~{estMin}min {estSec.toString().padStart(2, '0')}s</span>
                     </p>
-                    <p className="text-[11px] font-black uppercase tracking-widest flex items-center gap-1.5 text-[#B48646]">
+                    <div className="text-[11px] font-black uppercase tracking-widest flex items-center gap-1.5 text-[#B48646]">
                         <div className="w-1.5 h-1.5 rounded-full animate-pulse bg-[#B48646]"></div>
                         {isProFormat ? 'Format vertical optimisé' : `Idéal pour ${musicsNeeded} musique${musicsNeeded > 1 ? 's' : ''}`}
-                    </p>
+                    </div>
                 </div>
             </div>
 
@@ -389,27 +387,31 @@ const VideoForm = ({ onBack, onRequest }: FormProps) => {
             </header>
             <div className="max-w-5xl mx-auto px-6 w-full overflow-visible">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 overflow-visible">
-                    <div className="bg-white p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] border border-slate-100 shadow-sm mb-6 overflow-visible">
-                        <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-6">Type de projet</label>
-                        <div className="space-y-4">
+                    <div className="bg-white p-5 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] border border-slate-100 shadow-sm mb-6 overflow-visible">
+                        <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-6">Type de projet</label>
+                        <div className="grid grid-cols-1 gap-3">
                             {[
-                                { id: 'birthday', icon: Zap, label: 'Anniversaire / Retraite' },
-                                { id: 'wedding', icon: Zap, label: 'Mariage / Baptême' },
-                                { id: 'funeral', icon: Zap, label: 'Hommage & Obsèques' },
-                                { id: 'short', icon: Smartphone, label: 'Montage Short / TikTok / Réel' },
-                                { id: 'ads', icon: Zap, label: 'Publicité Express' }
+                                { id: 'birthday', icon: Zap, label: 'Anniversaire / Retraite', desc: 'Émotion et souvenirs' },
+                                { id: 'wedding', icon: Zap, label: 'Mariage / Baptême', desc: 'Le plus beau jour' },
+                                { id: 'funeral', icon: Zap, label: 'Hommage & Obsèques', desc: 'Respect et dignité' },
+                                { id: 'short', icon: Smartphone, label: 'Short / TikTok / Réel', desc: 'Format vertical dynamique' },
+                                { id: 'ads', icon: Zap, label: 'Publicité Express', desc: 'Boostez votre business' }
                             ].map((type) => (
-                                <label key={type.id} className={`border-2 p-5 sm:p-6 rounded-[1.5rem] sm:rounded-[2rem] flex items-center gap-4 cursor-pointer transition-all ${subService === type.id ? 'bg-[#B48646]/5 border-[#B48646] shadow-sm' : 'bg-slate-50 border-transparent hover:bg-white'}`}>
-                                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${subService === type.id ? 'border-[#B48646]' : 'border-slate-200'}`}>
-                                      {subService === type.id && <div className="w-3 h-3 rounded-full bg-[#B48646]" />}
-                                    </div>
-                                    <input type="radio" checked={subService === type.id} onChange={() => { setSubService(type.id); setPhotos(type.id === 'short' ? 5 : (type.id === 'ads' ? 10 : 50)); }} className="hidden" />
-                                    <div className="flex-1">
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-base font-bold text-slate-800 block">{type.label}</span>
-                                            {type.id === 'short' && <Smartphone size={14} className="text-[#B48646]" />}
+                                <label 
+                                    key={type.id} 
+                                    onClick={() => { setSubService(type.id); setPhotos(type.id === 'short' ? 5 : (type.id === 'ads' ? 10 : 50)); }}
+                                    className={`border-2 p-4 md:p-6 rounded-2xl md:rounded-[2rem] flex items-center justify-between cursor-pointer transition-all group ${subService === type.id ? 'bg-[#B48646]/5 border-[#B48646] shadow-md' : 'bg-slate-50 border-transparent hover:bg-white hover:border-slate-200'}`}
+                                >
+                                    <div className="flex items-center gap-4">
+                                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${subService === type.id ? 'border-[#B48646]' : 'border-slate-300'}`}>
+                                            {subService === type.id && <div className="w-2.5 h-2.5 rounded-full bg-[#B48646]" />}
+                                        </div>
+                                        <div>
+                                            <span className={`text-sm md:text-lg font-bold transition-colors ${subService === type.id ? 'text-slate-900' : 'text-slate-600'}`}>{type.label}</span>
+                                            <span className="text-[10px] md:text-xs text-slate-400 font-medium block">{type.desc}</span>
                                         </div>
                                     </div>
+                                    {type.id === 'short' && <Smartphone size={16} className={subService === type.id ? 'text-[#B48646]' : 'text-slate-300'} />}
                                 </label>
                             ))}
                         </div>
@@ -502,34 +504,42 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
     if (selectedService === ServiceType.ASSISTANCE) return <AssistanceForm onBack={handleBack} onRequest={handleProjectRequest} />;
 
     return (
-      <div className="flex flex-col h-full overflow-y-auto no-scrollbar relative">
-         <header className="pt-8 pb-6 px-4 sm:pt-14 sm:pb-10 sm:px-6 bg-white border-b border-slate-50 rounded-b-[1.5rem] sm:rounded-b-[3rem] mb-6 sm:mb-8 shrink-0 z-10 shadow-sm relative">
-            <h1 className="text-xl sm:text-4xl font-extrabold text-slate-900 leading-tight mb-1 sm:mb-2">Nos Services</h1>
-            <p className="text-slate-500 font-medium text-[10px] sm:text-base">Choisissez l'expertise dont vous avez besoin.</p>
-         </header>
-         
-         <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 pb-24 grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-6 overflow-visible">
-            {[
-                { type: ServiceType.GRAPHIC_DESIGN, icon: PenTool, label: "Design Graphique", desc: "Logos & Identité" },
-                { type: ServiceType.VIDEO, icon: Video, label: "Vidéo & Souvenirs", desc: "Montages Pro" },
-                { type: ServiceType.ASSISTANCE, icon: LifeBuoy, label: "Assistance Rapide", desc: "Aides ponctuelles" }
-            ].map(s => (
-                <div key={s.type} onClick={() => setSelectedService(s.type)} className="group bg-white p-4 sm:p-8 rounded-[1.5rem] sm:rounded-[2.5rem] shadow-sm border border-slate-50 hover:border-[#B48646]/30 transition-all cursor-pointer flex flex-row sm:flex-col items-center sm:text-center gap-4 sm:gap-0 h-full active:scale-[0.98]">
-                    <div className="w-12 h-12 sm:w-20 sm:h-20 bg-slate-50 rounded-xl sm:rounded-2xl flex items-center justify-center sm:mb-6 group-hover:bg-[#B48646] group-hover:text-white transition-all duration-300 shrink-0">
-                        <s.icon size={20} className="sm:w-8 sm:h-8" />
-                    </div>
-                    <div className="flex-1 text-left sm:text-center">
-                        <h3 className="text-base sm:text-xl font-bold text-slate-900 sm:mb-2">{s.label}</h3>
-                        <p className="text-slate-400 text-[11px] sm:text-sm sm:mb-6">{s.desc}</p>
-                    </div>
-                    <div className="hidden sm:block mt-auto">
-                        <span className="text-xs font-bold text-[#B48646] group-hover:underline">Configurer mon projet</span>
-                    </div>
-                    <div className="sm:hidden text-[#B48646]/40 group-hover:text-[#B48646] transition-colors">
-                        <ArrowRight size={18} />
-                    </div>
-                </div>
-            ))}
+      <div className="flex flex-col min-h-full relative">
+         <div className="flex-1 flex flex-col items-center justify-start p-4 md:p-12 pt-12 md:pt-24">
+          <div className="max-w-7xl mx-auto w-full grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-8 animate-in fade-in zoom-in duration-700">
+             {[
+                 { type: ServiceType.GRAPHIC_DESIGN, icon: Palette, label: "Design Graphique", desc: "Logos, identité visuelle et supports de communication sur-mesure.", color: "from-blue-500 to-indigo-600", accent: "bg-blue-500/10" },
+                 { type: ServiceType.VIDEO, icon: Video, label: "Vidéo & Souvenirs", desc: "Montages professionnels pour immortaliser vos événements précieux.", color: "from-[#B48646] to-[#E5B066]", accent: "bg-[#B48646]/10" },
+                 { type: ServiceType.ASSISTANCE, icon: Zap, label: "Assistance Rapide", desc: "Retouches et modifications express pour vos besoins urgents.", color: "from-slate-700 to-slate-900", accent: "bg-slate-700/10" }
+             ].map(s => (
+                 <div 
+                   key={s.type} 
+                   onClick={() => setSelectedService(s.type)} 
+                   className="group relative bg-white p-5 md:p-10 rounded-[2rem] md:rounded-[2.5rem] shadow-sm border border-slate-100 hover:border-[#B48646]/30 transition-all cursor-pointer flex flex-row md:flex-col items-center md:text-center gap-5 md:gap-0 h-full active:scale-[0.98] hover:shadow-2xl hover:shadow-[#B48646]/10 overflow-hidden"
+                 >
+                     {/* Hover Background Accent */}
+                     <div className="absolute top-0 right-0 w-32 h-32 bg-[#B48646]/5 rounded-full blur-3xl -mr-16 -mt-16 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+
+                     <div className={`w-16 h-16 md:w-24 md:h-24 ${s.accent} rounded-2xl md:rounded-3xl flex items-center justify-center md:mb-8 group-hover:bg-gradient-to-br ${s.color} group-hover:text-white transition-all duration-500 shrink-0 shadow-sm group-hover:shadow-xl group-hover:shadow-[#B48646]/20 group-hover:-translate-y-2`}>
+                         <s.icon size={28} className="md:w-10 md:h-10" />
+                     </div>
+
+                     <div className="flex-1 text-left md:text-center space-y-1 md:space-y-4">
+                         <h3 className="text-base md:text-2xl font-black text-slate-900 leading-tight">{s.label}</h3>
+                         <p className="text-slate-400 md:text-slate-500 text-[11px] md:text-base leading-relaxed line-clamp-2 md:line-clamp-none">{s.desc}</p>
+                     </div>
+
+                      <div className="hidden md:flex items-center gap-2 mt-8 text-[#B48646] font-bold text-sm opacity-0 group-hover:opacity-100 transition-all translate-y-4 group-hover:translate-y-0">
+                          <span>Configurer mon projet</span>
+                          <ArrowRight size={16} />
+                      </div>
+
+                      <div className="md:hidden text-[#B48646]/40 group-hover:text-[#B48646] transition-colors">
+                          <ArrowRight size={20} />
+                      </div>
+                  </div>
+              ))}
+           </div>
          </div>
       </div>
     );

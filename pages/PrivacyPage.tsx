@@ -8,29 +8,16 @@ interface PrivacyPageProps {
 
 const PrivacyPage: React.FC<PrivacyPageProps> = ({ onBack }) => {
   return (
-    <div className="flex flex-col h-full overflow-y-auto no-scrollbar bg-[#FDFCF8]">
-      {/* Header */}
-      <header className="relative pt-16 pb-12 px-8 bg-white border-b border-slate-50 rounded-b-[3rem] mb-8 overflow-hidden shadow-[0_4px_30px_-15px_rgba(0,0,0,0.05)] shrink-0 z-10">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-slate-100 rounded-full blur-[80px] -mr-16 -mt-16 pointer-events-none"></div>
-        
-        <div className="relative z-10">
-           <button 
+    <div className="flex flex-col min-h-full bg-[#FDFCF8] relative">
+      <div className="flex-1 px-6 lg:px-8 py-12 md:py-24 max-w-4xl mx-auto w-full">
+        <div className="bg-white rounded-[2.5rem] p-8 md:p-12 shadow-xl border border-slate-100 space-y-12">
+          <button 
              onClick={onBack}
              className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-50 text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-4 border border-slate-100 hover:bg-slate-100 transition-colors"
            >
               <ChevronLeft size={12} /> Retour
            </button>
-           <h1 className="text-3xl md:text-4xl font-extrabold font-['Poppins'] text-slate-900 leading-tight mb-2">
-             Politique de Confidentialité
-           </h1>
-           <p className="text-slate-500 font-medium max-w-md text-sm md:text-base">
-             Dernière mise à jour : 11 mars 2026
-           </p>
-        </div>
-      </header>
-
-      <div className="flex-1 px-6 lg:px-8 pb-24 max-w-4xl mx-auto w-full">
-        <div className="bg-white rounded-[2.5rem] p-8 md:p-12 shadow-xl border border-slate-100 space-y-12">
+           <h1 className="text-2xl md:text-3xl font-black text-slate-900 mb-8">Politique de Confidentialité</h1>
           
           <section className="space-y-4">
             <div className="flex items-center gap-3 text-[#B48646]">
