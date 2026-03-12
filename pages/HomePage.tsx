@@ -10,7 +10,7 @@ interface HomePageProps {
 const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
   
   return (
-    <div className="flex flex-col h-full bg-[#FDFCF8] relative overflow-hidden">
+    <div className="flex flex-col min-h-full bg-[#FDFCF8] relative md:overflow-hidden">
       <main className="flex-1 relative">
         {/* Background Decorative Elements */}
         <div className="absolute top-1/4 -left-20 w-96 h-96 bg-[#B48646]/5 rounded-full blur-[100px] pointer-events-none"></div>

@@ -180,7 +180,7 @@ const RealizationsPage: React.FC = () => {
         </div>
 
         {/* --- SOCIAL CTA (Footer) --- */}
-        <div className="pt-8 border-t border-slate-100 flex flex-col items-center justify-center text-center">
+        <div className="pt-8 pb-12 border-t border-slate-100 flex flex-col items-center justify-center text-center">
             <h3 className="text-lg font-bold text-slate-900 mb-2">Envie d'en voir plus ?</h3>
             <p className="text-slate-500 text-sm mb-6 max-w-xs mx-auto">
                 Retrouvez toutes nos actus et nos stories quotidiennes sur les réseaux.

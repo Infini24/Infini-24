@@ -34,12 +34,12 @@ const ContactPage: React.FC = () => {
 
     return (
         /* On force la page à faire exactement 100% de la hauteur visible sans scroll */
-        <div className="h-screen bg-[#FDFCF8] flex flex-col overflow-hidden font-sans">
+        <div className="min-h-full bg-[#FDFCF8] flex flex-col font-sans">
             
             {/* Main centré avec un padding minimal pour éviter le scroll */}
-            <main className="flex-1 flex items-center justify-center px-4 lg:px-12 py-2">
+            <main className="flex-1 flex items-center justify-center px-4 lg:px-12 py-8 md:py-2">
                 
-                <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch max-h-[90vh]">
+                <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch lg:max-h-[90vh]">
                     
                     {/* --- COLONNE GAUCHE (Infos & FAQ) --- */}
                     <div className="lg:col-span-5 flex flex-col justify-between py-2 animate-in fade-in slide-in-from-left duration-700">

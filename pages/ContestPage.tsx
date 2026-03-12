@@ -50,7 +50,7 @@ const ContestPage: React.FC<ContestPageProps> = ({ onNavigate }) => {
   );
 
   return (
-    <div className="flex flex-col h-full bg-[#FDFCF8] relative overflow-hidden">
+    <div className="flex flex-col min-h-full bg-[#FDFCF8] relative md:overflow-hidden">
       <main className="flex-1 relative flex flex-col items-center justify-start p-4 md:p-12 pt-12 md:pt-24">
         {/* Background Decorative Elements */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#B48646]/5 rounded-full blur-[120px] pointer-events-none"></div>

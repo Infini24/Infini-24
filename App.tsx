@@ -182,7 +182,7 @@ const App = () => {
       
       {/* Zone de contenu principale (le scroll ne se fait qu'ici) */}
       <main className="flex-1 relative z-10 overflow-y-auto no-scrollbar">
-        <div className="h-full w-full">
+        <div className="min-h-full w-full pb-32 md:pb-0">
           {/* Sections avec gestion du montage pour la performance */}
           <div className={activeTab === 0 ? 'block' : 'hidden'}><HomePage onNavigate={handleNavigate} /></div>
           

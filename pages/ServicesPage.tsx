@@ -206,7 +206,7 @@ const GraphicDesignForm = ({ onBack, onRequest }: FormProps) => {
     );
 
     return (
-        <div className="flex flex-col h-full overflow-y-auto no-scrollbar pb-20">
+        <div className="flex flex-col min-h-full pb-32">
             <header className="pt-8 pb-6 px-4 sm:pt-14 sm:pb-10 sm:px-6 bg-white border-b border-slate-50 rounded-b-[1.5rem] sm:rounded-b-[3rem] mb-4 sm:mb-6 shrink-0 z-20 shadow-sm">
                  <div className="flex items-center gap-3 sm:gap-4">
                     <button onClick={onBack} className="p-2.5 sm:p-3 bg-white border border-slate-100 rounded-xl sm:rounded-2xl text-slate-400 hover:text-[#B48646] transition-all">
@@ -373,7 +373,7 @@ const VideoForm = ({ onBack, onRequest }: FormProps) => {
     );
 
     return (
-        <div className="flex flex-col h-full overflow-y-auto no-scrollbar pb-20 overflow-x-visible">
+        <div className="flex flex-col min-h-full pb-32 overflow-x-visible">
             <header className="pt-8 pb-6 px-4 sm:pt-14 sm:pb-10 sm:px-6 bg-white border-b border-slate-50 rounded-b-[1.5rem] sm:rounded-b-[3rem] mb-4 sm:mb-6 shrink-0 z-20 shadow-sm relative">
                  <div className="flex items-center gap-3 sm:gap-4">
                     <button onClick={onBack} className="p-2.5 sm:p-3 bg-white border border-slate-100 rounded-xl sm:rounded-2xl text-slate-400 hover:text-[#B48646] transition-all">
@@ -437,7 +437,7 @@ const AssistanceForm = ({ onBack, onRequest }: FormProps) => {
     };
 
     return (
-        <div className="flex flex-col h-full overflow-y-auto no-scrollbar pb-20">
+        <div className="flex flex-col min-h-full pb-32">
              <header className="pt-8 pb-6 px-4 sm:pt-14 sm:pb-10 sm:px-6 bg-white border-b border-slate-50 rounded-b-[1.5rem] sm:rounded-b-[3rem] mb-4 sm:mb-6 shrink-0 z-20 shadow-sm">
                  <div className="flex items-center gap-3 sm:gap-4">
                     <button onClick={onBack} className="p-2.5 sm:p-3 bg-white border border-slate-100 rounded-xl sm:rounded-2xl text-slate-400 hover:text-[#B48646] transition-all">
