@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Home, Calculator, Mail, Infinity as InfinityIcon, Image as ImageIcon, Timer, Facebook, Star } from 'lucide-react';
+import { Home, Calculator, Mail, Infinity as InfinityIcon, Image as ImageIcon, Timer, Facebook } from 'lucide-react';
 import { Toaster } from 'react-hot-toast';
 
 // Imports des pages
@@ -31,51 +31,51 @@ const GlobalHeader = ({
 
   return (
     <header className="sticky top-0 w-full bg-white/90 backdrop-blur-md border-b border-slate-100 shadow-sm z-50 flex-none transition-all">
-      <div className="max-w-7xl mx-auto px-6 h-20 md:h-24 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-3 lg:px-6 h-20 md:h-24 flex items-center justify-between">
         
         {/* LOGO */}
-        <div className="flex items-center gap-3 group cursor-pointer" onClick={() => onNavigate(0)}>
+        <div className="flex items-center gap-2 lg:gap-3 group cursor-pointer shrink-0" onClick={() => onNavigate(0)}>
           <div className="text-[#B48646] group-hover:rotate-12 transition-transform duration-500">
-            <InfinityIcon size={32} className="md:w-10 md:h-10" strokeWidth={1.5} />
+            <InfinityIcon size={28} className="md:w-10 md:h-10" strokeWidth={1.5} />
           </div>
           <div>
-            <h1 className="text-lg md:text-2xl tracking-tighter font-bold">
+            <h1 className="text-base md:text-2xl tracking-tighter font-bold">
               <span className="text-slate-900">INFINI</span>
               <span className="text-[#B48646]">24</span>
             </h1>
-            <p className="text-slate-400 text-[7px] md:text-[9px] font-bold tracking-[0.3em] uppercase">
+            <p className="text-slate-400 text-[6px] md:text-[9px] font-bold tracking-[0.2em] md:tracking-[0.3em] uppercase">
               Créateur de souvenirs
             </p>
           </div>
         </div>
 
         {/* NAVIGATION DESKTOP */}
-        <nav className="hidden md:flex items-center gap-6">
+        <nav className="hidden md:flex items-center gap-1 lg:gap-6">
           {navItems.map((item) => {
             const isActive = activeTab === item.index;
             return (
               <button 
                 key={item.index}
                 onClick={() => onNavigate(item.index)} 
-                className={`relative group flex flex-col items-center px-6 py-2 transition-all duration-300 rounded-xl border-2 ${
+                className={`relative group flex flex-col items-center px-3 lg:px-6 py-2 transition-all duration-300 rounded-xl border-2 ${
                   isActive 
-                    ? "bg-slate-900 border-slate-900 text-white shadow-lg" 
+                    ? "border-[#B48646] text-[#B48646] shadow-sm" 
                     : "bg-transparent border-transparent text-slate-400 hover:text-slate-900"
                 }`}
               >
-                {/* Indicateur visuel (Étoile/Diamant/Infini) */}
+                {/* Indicateur visuel (Infini) */}
                 <div className={`absolute -top-3 transition-all duration-500 ${
                   isActive 
                     ? "opacity-100 scale-110 rotate-0" 
                     : "opacity-0 scale-50 rotate-45"
                 }`}>
                   <div className="bg-white p-1 rounded-full shadow-md border border-slate-100">
-                    <Star size={14} className="text-[#B48646] fill-[#B48646]" />
+                    <InfinityIcon size={14} className="text-[#B48646]" />
                   </div>
                 </div>
 
                 {/* Texte de l'onglet */}
-                <span className={`text-[11px] font-black uppercase tracking-[0.2em] transition-colors duration-300`}>
+                <span className={`text-[10px] lg:text-[11px] font-black uppercase tracking-[0.1em] lg:tracking-[0.2em] transition-colors duration-300`}>
                   {item.name}
                 </span>
               </button>
@@ -120,10 +120,10 @@ const MobileNavigation = ({ activeTab, onNavigate }: { activeTab: number; onNavi
         <button
           key={item.index}
           onClick={() => onNavigate(item.index)}
-          className={`p-3 rounded-2xl transition-all ${
+          className={`p-3 rounded-2xl transition-all border-2 ${
             activeTab === item.index 
-            ? 'bg-[#B48646] text-white shadow-lg shadow-[#B48646]/30 -translate-y-1' 
-            : 'text-slate-400 hover:bg-slate-50'
+            ? 'border-[#B48646] text-[#B48646] shadow-sm -translate-y-1' 
+            : 'text-slate-400 border-transparent hover:bg-slate-50'
           }`}
         >
           <item.icon size={24} strokeWidth={activeTab === item.index ? 2.5 : 2} />
