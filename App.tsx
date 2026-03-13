@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Home, Calculator, Mail, Infinity as InfinityIcon, Image as ImageIcon, Timer, Facebook } from 'lucide-react';
 import { Toaster } from 'react-hot-toast';
+import { generateBackground } from './src/backgroundGenerator';
 
 // Imports des pages
 import HomePage from './pages/HomePage';
@@ -30,7 +31,7 @@ const GlobalHeader = ({
   ];
 
   return (
-    <header className="sticky top-0 w-full bg-white/90 backdrop-blur-md border-b border-slate-100 shadow-sm z-50 flex-none transition-all">
+    <header className="sticky top-0 w-full bg-slate-950/80 backdrop-blur-md border-b border-white/5 shadow-sm z-50 flex-none transition-all">
       <div className="max-w-7xl mx-auto px-3 lg:px-6 h-20 md:h-24 flex items-center justify-between">
         
         {/* LOGO */}
@@ -40,7 +41,7 @@ const GlobalHeader = ({
           </div>
           <div>
             <h1 className="text-base md:text-2xl tracking-tighter font-bold">
-              <span className="text-slate-900">INFINI</span>
+              <span className="text-white">INFINI</span>
               <span className="text-[#B48646]">24</span>
             </h1>
             <p className="text-slate-400 text-[6px] md:text-[9px] font-bold tracking-[0.2em] md:tracking-[0.3em] uppercase">
@@ -59,8 +60,8 @@ const GlobalHeader = ({
                 onClick={() => onNavigate(item.index)} 
                 className={`relative group flex flex-col items-center px-3 lg:px-6 py-2 transition-all duration-300 rounded-xl border-2 ${
                   isActive 
-                    ? "border-[#B48646] text-[#B48646] shadow-sm" 
-                    : "bg-transparent border-transparent text-slate-400 hover:text-slate-900"
+                    ? "border-[#B48646] text-[#B48646] shadow-sm bg-[#B48646]/5" 
+                    : "bg-transparent border-transparent text-slate-400 hover:text-white"
                 }`}
               >
                 {/* Indicateur visuel (Infini) */}
@@ -90,8 +91,8 @@ const GlobalHeader = ({
 /* --- FOOTER GLOBAL --- */
 const GlobalFooter = ({ onNavigate }: { onNavigate: (index: number) => void }) => {
   return (
-    <footer className="flex-none py-4 px-12 bg-white border-t border-slate-100 z-20 hidden md:block">
-      <div className="max-w-7xl mx-auto flex items-center justify-between text-slate-400">
+    <footer className="flex-none py-4 px-12 bg-slate-950/80 backdrop-blur-md border-t border-white/5 z-20 hidden md:block">
+      <div className="max-w-7xl mx-auto flex items-center justify-between text-slate-500">
         <p className="text-[10px] font-bold uppercase tracking-widest">© 2026 Infini 24 • Tous droits réservés</p>
         <div className="flex items-center gap-6">
           <button onClick={() => onNavigate(5)} className="text-[10px] font-bold hover:text-[#B48646] uppercase tracking-widest transition-colors">Confidentialité</button>
@@ -109,7 +110,7 @@ const GlobalFooter = ({ onNavigate }: { onNavigate: (index: number) => void }) =
 /* --- NAVIGATION MOBILE --- */
 const MobileNavigation = ({ activeTab, onNavigate }: { activeTab: number; onNavigate: (index: number) => void }) => {
   return (
-    <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-100 px-6 py-4 flex justify-between items-center z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+    <div className="md:hidden fixed bottom-0 left-0 right-0 bg-slate-950/90 backdrop-blur-md border-t border-white/5 px-6 py-4 flex justify-between items-center z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.2)]">
       {[
         { icon: Home, index: 0 },
         { icon: Calculator, index: 2 },
@@ -122,8 +123,8 @@ const MobileNavigation = ({ activeTab, onNavigate }: { activeTab: number; onNavi
           onClick={() => onNavigate(item.index)}
           className={`p-3 rounded-2xl transition-all border-2 ${
             activeTab === item.index 
-            ? 'border-[#B48646] text-[#B48646] shadow-sm -translate-y-1' 
-            : 'text-slate-400 border-transparent hover:bg-slate-50'
+            ? 'border-[#B48646] text-[#B48646] shadow-sm -translate-y-1 bg-[#B48646]/10' 
+            : 'text-slate-500 border-transparent hover:bg-white/5'
           }`}
         >
           <item.icon size={24} strokeWidth={activeTab === item.index ? 2.5 : 2} />
@@ -138,6 +139,15 @@ const App = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [initialService, setInitialService] = useState<ServiceType | null>(null);
   const [mountedTabs, setMountedTabs] = useState<number[]>([0]);
+  const [backgroundUrl, setBackgroundUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    const loadBackground = async () => {
+      const url = await generateBackground();
+      if (url) setBackgroundUrl(url);
+    };
+    loadBackground();
+  }, []);
 
   useEffect(() => {
     const handlePopState = () => {
@@ -170,13 +180,67 @@ const App = () => {
 
   return (
     // h-screen + overflow-hidden pour supprimer le scroll global inutile
-    <div className="h-screen w-screen flex flex-col overflow-hidden bg-[#FDFCF8] text-slate-900 font-['Inter'] selection:bg-[#B48646]/20 selection:text-[#B48646]">
+    <div className="h-screen w-screen flex flex-col overflow-hidden bg-gradient-to-b from-[#000814] via-[#001d3d] to-[#003566] text-slate-100 font-['Inter'] selection:bg-[#B48646]/20 selection:text-[#B48646]">
       <Toaster position="top-center" />
 
-      {/* Arrière-plan décoratif léger */}
-      <div className="fixed inset-0 z-0 pointer-events-none opacity-40" 
-        style={{ background: `radial-gradient(circle at 90% 10%, rgba(180, 134, 70, 0.04) 0%, transparent 40%)` }} 
-      />
+      {/* Arrière-plan dynamique */}
+      <div className="star-rain">
+        {/* Soleil et Lune lointains - Alternance jour/nuit (Cycle accéléré) */}
+        <div className="celestial-body moon" style={{ animation: 'celestialMove 200s linear infinite', animationDelay: '-120s' }} />
+        <div className="celestial-body sun" style={{ animation: 'celestialMove 200s linear infinite', animationDelay: '-20s' }} />
+
+        {/* Étoiles filantes - Très rares et multidirectionnelles */}
+        {[...Array(3)].map((_, i) => {
+          const angle = Math.random() * 360;
+          const rad = (angle * Math.PI) / 180;
+          const dist = 100; // vmin
+          const moveX = Math.cos(rad) * dist;
+          const moveY = Math.sin(rad) * dist;
+          
+          return (
+            <div 
+              key={`shooting-${i}`} 
+              className="shooting-star" 
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                animation: `shootingStar ${10 + Math.random() * 15}s linear infinite`,
+                animationDelay: `-${Math.random() * 30}s`,
+                // @ts-ignore
+                '--rotation': `${angle}deg`,
+                '--move-x-start': `${moveX * 0.05}vw`,
+                '--move-y-start': `${moveY * 0.05}vh`,
+                '--move-x-end': `${moveX}vw`,
+                '--move-y-end': `${moveY}vh`
+              }}
+            />
+          );
+        })}
+
+        {/* Étoiles lointaines - Nombreuses et lentes */}
+        {[...Array(60)].map((_, i) => (
+          <div 
+            key={i} 
+            className={`star ${i % 4 === 0 ? 'star-twinkle' : ''}`} 
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animation: i % 4 === 0 
+                ? `distantStarMove ${60 + Math.random() * 100}s linear infinite, twinkle ${3 + Math.random() * 4}s ease-in-out infinite`
+                : `distantStarMove ${60 + Math.random() * 100}s linear infinite`,
+              animationDelay: `-${Math.random() * 100}s`,
+              transform: `scale(${0.3 + Math.random() * 0.7})`
+            }}
+          />
+        ))}
+      </div>
+      {backgroundUrl && (
+        <div 
+          className="bg-dynamic" 
+          style={{ backgroundImage: `url(${backgroundUrl})` }} 
+        />
+      )}
+      <div className="bg-overlay" />
 
       <GlobalHeader activeTab={activeTab} onNavigate={handleNavigate} />
       
