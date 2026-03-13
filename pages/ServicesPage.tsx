@@ -153,7 +153,7 @@ Cordialement.`);
 };
 
 // 1. Graphic Design Form
-const GraphicDesignForm = ({ onBack, onRequest }: FormProps) => {
+const GraphicDesignForm = ({ onBack, onRequest, isEmbedded }: FormProps) => {
     const [subService, setSubService] = useState<string>('identity_complete'); 
     const [price, setPrice] = useState<number>(370); 
     const [companyName, setCompanyName] = useState('');
@@ -207,17 +207,19 @@ const GraphicDesignForm = ({ onBack, onRequest }: FormProps) => {
 
     return (
         <div className="flex flex-col min-h-full pb-32">
-            <header className="pt-8 pb-6 px-4 sm:pt-14 sm:pb-10 sm:px-6 bg-slate-900/80 backdrop-blur-md border-b border-white/5 rounded-b-[1.5rem] sm:rounded-b-[3rem] mb-4 sm:mb-6 shrink-0 z-20 shadow-sm">
-                 <div className="flex items-center gap-3 sm:gap-4">
-                    <button onClick={onBack} className="p-2.5 sm:p-3 bg-white/5 border border-white/10 rounded-xl sm:rounded-2xl text-slate-400 hover:text-[#B48646] transition-all">
-                        <ChevronLeft size={18} className="sm:w-5 sm:h-5" />
-                    </button>
-                    <div>
-                        <h1 className="text-lg sm:text-2xl font-bold text-white leading-none mb-1">Logos & Design</h1>
-                        <p className="text-slate-400 text-[9px] sm:text-[10px] font-bold uppercase tracking-widest">Identité visuelle sur-mesure</p>
+            {!isEmbedded && (
+                <header className="pt-8 pb-6 px-4 sm:pt-14 sm:pb-10 sm:px-6 bg-slate-900/80 backdrop-blur-md border-b border-white/5 rounded-b-[1.5rem] sm:rounded-b-[3rem] mb-4 sm:mb-6 shrink-0 z-20 shadow-sm">
+                    <div className="flex items-center gap-3 sm:gap-4">
+                        <button onClick={onBack} className="p-2.5 sm:p-3 bg-white/5 border border-white/10 rounded-xl sm:rounded-2xl text-slate-400 hover:text-[#B48646] transition-all">
+                            <ChevronLeft size={18} className="sm:w-5 sm:h-5" />
+                        </button>
+                        <div>
+                            <h1 className="text-lg sm:text-2xl font-bold text-white leading-none mb-1">Logos & Design</h1>
+                            <p className="text-slate-400 text-[9px] sm:text-[10px] font-bold uppercase tracking-widest">Identité visuelle sur-mesure</p>
+                        </div>
                     </div>
-                </div>
-            </header>
+                </header>
+            )}
             <div className="max-w-5xl mx-auto px-4 sm:px-6 w-full">
                 <form className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8" onSubmit={handleFormSubmit}>
                     <div className="bg-slate-900/40 backdrop-blur-md p-5 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] border border-white/5 shadow-sm overflow-visible">
@@ -261,7 +263,7 @@ const GraphicDesignForm = ({ onBack, onRequest }: FormProps) => {
 };
 
 // 2. Video Form
-const VideoForm = ({ onBack, onRequest }: FormProps) => {
+const VideoForm = ({ onBack, onRequest, isEmbedded }: FormProps) => {
     const [subService, setSubService] = useState<string>('birthday'); 
     const [photos, setPhotos] = useState<number>(50);
     const [duration, setDuration] = useState<number>(10);
@@ -374,17 +376,19 @@ const VideoForm = ({ onBack, onRequest }: FormProps) => {
 
     return (
         <div className="flex flex-col min-h-full pb-32 overflow-x-visible">
-            <header className="pt-8 pb-6 px-4 sm:pt-14 sm:pb-10 sm:px-6 bg-slate-900/40 backdrop-blur-xl border-b border-white/5 rounded-b-[1.5rem] sm:rounded-b-[3rem] mb-4 sm:mb-6 shrink-0 z-20 shadow-sm relative">
-                 <div className="flex items-center gap-3 sm:gap-4">
-                    <button onClick={onBack} className="p-2.5 sm:p-3 bg-white/5 border border-white/10 rounded-xl sm:rounded-2xl text-slate-400 hover:text-[#B48646] transition-all">
-                        <ChevronLeft size={18} className="sm:w-5 sm:h-5" />
-                    </button>
-                    <div>
-                        <h1 className="text-lg sm:text-2xl font-bold text-white leading-none mb-1">Vidéos & Souvenirs</h1>
-                        <p className="text-slate-400 text-[9px] sm:text-[10px] font-bold uppercase tracking-widest">Montage pro de vos moments</p>
+            {!isEmbedded && (
+                <header className="pt-8 pb-6 px-4 sm:pt-14 sm:pb-10 sm:px-6 bg-slate-900/40 backdrop-blur-xl border-b border-white/5 rounded-b-[1.5rem] sm:rounded-b-[3rem] mb-4 sm:mb-6 shrink-0 z-20 shadow-sm relative">
+                    <div className="flex items-center gap-3 sm:gap-4">
+                        <button onClick={onBack} className="p-2.5 sm:p-3 bg-white/5 border border-white/10 rounded-xl sm:rounded-2xl text-slate-400 hover:text-[#B48646] transition-all">
+                            <ChevronLeft size={18} className="sm:w-5 sm:h-5" />
+                        </button>
+                        <div>
+                            <h1 className="text-lg sm:text-2xl font-bold text-white leading-none mb-1">Vidéos & Souvenirs</h1>
+                            <p className="text-slate-400 text-[9px] sm:text-[10px] font-bold uppercase tracking-widest">Montage pro de vos moments</p>
+                        </div>
                     </div>
-                </div>
-            </header>
+                </header>
+            )}
             <div className="max-w-5xl mx-auto px-6 w-full overflow-visible">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 overflow-visible">
                     <div className="bg-slate-900/40 backdrop-blur-xl p-5 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] border border-white/5 shadow-sm mb-6 overflow-visible">
@@ -426,7 +430,7 @@ const VideoForm = ({ onBack, onRequest }: FormProps) => {
 };
 
 // 3. Assistance Form
-const AssistanceForm = ({ onBack, onRequest }: FormProps) => {
+const AssistanceForm = ({ onBack, onRequest, isEmbedded }: FormProps) => {
     const [photoCount, setPhotoCount] = useState<number>(1);
     const [details, setDetails] = useState('');
     const price = photoCount * 5;
@@ -438,17 +442,19 @@ const AssistanceForm = ({ onBack, onRequest }: FormProps) => {
 
     return (
         <div className="flex flex-col min-h-full pb-32">
-             <header className="pt-8 pb-6 px-4 sm:pt-14 sm:pb-10 sm:px-6 bg-slate-900/80 backdrop-blur-md border-b border-white/5 rounded-b-[1.5rem] sm:rounded-b-[3rem] mb-4 sm:mb-6 shrink-0 z-20 shadow-sm">
-                 <div className="flex items-center gap-3 sm:gap-4">
-                    <button onClick={onBack} className="p-2.5 sm:p-3 bg-white/5 border border-white/10 rounded-xl sm:rounded-2xl text-slate-400 hover:text-[#B48646] transition-all">
-                        <ChevronLeft size={18} className="sm:w-5 sm:h-5" />
-                    </button>
-                    <div>
-                        <h1 className="text-lg sm:text-2xl font-bold text-white leading-none mb-1">Assistance</h1>
-                        <p className="text-slate-400 text-[9px] sm:text-[10px] font-bold uppercase tracking-widest">Support graphique immédiat</p>
+            {!isEmbedded && (
+                <header className="pt-8 pb-6 px-4 sm:pt-14 sm:pb-10 sm:px-6 bg-slate-900/80 backdrop-blur-md border-b border-white/5 rounded-b-[1.5rem] sm:rounded-b-[3rem] mb-4 sm:mb-6 shrink-0 z-20 shadow-sm">
+                    <div className="flex items-center gap-3 sm:gap-4">
+                        <button onClick={onBack} className="p-2.5 sm:p-3 bg-white/5 border border-white/10 rounded-xl sm:rounded-2xl text-slate-400 hover:text-[#B48646] transition-all">
+                            <ChevronLeft size={18} className="sm:w-5 sm:h-5" />
+                        </button>
+                        <div>
+                            <h1 className="text-lg sm:text-2xl font-bold text-white leading-none mb-1">Assistance</h1>
+                            <p className="text-slate-400 text-[9px] sm:text-[10px] font-bold uppercase tracking-widest">Support graphique immédiat</p>
+                        </div>
                     </div>
-                </div>
-            </header>
+                </header>
+            )}
             <div className="max-w-5xl mx-auto px-6 w-full">
                 <form className="grid grid-cols-1 lg:grid-cols-2 gap-8" onSubmit={handleFormSubmit}>
                     <div className="bg-slate-900/40 backdrop-blur-md p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] shadow-sm border border-white/5 space-y-6">
@@ -479,18 +485,20 @@ const AssistanceForm = ({ onBack, onRequest }: FormProps) => {
 interface FormProps {
     onBack: () => void;
     onRequest: (name: string, price: number, details: string) => void;
+    isEmbedded?: boolean;
 }
 
 const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial: () => void, onNavigateToContest: () => void}> = ({ initialService, onClearInitial, onNavigateToContest }) => {
-  const [selectedService, setSelectedService] = useState<ServiceType | null>(initialService);
+  const [selectedService, setSelectedService] = useState<ServiceType>(initialService || ServiceType.GRAPHIC_DESIGN);
   const [showProjectModal, setShowProjectModal] = useState(false);
   const [currentServiceName, setCurrentServiceName] = useState("");
   const [currentServicePrice, setCurrentServicePrice] = useState<number | string>(0);
   const [currentServiceDetails, setCurrentServiceDetails] = useState("");
 
-  useEffect(() => { if (initialService) setSelectedService(initialService); }, [initialService]);
+  useEffect(() => { 
+    if (initialService) setSelectedService(initialService); 
+  }, [initialService]);
 
-  const handleBack = () => { setSelectedService(null); onClearInitial(); };
   const handleProjectRequest = (name: string, price: number, details: string) => {
       setCurrentServiceName(name);
       setCurrentServicePrice(price);
@@ -498,65 +506,74 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
       setShowProjectModal(true);
   };
 
-  const renderContent = () => {
-    if (selectedService === ServiceType.VIDEO) return <VideoForm onBack={handleBack} onRequest={handleProjectRequest} />;
-    if (selectedService === ServiceType.GRAPHIC_DESIGN) return <GraphicDesignForm onBack={handleBack} onRequest={handleProjectRequest} />;
-    if (selectedService === ServiceType.ASSISTANCE) return <AssistanceForm onBack={handleBack} onRequest={handleProjectRequest} />;
-
-    return (
-      <div className="flex flex-col min-h-full relative bg-transparent">
-         <div className="flex-1 flex flex-col items-center justify-start p-4 md:p-12 pt-12 md:pt-24">
-          <div className="max-w-7xl mx-auto w-full grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-8 animate-in fade-in zoom-in duration-700">
-             {[
-                 { type: ServiceType.GRAPHIC_DESIGN, icon: Palette, label: "Design Graphique", desc: "Logos, identité visuelle et supports de communication sur-mesure.", color: "from-[#B48646] to-[#E5B066]", accent: "bg-[#B48646]/10" },
-                 { type: ServiceType.VIDEO, icon: Video, label: "Vidéo & Souvenirs", desc: "Montages professionnels pour immortaliser vos événements précieux.", color: "from-[#B48646] to-[#E5B066]", accent: "bg-[#B48646]/10" },
-                 { type: ServiceType.ASSISTANCE, icon: Zap, label: "Assistance Rapide", desc: "Retouches et modifications express pour vos besoins urgents.", color: "from-[#B48646] to-[#E5B066]", accent: "bg-[#B48646]/10" }
-             ].map(s => (
-                 <div 
-                   key={s.type} 
-                   onClick={() => setSelectedService(s.type)} 
-                   className="group relative bg-slate-900/40 backdrop-blur-md p-5 md:p-10 rounded-[2rem] md:rounded-[2.5rem] shadow-sm border border-white/5 hover:border-[#B48646]/30 transition-all cursor-pointer flex flex-row md:flex-col items-center md:text-center gap-5 md:gap-0 h-full active:scale-[0.98] hover:shadow-2xl hover:shadow-[#B48646]/10 overflow-hidden"
-                 >
-                     {/* Hover Background Accent */}
-                     <div className="absolute top-0 right-0 w-32 h-32 bg-[#B48646]/5 rounded-full blur-3xl -mr-16 -mt-16 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-
-                     <div className={`w-16 h-16 md:w-24 md:h-24 ${s.accent} rounded-2xl md:rounded-3xl flex items-center justify-center md:mb-8 group-hover:bg-gradient-to-br ${s.color} group-hover:text-white transition-all duration-500 shrink-0 shadow-sm group-hover:shadow-xl group-hover:shadow-[#B48646]/20 group-hover:-translate-y-2`}>
-                         <s.icon size={28} className="md:w-10 md:h-10" />
-                     </div>
-
-                     <div className="flex-1 text-left md:text-center space-y-1 md:space-y-4">
-                         <h3 className="text-base md:text-2xl font-black text-white leading-tight">{s.label}</h3>
-                         <p className="text-slate-400 md:text-slate-400 text-[11px] md:text-base leading-relaxed line-clamp-2 md:line-clamp-none">{s.desc}</p>
-                     </div>
-
-                      <div className="hidden md:flex items-center gap-2 mt-8 text-[#B48646] font-bold text-sm opacity-0 group-hover:opacity-100 transition-all translate-y-4 group-hover:translate-y-0">
-                          <span>Configurer mon projet</span>
-                          <ArrowRight size={16} />
-                      </div>
-
-                      <div className="md:hidden text-[#B48646]/40 group-hover:text-[#B48646] transition-colors">
-                          <ArrowRight size={20} />
-                      </div>
-                  </div>
-              ))}
-           </div>
-         </div>
-      </div>
-    );
-  };
+  const services = [
+    { type: ServiceType.GRAPHIC_DESIGN, icon: Palette, label: "Design Graphique", desc: "Logos & Identité" },
+    { type: ServiceType.VIDEO, icon: Video, label: "Vidéo & Souvenirs", desc: "Montages Pro" },
+    { type: ServiceType.ASSISTANCE, icon: Zap, label: "Assistance Rapide", desc: "Retouches Express" }
+  ];
 
   return (
-    <>
-        {renderContent()}
-        <ProjectWorkflowModal 
-            serviceName={currentServiceName}
-            price={currentServicePrice}
-            customDetails={currentServiceDetails}
-            isOpen={showProjectModal}
-            onClose={() => setShowProjectModal(false)}
-            onSuccess={() => { setSelectedService(null); onClearInitial(); }}
-        />
-    </>
+    <div className="flex flex-col min-h-full relative bg-transparent">
+      {/* Header de la page Services */}
+      <div className="pt-12 md:pt-20 pb-8 px-4 text-center">
+        <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tighter">
+          Nos <span className="text-[#B48646]">Services</span>
+        </h2>
+        <p className="text-slate-400 max-w-2xl mx-auto text-sm md:text-base">
+          Choisissez une catégorie pour configurer votre projet sur-mesure et obtenir un tarif instantané.
+        </p>
+      </div>
+
+      {/* Sélecteur de Service Centralisé (Tabs) */}
+      <div className="sticky top-0 z-30 bg-slate-950/50 backdrop-blur-xl border-y border-white/5 py-4 mb-8">
+        <div className="max-w-4xl mx-auto px-4">
+          <div className="flex bg-white/5 p-1.5 rounded-[1.5rem] md:rounded-[2rem] gap-1">
+            {services.map((s) => {
+              const isActive = selectedService === s.type;
+              return (
+                <button
+                  key={s.type}
+                  onClick={() => setSelectedService(s.type)}
+                  className={`flex-1 flex flex-col md:flex-row items-center justify-center gap-1 md:gap-3 py-3 md:py-4 rounded-xl md:rounded-[1.5rem] transition-all duration-500 ${
+                    isActive 
+                      ? "bg-gradient-to-r from-[#B48646] to-[#E5B066] text-white shadow-lg shadow-[#B48646]/20 scale-[1.02]" 
+                      : "text-slate-400 hover:text-white hover:bg-white/5"
+                  }`}
+                >
+                  <s.icon size={18} className={isActive ? "text-white" : "text-[#B48646]"} />
+                  <div className="text-center md:text-left">
+                    <span className="block text-[10px] md:text-sm font-black uppercase tracking-wider">{s.label}</span>
+                    <span className={`hidden md:block text-[8px] uppercase tracking-widest font-bold opacity-60`}>{s.desc}</span>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* Zone de Formulaire Dynamique */}
+      <div className="flex-1 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        {selectedService === ServiceType.GRAPHIC_DESIGN && (
+          <GraphicDesignForm onBack={() => {}} onRequest={handleProjectRequest} isEmbedded />
+        )}
+        {selectedService === ServiceType.VIDEO && (
+          <VideoForm onBack={() => {}} onRequest={handleProjectRequest} isEmbedded />
+        )}
+        {selectedService === ServiceType.ASSISTANCE && (
+          <AssistanceForm onBack={() => {}} onRequest={handleProjectRequest} isEmbedded />
+        )}
+      </div>
+
+      <ProjectWorkflowModal 
+          serviceName={currentServiceName}
+          price={currentServicePrice}
+          customDetails={currentServiceDetails}
+          isOpen={showProjectModal}
+          onClose={() => setShowProjectModal(false)}
+          onSuccess={() => { onClearInitial(); }}
+      />
+    </div>
   );
 };
 
