@@ -27,8 +27,14 @@ const FinnAssistant: React.FC = () => {
         setIsTyping(true);
 
         try {
-            const apiKey = process.env.GEMINI_API_KEY;
-            if (!apiKey) throw new Error("Clé API manquante");
+            // Utilisation de import.meta.env pour Vite ou fallback sur process.env
+            // @ts-ignore
+            const apiKey = import.meta.env?.VITE_GEMINI_API_KEY || process.env.GEMINI_API_KEY;
+            
+            if (!apiKey) {
+                console.error("Finn: Clé API manquante dans l'environnement.");
+                throw new Error("Clé API manquante");
+            }
 
             const ai = new GoogleGenAI({ apiKey });
             
