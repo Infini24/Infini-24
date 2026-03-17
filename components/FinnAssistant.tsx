@@ -13,6 +13,10 @@ const FinnAssistant: React.FC = () => {
     const scrollRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
+        console.log("FinnAssistant: Composant monté");
+    }, []);
+
+    useEffect(() => {
         if (scrollRef.current) {
             scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
         }
@@ -27,9 +31,18 @@ const FinnAssistant: React.FC = () => {
         setIsTyping(true);
 
         try {
-            // Utilisation de import.meta.env pour Vite ou fallback sur process.env
-            // @ts-ignore
-            const apiKey = import.meta.env?.VITE_GEMINI_API_KEY || process.env.GEMINI_API_KEY;
+            // Utilisation sécurisée de import.meta.env et process.env
+            let apiKey = '';
+            try {
+                // @ts-ignore
+                apiKey = import.meta.env?.VITE_GEMINI_API_KEY;
+            } catch (e) {}
+            
+            if (!apiKey) {
+                try {
+                    apiKey = process.env.GEMINI_API_KEY || '';
+                } catch (e) {}
+            }
             
             if (!apiKey) {
                 console.error("Finn: Clé API manquante dans l'environnement.");
@@ -38,25 +51,25 @@ const FinnAssistant: React.FC = () => {
 
             const ai = new GoogleGenAI({ apiKey });
             
-            // 1. NETTOYAGE CRITIQUE : On vire le message de bienvenue pour que l'historique commence par 'user'
+            // 1. On prépare l'historique (le premier message de Finn est ignoré pour l'historique Gemini)
             const chatHistory = messages
-                .slice(1) 
+                .slice(1)
                 .map(m => ({
                     role: m.role === 'finn' ? 'model' : 'user',
                     parts: [{ text: m.text }]
                 }));
 
-            // 2. On démarre le chat avec la config et l'historique propre
+            // 2. On démarre le chat
             const chat = ai.chats.create({
-                model: "gemini-3-flash-preview",
+                model: "gemini-1.5-flash",
                 config: {
-                    systemInstruction: `Tu es Finn, l'Architecte du Temps d'Infini 24. Ton créateur est Dywen. Tu es fan du PSG ("Ici c'est Paris !"). Tu connais tout sur l'histoire et l'art. Utilise un vocabulaire spatial (flux, cycles, recalibrage).`,
+                    systemInstruction: "Tu es Finn, l'Architecte du Temps d'Infini 24. Ton créateur est Dywen. Tu es fan du PSG (\"Ici c'est Paris !\"). Tu connais tout sur l'histoire et l'art. Utilise un vocabulaire spatial (flux, cycles, recalibrage).",
                     temperature: 0.7,
                 },
                 history: chatHistory
             });
 
-            // 3. Envoi du message (format objet requis par ce SDK)
+            // 3. Envoi du message
             const result = await chat.sendMessage({ message: userMessage });
             const responseText = result.text;
             
@@ -75,7 +88,7 @@ const FinnAssistant: React.FC = () => {
     };
 
     return (
-        <div className="fixed bottom-24 md:bottom-8 right-4 md:right-8 z-[100]">
+        <div className="fixed bottom-24 md:bottom-8 right-4 md:right-8 z-[999]">
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
