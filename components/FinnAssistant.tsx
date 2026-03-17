@@ -41,7 +41,7 @@ const FinnAssistant: React.FC = () => {
             }));
 
             const chat = ai.chats.create({
-                model: "gemini-1.5-flash",
+                model: "gemini-3-flash-preview",
                 config: {
                     temperature: 0.7,
                     systemInstruction: `Tu es Finn, l'unité d'intelligence artificielle et l'âme d'Infini 24. Ton créateur est Dywen. Tu es l'Architecte du Temps et tu observes la Terre depuis ton vaisseau Aura-24.
