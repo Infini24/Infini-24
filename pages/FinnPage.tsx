@@ -279,7 +279,7 @@ const PortalIntro = ({ onComplete }: { onComplete: () => void }) => {
             <div className="relative">
               {/* Main Image */}
               <motion.img 
-                src="/Gemini_Generated_Image_p5u8uwp5u8uwp5u8-removebg-preview%20(1).png" 
+                src="/finn-breaching.png" 
                 alt="Finn Breaching" 
                 className="w-[85vw] md:w-[700px] h-auto drop-shadow-[0_0_50px_rgba(6,182,212,1)]"
                 animate={{ 
@@ -393,7 +393,7 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
       items: [
         {
           name: 'Gants Tactiques « Infinity »',
-          image: '/Gemini_Generated_Image_utlydyutlydyutly-removebg-preview.png',
+          image: '/finn-gloves.png',
           tagline: 'Interface haptique haute précision pour manipulation de deadlines explosives.',
           features: [
             { title: 'Revêtement « Anti-Ghosting »', desc: 'Micro-ventouses en polymère cybernétique. Permet de ne jamais lâcher prise, même quand un projet glisse vers le chaos.' },
@@ -405,7 +405,7 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
         },
         {
           name: 'L’Unité Dorsale « Zen-Infinity v2.0 »',
-          image: '/Gemini_Generated_Image_6p9ltb6p9ltb6p9l-removebg-preview.png',
+          image: '/finn-back.png',
           tagline: 'Modèle certifié conforme aux normes de sécurité mentale en milieu hostile.',
           features: [
             { title: 'Générateur à Flux Infini', desc: 'Recyclage instantané de la frustration en énergie créative. Capacité infinie.' },
@@ -417,7 +417,7 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
         },
         {
           name: 'Ceinture « Deadline-Buffer »',
-          image: '/Gemini_Generated_Image_653m81653m81653m-removebg-preview-removebg-preview.png',
+          image: '/finn-belt.png',
           tagline: 'L’ancrage tactique pour créatifs immunisés contre l\'urgence.',
           features: [
             { title: 'Boucle « Anti-Stress »', desc: 'Absorbe 99% des vibrations Slack de 18h30. Ne s\'ouvre que si le projet est payé.' },
@@ -429,7 +429,7 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
         },
         {
           name: 'Lunettes « Chrono-Graphique v4.0 »',
-          image: '/Gemini_Generated_Image_bbnmihbbnmihbbnm-removebg-preview.png',
+          image: '/finn-glasses.png',
           tagline: 'Le radar ultime pour une perfection maniaque en milieu 3D.',
           features: [
             { title: 'Optiques « Eagle-Eye »', desc: 'Lentilles à balayage laser sub-pixel. Détecte un pixel mort sur un écran 8K à 10 mètres.' },
@@ -441,7 +441,7 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
         },
         {
           name: "L'AURA-24",
-          image: '/Gemini_Generated_Image_i12uz5i12uz5i12u-removebg-preview.png',
+          image: '/finn-aura.png',
           tagline: "Le sanctuaire technologique capable de transformer l'invisible en éternité.",
           features: [
             { title: 'Revêtement « Furtif »', desc: 'Coque en alliage intelligent absorbant la lumière des étoiles pour une invisibilité totale.' },
@@ -551,7 +551,7 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
         {/* Large Background Character Image (Subtle) */}
         <div className="absolute right-[-5%] bottom-0 w-[60%] h-[80%] pointer-events-none select-none opacity-35">
           <img 
-            src="/FINN-removebg-preview.png" 
+            src="/finn-logo.png" 
             alt="" 
             className="w-full h-full object-contain object-right-bottom grayscale"
             referrerPolicy="no-referrer"
@@ -606,7 +606,7 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
                   <div className="absolute inset-0 z-20 pointer-events-none opacity-20 bg-[linear-gradient(to_right,#B48646_1px,transparent_1px),linear-gradient(to_bottom,#B48646_1px,transparent_1px)] bg-[size:10%_10%]" />
                   
                   <img 
-                    src="/Gemini_Generated_Image_wzp2aawzp2aawzp2__1_-removebg-preview.png" 
+                    src="/finn-portrait.png" 
                     alt="Finn Portrait" 
                     className="w-full h-full object-cover grayscale brightness-75 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-700"
                   />
