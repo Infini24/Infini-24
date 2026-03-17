@@ -21,14 +21,14 @@ import {
 
 // External Assets (Cloudinary)
 const CLOUDINARY_URLS = {
-  portrait: 'https://res.cloudinary.com/dmgqewagr/image/upload/v1773739523/Gemini_Generated_Image_wzp2aawzp2aawzp2__1_-removebg-preview_satw8f.png',
-  breaching: 'https://res.cloudinary.com/dmgqewagr/image/upload/v1773739524/Gemini_Generated_Image_p5u8uwp5u8uwp5u8-removebg-preview_1_wio66j.png',
-  gloves: 'https://res.cloudinary.com/dmgqewagr/image/upload/v1773739523/Gemini_Generated_Image_utlydyutlydyutly-removebg-preview_tb1qun.png',
-  back: 'https://res.cloudinary.com/dmgqewagr/image/upload/v1773739523/Gemini_Generated_Image_6p9ltb6p9ltb6p9l-removebg-preview_oegt1n.png',
-  belt: 'https://res.cloudinary.com/dmgqewagr/image/upload/v1773739523/Gemini_Generated_Image_653m81653m81653m-removebg-preview-removebg-preview_tcproi.png',
-  glasses: 'https://res.cloudinary.com/dmgqewagr/image/upload/v1773739522/Gemini_Generated_Image_bbnmihbbnmihbbnm-removebg-preview_bbcrrh.png',
-  aura: 'https://res.cloudinary.com/dmgqewagr/image/upload/v1773739523/Gemini_Generated_Image_i12uz5i12uz5i12u-removebg-preview_wvvies.png',
-  logo: 'https://res.cloudinary.com/dmgqewagr/image/upload/v1773739550/FINN-removebg-preview_xrhugc.png'
+  portrait: 'https://res.cloudinary.com/dmgqewagr/image/upload/v1773739523/Portrait.png',
+  breaching: 'https://res.cloudinary.com/dmgqewagr/image/upload/v1773739524/Intro%20%28Breaching%29.png',
+  gloves: 'https://res.cloudinary.com/dmgqewagr/image/upload/v1773739523/Gants.png',
+  back: 'https://res.cloudinary.com/dmgqewagr/image/upload/v1773739523/Unit%C3%A9%20Dorsale.png',
+  belt: 'https://res.cloudinary.com/dmgqewagr/image/upload/v1773739523/Ceinture.png',
+  glasses: 'https://res.cloudinary.com/dmgqewagr/image/upload/v1773739522/Lunettes.png',
+  aura: 'https://res.cloudinary.com/dmgqewagr/image/upload/v1773739523/Aura-24.png',
+  logo: 'https://res.cloudinary.com/dmgqewagr/image/upload/v1773739550/Logo%20de%20fond.png'
 };
 
 // --- TYPEWRITER COMPONENT ---
@@ -290,20 +290,25 @@ const PortalIntro = ({ onComplete }: { onComplete: () => void }) => {
           >
             <div className="relative">
               {/* Main Image */}
-              <motion.img 
-                src={CLOUDINARY_URLS.breaching} 
-                alt="Finn Breaching" 
-                className="w-[85vw] md:w-[700px] h-auto drop-shadow-[0_0_50px_rgba(6,182,212,1)]"
-                animate={{ 
-                  scale: [1, 1.02, 1],
-                  rotateY: [-5, 5, -5]
-                }}
-                transition={{ 
-                  repeat: Infinity, 
-                  duration: 2, 
-                  ease: "easeInOut" 
-                }}
-              />
+              <div className="relative group">
+                <motion.img 
+                  src={CLOUDINARY_URLS.breaching} 
+                  alt="Finn Breaching" 
+                  className="w-[85vw] md:w-[700px] h-auto drop-shadow-[0_0_50px_rgba(6,182,212,1)] pointer-events-none select-none"
+                  animate={{ 
+                    scale: [1, 1.02, 1],
+                    rotateY: [-5, 5, -5]
+                  }}
+                  transition={{ 
+                    repeat: Infinity, 
+                    duration: 2, 
+                    ease: "easeInOut" 
+                  }}
+                  referrerPolicy="no-referrer"
+                />
+                {/* Invisible shield to prevent right-click/save */}
+                <div className="absolute inset-0 z-30" />
+              </div>
               
               {/* Energy Aura / Shatter Particles */}
               <motion.div 
@@ -543,11 +548,16 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
                 exit={{ scale: 0.8, opacity: 0 }}
                 className="relative max-w-5xl w-full h-full flex items-center justify-center"
               >
-                <img 
-                  src={zoomedImage} 
-                  alt="Zoomed Equipment" 
-                  className="max-w-full max-h-full object-contain drop-shadow-[0_0_50px_rgba(180,134,70,0.5)]"
-                />
+                <div className="relative w-full h-full flex items-center justify-center">
+                  <img 
+                    src={zoomedImage} 
+                    alt="Zoomed Equipment" 
+                    className="max-w-full max-h-full object-contain drop-shadow-[0_0_50px_rgba(180,134,70,0.5)] pointer-events-none select-none"
+                    referrerPolicy="no-referrer"
+                  />
+                  {/* Shield */}
+                  <div className="absolute inset-0 z-10" />
+                </div>
                 <div className="absolute top-0 right-0 text-white/50 font-mono text-[10px] uppercase tracking-widest">
                   ESC TO CLOSE // CLIC TO EXIT
                 </div>
@@ -565,9 +575,11 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
           <img 
             src={CLOUDINARY_URLS.logo} 
             alt="" 
-            className="w-full h-full object-contain object-right-bottom grayscale"
+            className="w-full h-full object-contain object-right-bottom grayscale pointer-events-none select-none"
             referrerPolicy="no-referrer"
           />
+          {/* Shield */}
+          <div className="absolute inset-0" />
         </div>
 
         <div className="max-w-7xl mx-auto px-4 md:px-12 py-8 md:py-16 relative z-10">
@@ -620,8 +632,10 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
                   <img 
                     src={CLOUDINARY_URLS.portrait} 
                     alt="Finn Portrait" 
-                    className="w-full h-full object-cover grayscale brightness-75 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-700"
+                    className="w-full h-full object-cover grayscale brightness-75 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-700 pointer-events-none select-none"
                   />
+                  {/* Shield */}
+                  <div className="absolute inset-0 z-25" />
 
                   {/* Technical Data Overlay */}
                   <div className="absolute top-4 left-4 z-30 font-mono text-[8px] text-[#B48646] space-y-1">
@@ -758,11 +772,16 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
                             >
                               <div className="absolute inset-0 z-0 opacity-10 bg-[linear-gradient(to_right,#B48646_1px,transparent_1px),linear-gradient(to_bottom,#B48646_1px,transparent_1px)] bg-[size:20px_20px]" />
                               
-                              <img 
-                                src={activeSectionData?.items?.[selectedAbility].image} 
-                                alt={activeSectionData?.items?.[selectedAbility].name}
-                                className="w-full h-full object-contain drop-shadow-[0_0_20px_rgba(180,134,70,0.3)] z-10 grayscale group-hover:grayscale-0 transition-all duration-700"
-                              />
+                              <div className="relative w-full h-full">
+                                <img 
+                                  src={activeSectionData?.items?.[selectedAbility].image} 
+                                  alt={activeSectionData?.items?.[selectedAbility].name}
+                                  className="w-full h-full object-contain drop-shadow-[0_0_20px_rgba(180,134,70,0.3)] z-10 grayscale group-hover:grayscale-0 transition-all duration-700 pointer-events-none select-none"
+                                  referrerPolicy="no-referrer"
+                                />
+                                {/* Shield */}
+                                <div className="absolute inset-0 z-20" />
+                              </div>
                               
                               <div className="absolute top-2 left-2 font-mono text-[7px] text-[#B48646]/60">
                                 [VISUAL_PREVIEW_0{selectedAbility + 1}]

@@ -67,11 +67,16 @@ const ImageModal = ({ image, onClose }: { image: ProjectImage | null, onClose: (
         <X size={28} />
       </button>
       <div className="w-full h-full flex flex-col items-center justify-center p-2">
-        <img 
-            src={image.url} 
-            alt={image.caption} 
-            className="w-auto h-auto max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl animate-in zoom-in-95 duration-300" 
-        />
+        <div className="relative">
+          <img 
+              src={image.url} 
+              alt={image.caption} 
+              className="w-auto h-auto max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl animate-in zoom-in-95 duration-300 pointer-events-none select-none" 
+              referrerPolicy="no-referrer"
+          />
+          {/* Shield */}
+          <div className="absolute inset-0 z-10" />
+        </div>
         <p className="mt-6 text-white/90 font-medium text-xl tracking-wide">{image.caption}</p>
       </div>
     </div>
@@ -158,7 +163,8 @@ const RealizationsPage: React.FC = () => {
                          <img 
                             src={img.url} 
                             alt={img.caption} 
-                            className={`transition-transform duration-700 group-hover/img:scale-[1.02] ${img.isWide ? 'w-full h-full object-contain' : 'w-full h-full object-cover'}`}
+                            className={`transition-transform duration-700 group-hover/img:scale-[1.02] ${img.isWide ? 'w-full h-full object-contain' : 'w-full h-full object-cover'} pointer-events-none select-none`}
+                            referrerPolicy="no-referrer"
                          />
                       </div>
                       
