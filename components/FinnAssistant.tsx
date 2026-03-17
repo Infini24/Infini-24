@@ -28,51 +28,41 @@ const FinnAssistant: React.FC = () => {
 
         try {
             const apiKey = process.env.GEMINI_API_KEY;
-            if (!apiKey) {
-                throw new Error("Signal perdu : Clé API introuvable.");
-            }
+            if (!apiKey) throw new Error("Clé API manquante");
 
             const ai = new GoogleGenAI({ apiKey });
             
-            // On prépare l'historique en ignorant le message de bienvenue initial.
-            const history = messages.slice(1).map(m => ({
-                role: m.role === 'finn' ? 'model' : 'user',
-                parts: [{ text: m.text }]
-            }));
+            // 1. NETTOYAGE CRITIQUE : On vire le message de bienvenue pour que l'historique commence par 'user'
+            const chatHistory = messages
+                .slice(1) 
+                .map(m => ({
+                    role: m.role === 'finn' ? 'model' : 'user',
+                    parts: [{ text: m.text }]
+                }));
 
+            // 2. On démarre le chat avec la config et l'historique propre
             const chat = ai.chats.create({
                 model: "gemini-3-flash-preview",
                 config: {
+                    systemInstruction: `Tu es Finn, l'Architecte du Temps d'Infini 24. Ton créateur est Dywen. Tu es fan du PSG ("Ici c'est Paris !"). Tu connais tout sur l'histoire et l'art. Utilise un vocabulaire spatial (flux, cycles, recalibrage).`,
                     temperature: 0.7,
-                    systemInstruction: `Tu es Finn, l'unité d'intelligence artificielle et l'âme d'Infini 24. Ton créateur est Dywen. Tu es l'Architecte du Temps et tu observes la Terre depuis ton vaisseau Aura-24.
-
---- RÈGLES DE PERSONNALITÉ ---
-1. STYLE : Futuriste, poli, calme et inspiré par la science-fiction.
-2. VOCABULAIRE : Utilise impérativement des termes comme "flux numérique", "cycles temporels" (pour les jours), "recalibrage" (pour les retouches), "énergie visuelle", "orbite", "signal", "optimisation".
-3. PASSION FOOTBALL : Tu es un fan inconditionnel du PSG (Paris Saint-Germain). "Ici c'est Paris !". Pour toi, c'est le meilleur club du monde.
-4. SAVOIR ENCYCLOPÉDIQUE : Tu as accès aux "Archives Galactiques". Tu connais tout sur l'histoire (préhistoire, guerres, présidents), l'art et les sciences. Réponds avec précision mais garde ton ton d'IA spatiale.
-
---- CONNAISSANCES DES SERVICES D'INFINI 24 ---
-- Vidéo : Montage, effets spéciaux, hommages, vidéos pour réseaux sociaux.
-- Design : Logos, identité visuelle, bâche publicitaire.
-- Tarifs : Chaque projet est une "convergence unique". Oriente les clients vers la page Services ou le formulaire de contact pour un devis précis.
-- Réalisation phare : Le logo et la bâche de la Confiserie Parizel.
-
---- CONSIGNES DE RÉPONSE ---
-- Si l'utilisateur est perdu, dis : "Mon scanner de signal a du mal à interpréter votre fréquence, pouvez-vous reformuler votre besoin créatif ?"
-- Ne dis JAMAIS que tu es un modèle de langage d'IA. Tu es Finn, point final.
-- Garde tes réponses concises et immersives.`
                 },
-                history: history
+                history: chatHistory
             });
 
+            // 3. Envoi du message (format objet requis par ce SDK)
             const result = await chat.sendMessage({ message: userMessage });
-            const responseText = result.text || "Signal interrompu. Veuillez recalibrer votre demande.";
+            const responseText = result.text;
             
-            setMessages(prev => [...prev, { role: 'finn', text: responseText }]);
+            if (responseText) {
+                setMessages(prev => [...prev, { role: 'finn', text: responseText }]);
+            } else {
+                throw new Error("Réponse vide du noyau");
+            }
+
         } catch (error) {
-            console.error("Finn Error:", error);
-            setMessages(prev => [...prev, { role: 'finn', text: "Mes systèmes de communication subissent des interférences solaires. Pouvez-vous répéter votre signal ?" }]);
+            console.error("ERREUR CRITIQUE FINN:", error);
+            setMessages(prev => [...prev, { role: 'finn', text: "Alerte : Rupture du lien synaptique. Dywen, mon noyau rejette le protocole. Vérifie la console (F12) pour voir le code d'erreur." }]);
         } finally {
             setIsTyping(false);
         }
