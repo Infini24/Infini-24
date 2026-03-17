@@ -12,6 +12,7 @@ import ContestPage from './pages/ContestPage';
 import PrivacyPage from './pages/PrivacyPage';
 import LegalNoticePage from './pages/LegalNoticePage';
 import FinnPage from './pages/FinnPage';
+import FinnAssistant from './components/FinnAssistant';
 import ErrorBoundary from './components/ErrorBoundary';
 import CookieBanner from './components/CookieBanner';
 import ScrollProgress from './components/ScrollProgress';
@@ -396,6 +397,7 @@ const App = () => {
       <MobileNavigation activeTab={activeTab} onNavigate={handleNavigate} />
       <GlobalFooter onNavigate={handleNavigate} />
       <CookieBanner onShowPrivacy={() => handleNavigate(5)} />
+      <FinnAssistant />
     </div>
   );
 };
