@@ -31,18 +31,8 @@ const FinnAssistant: React.FC = () => {
         setIsTyping(true);
 
         try {
-            // Utilisation sécurisée de import.meta.env et process.env
-            let apiKey = '';
-            try {
-                // @ts-ignore
-                apiKey = import.meta.env?.VITE_GEMINI_API_KEY;
-            } catch (e) {}
-            
-            if (!apiKey) {
-                try {
-                    apiKey = process.env.GEMINI_API_KEY || '';
-                } catch (e) {}
-            }
+            // Utilisation de la clé API fournie par la plateforme
+            const apiKey = process.env.GEMINI_API_KEY;
             
             if (!apiKey) {
                 console.error("Finn: Clé API manquante dans l'environnement.");
@@ -61,7 +51,7 @@ const FinnAssistant: React.FC = () => {
 
             // 2. On démarre le chat
             const chat = ai.chats.create({
-                model: "gemini-1.5-flash",
+                model: "gemini-3-flash-preview",
                 config: {
                     systemInstruction: "Tu es Finn, l'Architecte du Temps d'Infini 24. Ton créateur est Dywen. Tu es fan du PSG (\"Ici c'est Paris !\"). Tu connais tout sur l'histoire et l'art. Utilise un vocabulaire spatial (flux, cycles, recalibrage).",
                     temperature: 0.7,
@@ -79,9 +69,13 @@ const FinnAssistant: React.FC = () => {
                 throw new Error("Réponse vide du noyau");
             }
 
-        } catch (error) {
+        } catch (error: any) {
             console.error("ERREUR CRITIQUE FINN:", error);
-            setMessages(prev => [...prev, { role: 'finn', text: "Alerte : Rupture du lien synaptique. Dywen, mon noyau rejette le protocole. Vérifie la console (F12) pour voir le code d'erreur." }]);
+            let errorMessage = "Alerte : Rupture du lien synaptique. Dywen, mon noyau rejette le protocole.";
+            if (error.message === "Clé API manquante") {
+                errorMessage = "Alerte : Noyau déconnecté. La clé API est absente du système. Dywen, vérifie les variables d'environnement.";
+            }
+            setMessages(prev => [...prev, { role: 'finn', text: errorMessage + " Vérifie la console (F12) pour voir le code d'erreur." }]);
         } finally {
             setIsTyping(false);
         }
