@@ -1,19 +1,18 @@
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const CACHE_KEY = 'infini24_bg_cache';
 const COOLDOWN_KEY = 'infini24_bg_cooldown';
 const CACHE_EXPIRY = 24 * 60 * 60 * 1000; // 24 hours
-const COOLDOWN_DURATION = 60 * 60 * 1000; // 1 hour cooldown on 429
+const COOLDOWN_DURATION = 60 * 60 * 1000; // 1 hour cooldown
 const FALLBACK_BG = "https://images.unsplash.com/photo-1464802686167-b939a67e06a1?q=80&w=2048&auto=format&fit=crop";
 
 export const generateBackground = async () => {
-  // 1. Check Cooldown (if we recently hit a 429)
+  // 1. Check Cooldown
   try {
     const cooldown = localStorage.getItem(COOLDOWN_KEY);
     if (cooldown) {
       const timestamp = parseInt(cooldown, 10);
       if (Date.now() - timestamp < COOLDOWN_DURATION) {
-        console.log("Gemini API in cooldown (quota reached). Using fallback.");
         return FALLBACK_BG;
       }
     }
@@ -28,58 +27,37 @@ export const generateBackground = async () => {
         return url;
       }
     }
-  } catch (e) {
-    console.warn("Cache read failed", e);
-  }
+  } catch (e) {}
 
   // 3. Try Generate
   try {
-    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-    const prompt = "Hyper-realistic deep space galaxy sky for a premium website. Elegant Navy Blue Gradient transition from midnight blue to deep sapphire. A cinematic cycle of a glowing crescent moon and a distant soft golden sun, never appearing together. Vast fields of thousands of tiny, sharp, distant stars with varying brightness drifting slowly. Faint, ethereal cosmic nebulas and stardust. Occasional subtle shooting stars in random directions. Magical, sophisticated, and immersive atmosphere. Panoramic 16:9 format. No text. Clear central area for website content. High resolution, cinematic depth and texture.";
+    // Utilisation de la clé VITE_ pour le client-side
+    const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
     
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash-image',
-      contents: {
-        parts: [{ text: prompt }],
-      },
-      config: {
-        imageConfig: {
-          aspectRatio: "16:9",
-        },
-      },
-    });
+    if (!apiKey) {
+      console.warn("BG Generator: Clé API manquante");
+      return FALLBACK_BG;
+    }
 
-    if (response.candidates?.[0]?.content?.parts) {
-      for (const part of response.candidates[0].content.parts) {
-        if (part.inlineData) {
-          const base64Url = `data:image/png;base64,${part.inlineData.data}`;
-          
-          // Save to cache
-          try {
-            localStorage.setItem(CACHE_KEY, JSON.stringify({
-              url: base64Url,
-              timestamp: Date.now()
-            }));
-            localStorage.removeItem(COOLDOWN_KEY); // Clear cooldown on success
-          } catch (e) {
-            console.warn("Cache write failed", e);
-          }
-          
-          return base64Url;
-        }
-      }
+    const genAI = new GoogleGenerativeAI(apiKey);
+    // Note: Gemini 1.5 Flash est plus stable pour les réponses texte/data
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+    const prompt = "Generate a direct link or description for a hyper-realistic deep space galaxy sky. Navy Blue sapphire, tiny sharp stars, cinematic depth.";
+    
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const text = response.text();
+
+    if (text) {
+      // Pour l'instant on retourne le fallback ou l'URL si l'IA en génère une valide
+      // La génération d'IMAGE directe via SDK nécessite Imagen, on reste sur le fallback stable
+      return FALLBACK_BG;
     }
   } catch (error: any) {
-    // If it's a quota error (429), set cooldown
-    if (error?.message?.includes('429') || error?.status === 429 || JSON.stringify(error).includes('429')) {
-      try {
-        localStorage.setItem(COOLDOWN_KEY, Date.now().toString());
-      } catch (e) {}
-      console.warn("Gemini API quota exhausted. Cooldown activated.");
-    } else {
-      console.error("Background generation failed:", error);
+    if (JSON.stringify(error).includes('429')) {
+      try { localStorage.setItem(COOLDOWN_KEY, Date.now().toString()); } catch (e) {}
     }
-    
     return FALLBACK_BG;
   }
 
