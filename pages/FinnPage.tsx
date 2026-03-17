@@ -19,6 +19,16 @@ import {
   Eye
 } from 'lucide-react';
 
+// Assets
+import finnPortrait from '../src/assets/finn/finn-portrait.png';
+import finnBreaching from '../src/assets/finn/finn-breaching.png';
+import finnGloves from '../src/assets/finn/finn-gloves.png';
+import finnBack from '../src/assets/finn/finn-back.png';
+import finnBelt from '../src/assets/finn/finn-belt.png';
+import finnGlasses from '../src/assets/finn/finn-glasses.png';
+import finnAura from '../src/assets/finn/finn-aura.png';
+import finnLogo from '../src/assets/finn/finn-logo.png';
+
 // --- TYPEWRITER COMPONENT ---
 const Typewriter = ({ text, speed = 20, delay = 0 }: { text: string, speed?: number, delay?: number }) => {
   const [displayedText, setDisplayedText] = useState('');
@@ -279,7 +289,7 @@ const PortalIntro = ({ onComplete }: { onComplete: () => void }) => {
             <div className="relative">
               {/* Main Image */}
               <motion.img 
-                src="/finn-breaching.png" 
+                src={finnBreaching} 
                 alt="Finn Breaching" 
                 className="w-[85vw] md:w-[700px] h-auto drop-shadow-[0_0_50px_rgba(6,182,212,1)]"
                 animate={{ 
@@ -393,7 +403,7 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
       items: [
         {
           name: 'Gants Tactiques « Infinity »',
-          image: '/finn-gloves.png',
+          image: finnGloves,
           tagline: 'Interface haptique haute précision pour manipulation de deadlines explosives.',
           features: [
             { title: 'Revêtement « Anti-Ghosting »', desc: 'Micro-ventouses en polymère cybernétique. Permet de ne jamais lâcher prise, même quand un projet glisse vers le chaos.' },
@@ -405,7 +415,7 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
         },
         {
           name: 'L’Unité Dorsale « Zen-Infinity v2.0 »',
-          image: '/finn-back.png',
+          image: finnBack,
           tagline: 'Modèle certifié conforme aux normes de sécurité mentale en milieu hostile.',
           features: [
             { title: 'Générateur à Flux Infini', desc: 'Recyclage instantané de la frustration en énergie créative. Capacité infinie.' },
@@ -417,7 +427,7 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
         },
         {
           name: 'Ceinture « Deadline-Buffer »',
-          image: '/finn-belt.png',
+          image: finnBelt,
           tagline: 'L’ancrage tactique pour créatifs immunisés contre l\'urgence.',
           features: [
             { title: 'Boucle « Anti-Stress »', desc: 'Absorbe 99% des vibrations Slack de 18h30. Ne s\'ouvre que si le projet est payé.' },
@@ -429,7 +439,7 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
         },
         {
           name: 'Lunettes « Chrono-Graphique v4.0 »',
-          image: '/finn-glasses.png',
+          image: finnGlasses,
           tagline: 'Le radar ultime pour une perfection maniaque en milieu 3D.',
           features: [
             { title: 'Optiques « Eagle-Eye »', desc: 'Lentilles à balayage laser sub-pixel. Détecte un pixel mort sur un écran 8K à 10 mètres.' },
@@ -441,7 +451,7 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
         },
         {
           name: "L'AURA-24",
-          image: '/finn-aura.png',
+          image: finnAura,
           tagline: "Le sanctuaire technologique capable de transformer l'invisible en éternité.",
           features: [
             { title: 'Revêtement « Furtif »', desc: 'Coque en alliage intelligent absorbant la lumière des étoiles pour une invisibilité totale.' },
@@ -551,7 +561,7 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
         {/* Large Background Character Image (Subtle) */}
         <div className="absolute right-[-5%] bottom-0 w-[60%] h-[80%] pointer-events-none select-none opacity-35">
           <img 
-            src="/finn-logo.png" 
+            src={finnLogo} 
             alt="" 
             className="w-full h-full object-contain object-right-bottom grayscale"
             referrerPolicy="no-referrer"
@@ -606,7 +616,7 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
                   <div className="absolute inset-0 z-20 pointer-events-none opacity-20 bg-[linear-gradient(to_right,#B48646_1px,transparent_1px),linear-gradient(to_bottom,#B48646_1px,transparent_1px)] bg-[size:10%_10%]" />
                   
                   <img 
-                    src="/finn-portrait.png" 
+                    src={finnPortrait} 
                     alt="Finn Portrait" 
                     className="w-full h-full object-cover grayscale brightness-75 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-700"
                   />
