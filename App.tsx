@@ -154,24 +154,35 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    const handlePopState = () => {
+    const getTabFromPath = () => {
       const path = window.location.pathname;
-      if (path.includes('concours')) setActiveTab(4);
-      else if (path.includes('contact')) setActiveTab(3);
-      else if (path.includes('services')) setActiveTab(2);
-      else if (path.includes('realisations')) setActiveTab(1);
-      else if (path.includes('confidentialite')) setActiveTab(5);
-      else if (path.includes('mentions-legales')) setActiveTab(6);
-      else if (path.includes('finn')) setActiveTab(7);
-      else setActiveTab(0);
+      if (path.includes('concours')) return 4;
+      if (path.includes('contact')) return 3;
+      if (path.includes('services')) return 2;
+      if (path.includes('realisations')) return 1;
+      if (path.includes('confidentialite')) return 5;
+      if (path.includes('mentions-legales')) return 6;
+      if (path.includes('finn')) return 7;
+      return 0;
     };
+
+    const initialTab = getTabFromPath();
+    setActiveTab(initialTab);
+    setMountedTabs(prev => prev.includes(initialTab) ? prev : [...prev, initialTab]);
+
+    const handlePopState = () => {
+      const tab = getTabFromPath();
+      setActiveTab(tab);
+      setMountedTabs(prev => prev.includes(tab) ? prev : [...prev, tab]);
+    };
+
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
   const handleNavigate = (index: number, serviceType?: ServiceType) => {
     setActiveTab(index);
-    if (!mountedTabs.includes(index)) setMountedTabs(prev => [...prev, index]);
+    setMountedTabs(prev => prev.includes(index) ? prev : [...prev, index]);
     if (serviceType) setInitialService(serviceType);
 
     const paths: Record<number, string> = { 
@@ -179,6 +190,7 @@ const App = () => {
       4: '/concours', 5: '/confidentialite', 6: '/mentions-legales',
       7: '/finn'
     };
+    
     if (window.location.pathname !== paths[index]) {
       window.history.pushState({}, '', paths[index]);
     }
@@ -186,7 +198,7 @@ const App = () => {
 
   return (
     // h-screen + overflow-hidden pour supprimer le scroll global inutile
-    <div className="h-screen w-screen flex flex-col overflow-hidden bg-gradient-to-b from-[#000814] via-[#001d3d] to-[#003566] text-slate-100 font-['Inter'] selection:bg-[#B48646]/20 selection:text-[#B48646]">
+    <div className="h-screen w-full flex flex-col overflow-hidden bg-gradient-to-b from-[#000814] via-[#001d3d] to-[#003566] text-slate-100 font-['Inter'] selection:bg-[#B48646]/20 selection:text-[#B48646]">
       <Toaster position="top-center" />
 
       {/* Arrière-plan dynamique */}
@@ -251,7 +263,7 @@ const App = () => {
       <GlobalHeader activeTab={activeTab} onNavigate={handleNavigate} />
       
       {/* Zone de contenu principale (le scroll ne se fait qu'ici) */}
-      <main className="flex-1 relative z-10 overflow-y-auto no-scrollbar">
+      <main className="flex-1 relative z-10 overflow-y-auto overflow-x-hidden no-scrollbar">
         <div className="min-h-full w-full pb-32 md:pb-0">
           {/* Sections avec gestion du montage pour la performance */}
           <div className={activeTab === 0 ? 'block' : 'hidden'}>

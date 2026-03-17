@@ -150,8 +150,8 @@ const PortalIntro = ({ onComplete }: { onComplete: () => void }) => {
       setTimeout(() => {
         setPhase(4);
         playSound('https://assets.mixkit.co/active_storage/sfx/2574/2574-preview.mp3', 0.6); // Impact
-      }, 5000),
-      setTimeout(() => onComplete(), 6500)
+      }, 7500),
+      setTimeout(() => onComplete(), 9500)
     ];
     return () => timers.forEach(clearTimeout);
   }, [onComplete]);

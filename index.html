@@ -31,7 +31,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-      body {
+      html, body {
         font-family: 'Inter', sans-serif;
         background: linear-gradient(to bottom, #000814, #001d3d, #003566);
         background-attachment: fixed;
@@ -39,6 +39,16 @@
         overscroll-behavior-y: none;
         margin: 0;
         padding: 0;
+        width: 100%;
+        overflow-x: hidden;
+        position: relative;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      img, video, canvas, svg {
+        max-width: 100%;
+        height: auto;
       }
       #root {
         min-h-screen: 100vh;
