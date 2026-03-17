@@ -279,7 +279,7 @@ const PortalIntro = ({ onComplete }: { onComplete: () => void }) => {
             <div className="relative">
               {/* Main Image */}
               <motion.img 
-                src="/Gemini_Generated_Image_p5u8uwp5u8uwp5u8-removebg-preview (1).png" 
+                src="/Gemini_Generated_Image_p5u8uwp5u8uwp5u8-removebg-preview%20(1).png" 
                 alt="Finn Breaching" 
                 className="w-[85vw] md:w-[700px] h-auto drop-shadow-[0_0_50px_rgba(6,182,212,1)]"
                 animate={{ 
@@ -290,9 +290,6 @@ const PortalIntro = ({ onComplete }: { onComplete: () => void }) => {
                   repeat: Infinity, 
                   duration: 2, 
                   ease: "easeInOut" 
-                }}
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = "https://picsum.photos/seed/finn-portal/800/600";
                 }}
               />
               
@@ -612,9 +609,6 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
                     src="/Gemini_Generated_Image_wzp2aawzp2aawzp2__1_-removebg-preview.png" 
                     alt="Finn Portrait" 
                     className="w-full h-full object-cover grayscale brightness-75 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-700"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = "https://picsum.photos/seed/finn-dossier/800/1000";
-                    }}
                   />
 
                   {/* Technical Data Overlay */}
