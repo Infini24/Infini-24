@@ -12,7 +12,6 @@ import ContestPage from './pages/ContestPage';
 import PrivacyPage from './pages/PrivacyPage';
 import LegalNoticePage from './pages/LegalNoticePage';
 import FinnPage from './pages/FinnPage';
-import GazettePage from './pages/GazettePage';
 import ErrorBoundary from './components/ErrorBoundary';
 import CookieBanner from './components/CookieBanner';
 import FinnAssistant from './components/FinnAssistant';
@@ -35,7 +34,6 @@ const GlobalHeader = ({
     { name: "Accueil", index: 0 },
     { name: "Services", index: 2 },
     { name: "Réalisations", index: 1 },
-    { name: "Gazette", index: 8 },
     { name: "Finn", index: 7 },
     { name: "Concours", index: 4 },
     { name: "Contact", index: 3 }
@@ -192,7 +190,6 @@ const App = () => {
       if (path.includes('confidentialite')) return 5;
       if (path.includes('mentions-legales')) return 6;
       if (path.includes('finn')) return 7;
-      if (path.includes('gazette')) return 8;
       return -1; // Not Found
     };
 
@@ -218,7 +215,7 @@ const App = () => {
     const paths: Record<number, string> = { 
       0: '/', 1: '/realisations', 2: '/services', 3: '/contact', 
       4: '/concours', 5: '/confidentialite', 6: '/mentions-legales',
-      7: '/finn', 8: '/gazette'
+      7: '/finn'
     };
     
     if (window.location.pathname !== paths[index]) {
@@ -358,14 +355,6 @@ const App = () => {
             <div className="block">
               <ErrorBoundary>
                 <NotFoundPage onNavigate={handleNavigate} />
-              </ErrorBoundary>
-            </div>
-          )}
-          
-          {mountedTabs.includes(8) && (
-            <div className={activeTab === 8 ? 'block' : 'hidden'}>
-              <ErrorBoundary>
-                <GazettePage />
               </ErrorBoundary>
             </div>
           )}

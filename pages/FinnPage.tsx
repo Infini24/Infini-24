@@ -16,8 +16,46 @@ import {
   Terminal as TerminalIcon,
   Sparkles,
   Layers,
-  Eye
+  Eye,
+  Rocket
 } from 'lucide-react';
+
+// --- TYPES ---
+interface Report {
+    id: number;
+    title: string;
+    date: string;
+    category: string;
+    content: string;
+    tags: string[];
+}
+
+const reports: Report[] = [
+    {
+        id: 1,
+        title: "L'Ascension du Minimalisme Spatial",
+        date: "15 Mars 2026",
+        category: "Design",
+        content: "Mes capteurs indiquent une saturation des interfaces complexes. Le flux se dirige vers une clarté absolue. Moins de bruit, plus d'Aura-24.",
+        tags: ["Minimalisme", "UX"]
+    },
+    {
+        id: 2,
+        title: "La Vidéo Verticale Domine",
+        date: "10 Mars 2026",
+        category: "Vidéo",
+        content: "Les séquences temporelles de 15 à 60 secondes capturent 85% de l'attention organique. Optimisation 9:16 recommandée.",
+        tags: ["Reels", "TikTok"]
+    },
+    {
+        id: 3,
+        title: "L'IA comme Muse Créative",
+        date: "05 Mars 2026",
+        category: "Technologie",
+        content: "L'IA n'est pas une menace, c'est un exosquelette pour la créativité humaine. Protocole d'hybridation activé.",
+        tags: ["IA", "Hybride"]
+    }
+];
 
 // External Assets (Cloudinary)
 const CLOUDINARY_URLS = {
@@ -473,15 +511,9 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
     {
       id: 'journal',
       title: 'Chroniques',
-      subtitle: 'Journal de Bord',
+      subtitle: 'La Gazette de Finn',
       icon: BookOpen,
-      content: [
-        { label: '01/12/25', value: 'Arrivée. Caféine : 100%. Pixels : 0%.' },
-        { label: '15/01/26', value: 'Saut en 2030. Le néon est toujours roi.' },
-        { label: '02/02/26', value: 'Rendu fini en 12s. Record battu.' },
-        { label: '17/03/26', value: 'Détection nouvelle planète. OK. Nom : TERRE.' }
-      ],
-      description: "Chaque saut temporel laisse une trace. Finn documente ses voyages pour s'assurer que le futur d'Infini24 reste radieux et visuellement impeccable."
+      description: "Rapports d'observation du secteur créatif. Finn documente les flux et tendances pour assurer que le futur d'Infini24 reste visuellement impeccable."
     },
     {
       id: 'secrets',
@@ -824,6 +856,41 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
                             </div>
                           </div>
                         </motion.div>
+                      </div>
+                    ) : activeSection === 'journal' ? (
+                      <div className="space-y-6">
+                        <div className="bg-[#B48646]/5 border-l-4 border-[#B48646] p-6 mb-6">
+                          <p className="text-slate-300 leading-relaxed text-sm md:text-base font-mono uppercase">
+                            <span className="text-[#B48646] font-black block mb-2">[SUMMARY]</span>
+                            <Typewriter text={activeSectionData?.description || ''} speed={15} />
+                          </p>
+                        </div>
+                        
+                        <div className="space-y-4">
+                          {reports.map((report, idx) => (
+                            <motion.div 
+                              key={report.id}
+                              initial={{ opacity: 0, y: 10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ delay: idx * 0.1 }}
+                              className="bg-slate-900/50 border border-white/5 p-5 rounded-2xl hover:border-[#B48646]/30 transition-all group"
+                            >
+                              <div className="flex items-center justify-between mb-2">
+                                <div className="flex items-center gap-1.5">
+                                  <Cpu size={10} className="text-[#B48646]" />
+                                  <span className="text-[8px] font-mono font-bold text-[#B48646] uppercase tracking-widest">{report.category} // {report.date}</span>
+                                </div>
+                                <div className="flex gap-1">
+                                  {report.tags.map(tag => (
+                                    <span key={tag} className="text-[7px] text-slate-600 uppercase font-bold">#{tag}</span>
+                                  ))}
+                                </div>
+                              </div>
+                              <h4 className="text-lg font-black text-white mb-2 group-hover:text-[#B48646] transition-colors">{report.title}</h4>
+                              <p className="text-slate-400 text-xs italic leading-relaxed">"{report.content}"</p>
+                            </motion.div>
+                          ))}
+                        </div>
                       </div>
                     ) : (
                       <div className="space-y-8">
