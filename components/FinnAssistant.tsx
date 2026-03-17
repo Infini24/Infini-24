@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageSquare, X, Send, Terminal, Cpu, Sparkles } from 'lucide-react';
-import { GoogleGenAI } from "@google/genai";
+import { MessageSquare, X, Send } from 'lucide-react';
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const FinnAssistant: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -12,10 +12,7 @@ const FinnAssistant: React.FC = () => {
     const [isTyping, setIsTyping] = useState(false);
     const scrollRef = useRef<HTMLDivElement>(null);
 
-    useEffect(() => {
-        console.log("FinnAssistant: Composant monté");
-    }, []);
-
+    // Auto-scroll vers le bas
     useEffect(() => {
         if (scrollRef.current) {
             scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -31,52 +28,58 @@ const FinnAssistant: React.FC = () => {
         setIsTyping(true);
 
         try {
-            // Utilisation de la clé API fournie par la plateforme (VITE_ pour le client-side)
-            // @ts-ignore
-            const apiKey = import.meta.env?.VITE_GEMINI_API_KEY || process.env.GEMINI_API_KEY;
+            // Récupération de la clé API via Vite (Vercel)
+            const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
             
             if (!apiKey) {
-                console.error("Finn: Clé API manquante dans l'environnement.");
                 throw new Error("Clé API manquante");
             }
 
-            const ai = new GoogleGenAI({ apiKey });
-            
-            // 1. On prépare l'historique (le premier message de Finn est ignoré pour l'historique Gemini)
+            // Initialisation de l'IA Google
+            const genAI = new GoogleGenerativeAI(apiKey);
+            const model = genAI.getGenerativeModel({ 
+                model: "gemini-1.5-flash",
+                systemInstruction: "Tu es Finn, l'Architecte du Temps d'Infini 24. Ton créateur est Dywen. Tu es fan du PSG (\"Ici c'est Paris !\"). Tu connais tout sur l'histoire et l'art. Utilise un vocabulaire spatial (flux, cycles, recalibrage).",
+            });
+
+            // Préparation de l'historique pour Gemini
             const chatHistory = messages
-                .slice(1)
+                .slice(1) // On ignore le message de bienvenue statique
                 .map(m => ({
                     role: m.role === 'finn' ? 'model' : 'user',
                     parts: [{ text: m.text }]
                 }));
 
-            // 2. On démarre le chat
-            const chat = ai.chats.create({
-                model: "gemini-3-flash-preview",
-                config: {
-                    systemInstruction: "Tu es Finn, l'Architecte du Temps d'Infini 24. Ton créateur est Dywen. Tu es fan du PSG (\"Ici c'est Paris !\"). Tu connais tout sur l'histoire et l'art. Utilise un vocabulaire spatial (flux, cycles, recalibrage).",
+            // Démarrage de la session de chat
+            const chat = model.startChat({
+                history: chatHistory,
+                generationConfig: {
                     temperature: 0.7,
                 },
-                history: chatHistory
             });
 
-            // 3. Envoi du message
-            const result = await chat.sendMessage({ message: userMessage });
-            const responseText = result.text;
+            // Envoi du message et récupération de la réponse
+            const result = await chat.sendMessage(userMessage);
+            const responseText = result.response.text();
             
             if (responseText) {
                 setMessages(prev => [...prev, { role: 'finn', text: responseText }]);
             } else {
-                throw new Error("Réponse vide du noyau");
+                throw new Error("Réponse vide");
             }
 
         } catch (error: any) {
-            console.error("ERREUR CRITIQUE FINN:", error);
-            let errorMessage = "Alerte : Rupture du lien synaptique. Dywen, mon noyau rejette le protocole.";
+            console.error("ERREUR FINN:", error);
+            let errorMessage = "Alerte : Rupture du lien synaptique. Mon noyau rejette le protocole.";
+            
             if (error.message === "Clé API manquante") {
-                errorMessage = "Alerte : Noyau déconnecté. La clé API est absente du système. Dywen, vérifie les variables d'environnement.";
+                errorMessage = "Alerte : Noyau déconnecté. La clé API (VITE_GEMINI_API_KEY) est absente de Vercel.";
             }
-            setMessages(prev => [...prev, { role: 'finn', text: errorMessage + " Vérifie la console (F12) pour voir le code d'erreur." }]);
+            
+            setMessages(prev => [...prev, { 
+                role: 'finn', 
+                text: errorMessage + " Dywen, vérifie la console (F12) pour le code d'erreur." 
+            }]);
         } finally {
             setIsTyping(false);
         }
@@ -92,7 +95,7 @@ const FinnAssistant: React.FC = () => {
                         exit={{ opacity: 0, scale: 0.8, y: 20 }}
                         className="absolute bottom-20 right-0 w-[320px] md:w-[380px] h-[500px] bg-slate-950 border border-[#B48646]/30 rounded-3xl shadow-2xl overflow-hidden flex flex-col backdrop-blur-xl"
                     >
-                        {/* Header */}
+                        {/* Header de la bulle */}
                         <div className="bg-[#B48646]/10 border-b border-[#B48646]/20 p-4 flex items-center justify-between">
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 rounded-full border border-[#B48646]/40 overflow-hidden bg-slate-900">
@@ -100,14 +103,13 @@ const FinnAssistant: React.FC = () => {
                                         src="https://res.cloudinary.com/dmgqewagr/image/upload/v1773739523/Portrait.png" 
                                         alt="Finn" 
                                         className="w-full h-full object-cover grayscale"
-                                        referrerPolicy="no-referrer"
                                     />
                                 </div>
                                 <div>
                                     <h3 className="text-xs font-black uppercase tracking-widest text-white">Finn Assistant</h3>
                                     <div className="flex items-center gap-1.5">
                                         <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                        <span className="text-[8px] font-bold text-emerald-500 uppercase tracking-widest">Online</span>
+                                        <span className="text-[8px] font-bold text-emerald-500 uppercase tracking-widest">Connecté</span>
                                     </div>
                                 </div>
                             </div>
@@ -116,15 +118,10 @@ const FinnAssistant: React.FC = () => {
                             </button>
                         </div>
 
-                        {/* Messages */}
-                        <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-4 no-scrollbar bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]">
+                        {/* Zone des messages */}
+                        <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-4 no-scrollbar">
                             {messages.map((msg, i) => (
-                                <motion.div
-                                    initial={{ opacity: 0, x: msg.role === 'user' ? 20 : -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    key={i}
-                                    className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                                >
+                                <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                                     <div className={`max-w-[85%] p-3 rounded-2xl text-sm ${
                                         msg.role === 'user' 
                                         ? 'bg-[#B48646] text-white rounded-tr-none' 
@@ -132,7 +129,7 @@ const FinnAssistant: React.FC = () => {
                                     }`}>
                                         {msg.text}
                                     </div>
-                                </motion.div>
+                                </div>
                             ))}
                             {isTyping && (
                                 <div className="flex justify-start">
@@ -147,7 +144,7 @@ const FinnAssistant: React.FC = () => {
                             )}
                         </div>
 
-                        {/* Input */}
+                        {/* Zone de saisie */}
                         <div className="p-4 bg-slate-900/50 border-t border-white/5">
                             <div className="relative">
                                 <input 
@@ -174,23 +171,16 @@ const FinnAssistant: React.FC = () => {
                 )}
             </AnimatePresence>
 
-            {/* Toggle Button */}
+            {/* Bouton d'ouverture */}
             <motion.button
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={() => setIsOpen(!isOpen)}
-                className={`w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center shadow-2xl transition-all duration-500 aura-24-hover ${
+                className={`w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center shadow-2xl transition-all duration-500 ${
                     isOpen ? 'bg-slate-900 rotate-90' : 'bg-[#B48646]'
                 } border-2 border-white/20`}
             >
-                {isOpen ? (
-                    <X size={24} className="text-white" />
-                ) : (
-                    <div className="relative">
-                        <MessageSquare size={24} className="text-white" />
-                        <div className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full border-2 border-[#B48646] animate-pulse" />
-                    </div>
-                )}
+                {isOpen ? <X size={24} className="text-white" /> : <MessageSquare size={24} className="text-white" />}
             </motion.button>
         </div>
     );
