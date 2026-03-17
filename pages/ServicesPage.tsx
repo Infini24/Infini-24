@@ -154,13 +154,14 @@ Cordialement.`);
 
 // 1. Graphic Design Form
 const GraphicDesignForm = ({ onBack, onRequest, isEmbedded }: FormProps) => {
-    const [subService, setSubService] = useState<string>('identity_complete'); 
-    const [price, setPrice] = useState<number>(370); 
+    const [subService, setSubService] = useState<string | null>(null); 
+    const [price, setPrice] = useState<number>(0); 
     const [companyName, setCompanyName] = useState('');
     const [details, setDetails] = useState('');
 
     useEffect(() => {
         let basePrice = 0;
+        if (!subService) return;
         switch(subService) {
             case 'identity_complete': basePrice = 370; break; 
             case 'logo_creation': basePrice = 200; break;
@@ -173,15 +174,16 @@ const GraphicDesignForm = ({ onBack, onRequest, isEmbedded }: FormProps) => {
 
     const handleFormSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        if (!subService) return;
         let serviceName = subService === 'identity_complete' ? "Pack Identité Complète" : (subService === 'logo_creation' ? "Création Logo" : (subService === 'print' ? "Print" : "Kit Réseaux"));
         const fullDetails = `• Entreprise : ${companyName}\n• Préférences : ${details}`;
         onRequest(serviceName, price, fullDetails);
     };
 
     const renderConfigPanel = () => (
-        <div className="space-y-6 animate-in slide-in-from-top duration-300">
-                <div className="bg-slate-900/40 backdrop-blur-md p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] shadow-xl border border-white/5 space-y-6 overflow-visible">
-                    <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2 mb-4">
+        <div className="space-y-6 animate-in slide-in-from-top duration-500">
+                <div className="bg-slate-900/60 backdrop-blur-md p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] shadow-xl border border-white/10 space-y-6 overflow-visible">
+                    <h3 className="text-[10px] font-bold text-[#B48646] uppercase tracking-widest flex items-center gap-2 mb-4">
                         <Palette size={14} /> Personnalisation
                     </h3>
                     <div className="space-y-4">
@@ -195,7 +197,7 @@ const GraphicDesignForm = ({ onBack, onRequest, isEmbedded }: FormProps) => {
                         </div>
                     </div>
                 </div>
-            <div className="bg-slate-950 p-8 rounded-[2.5rem] border border-white/5 text-center text-white shadow-2xl">
+            <div className="bg-slate-950 p-8 rounded-[2.5rem] border border-white/10 text-center text-white shadow-2xl">
                 <span className="block text-xs text-[#B48646] uppercase tracking-widest font-black mb-2">Tarif Estimé</span>
                 <span className="text-6xl font-extrabold tracking-tight">{price}€</span>
             </div>
@@ -204,6 +206,13 @@ const GraphicDesignForm = ({ onBack, onRequest, isEmbedded }: FormProps) => {
             </button>
         </div>
     );
+
+    const formulas = [
+        { id: 'identity_complete', label: 'Pack Identité Complète', price: '370€', desc: 'Logo + Charte + Réseaux' },
+        { id: 'logo_creation', label: 'Création & Refonte Logo', price: '200€', desc: 'Logo vectoriel haute qualité' },
+        { id: 'print', label: 'Cartes de Visite & Flyers', price: '50€', desc: 'Design prêt pour impression' },
+        { id: 'social_kit', label: 'Kit Réseaux Sociaux', price: '120€', desc: 'Bannières et avatars pro' }
+    ];
 
     return (
         <div className="flex flex-col min-h-full pb-32">
@@ -222,39 +231,43 @@ const GraphicDesignForm = ({ onBack, onRequest, isEmbedded }: FormProps) => {
             )}
             <div className="max-w-5xl mx-auto px-4 sm:px-6 w-full">
                 <form className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8" onSubmit={handleFormSubmit}>
-                    <div className="bg-slate-900/40 backdrop-blur-md p-5 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] border border-white/5 shadow-sm overflow-visible">
+                    <div className="bg-slate-900/40 backdrop-blur-md p-5 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] border border-white/5 shadow-sm overflow-visible h-fit">
                         <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-6">Choisissez votre formule</label>
                         <div className="grid gap-3 md:gap-5">
-                            {[
-                                { id: 'identity_complete', label: 'Pack Identité Complète', price: '370€', desc: 'Logo + Charte + Réseaux' },
-                                { id: 'logo_creation', label: 'Création & Refonte Logo', price: '200€', desc: 'Logo vectoriel haute qualité' },
-                                { id: 'print', label: 'Cartes de Visite & Flyers', price: '50€', desc: 'Design prêt pour impression' },
-                                { id: 'social_kit', label: 'Kit Réseaux Sociaux', price: '120€', desc: 'Bannières et avatars pro' }
-                            ].map((item) => (
-                                <label 
-                                    key={item.id}
-                                    onClick={() => setSubService(item.id)}
-                                    className={`relative border-2 p-4 md:p-6 rounded-2xl md:rounded-[2rem] cursor-pointer transition-all flex items-center justify-between group ${subService === item.id ? 'bg-[#B48646]/10 border-[#B48646] shadow-md' : 'bg-white/5 border-transparent hover:bg-white/10 hover:border-white/10'}`}
-                                >
-                                    <div className="flex items-center gap-4">
-                                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${subService === item.id ? 'border-[#B48646]' : 'border-slate-600'}`}>
-                                            {subService === item.id && <div className="w-2.5 h-2.5 rounded-full bg-[#B48646]" />}
+                            {formulas.map((item) => (
+                                <React.Fragment key={item.id}>
+                                    <label 
+                                        onClick={() => setSubService(item.id)}
+                                        className={`relative border-2 p-4 md:p-6 rounded-2xl md:rounded-[2rem] cursor-pointer transition-all flex items-center justify-between group ${subService === item.id ? 'bg-[#B48646]/10 border-[#B48646] shadow-md' : 'bg-white/5 border-transparent hover:bg-white/10 hover:border-white/10'}`}
+                                    >
+                                        <div className="flex items-center gap-4">
+                                            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${subService === item.id ? 'border-[#B48646]' : 'border-slate-600'}`}>
+                                                {subService === item.id && <div className="w-2.5 h-2.5 rounded-full bg-[#B48646]" />}
+                                            </div>
+                                            <div>
+                                                <span className={`font-bold block text-sm md:text-lg transition-colors ${subService === item.id ? 'text-white' : 'text-slate-300'}`}>{item.label}</span>
+                                                <span className="text-[10px] md:text-xs text-slate-500 font-medium">{item.desc}</span>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <span className={`font-bold block text-sm md:text-lg transition-colors ${subService === item.id ? 'text-white' : 'text-slate-300'}`}>{item.label}</span>
-                                            <span className="text-[10px] md:text-xs text-slate-500 font-medium">{item.desc}</span>
+                                        <span className={`font-black text-sm md:text-lg ${subService === item.id ? 'text-[#B48646]' : 'text-slate-500'}`}>{item.price}</span>
+                                    </label>
+                                    {/* Mobile Simulator under selected item */}
+                                    {subService === item.id && (
+                                        <div className="lg:hidden animate-in zoom-in duration-300 mt-4">
+                                            {renderConfigPanel()}
                                         </div>
-                                    </div>
-                                    <span className={`font-black text-sm md:text-lg ${subService === item.id ? 'text-[#B48646]' : 'text-slate-500'}`}>{item.price}</span>
-                                </label>
+                                    )}
+                                </React.Fragment>
                             ))}
                         </div>
                     </div>
                     <div className="hidden lg:block sticky top-6 overflow-visible">
-                        {renderConfigPanel()}
-                    </div>
-                    <div className="lg:hidden overflow-visible">
-                        {renderConfigPanel()}
+                        {subService ? renderConfigPanel() : (
+                            <div className="bg-slate-900/40 backdrop-blur-md p-12 rounded-[2.5rem] border border-dashed border-white/10 text-center flex flex-col items-center justify-center min-h-[400px]">
+                                <Palette size={48} className="text-slate-700 mb-4" />
+                                <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">Sélectionnez une formule pour configurer</p>
+                            </div>
+                        )}
                     </div>
                 </form>
             </div>
@@ -264,7 +277,7 @@ const GraphicDesignForm = ({ onBack, onRequest, isEmbedded }: FormProps) => {
 
 // 2. Video Form
 const VideoForm = ({ onBack, onRequest, isEmbedded }: FormProps) => {
-    const [subService, setSubService] = useState<string>('birthday'); 
+    const [subService, setSubService] = useState<string | null>(null); 
     const [photos, setPhotos] = useState<number>(50);
     const [duration, setDuration] = useState<number>(10);
     const [price, setPrice] = useState<number>(0);
@@ -278,6 +291,7 @@ const VideoForm = ({ onBack, onRequest, isEmbedded }: FormProps) => {
     const musicsNeeded = isProFormat ? 1 : Math.max(1, Math.ceil(estimatedDurationInSeconds / 210));
 
     useEffect(() => {
+        if (!subService) return;
         let basePrice = 0;
         let photoCost = 0;
         let durationCost = 0;
@@ -298,6 +312,7 @@ const VideoForm = ({ onBack, onRequest, isEmbedded }: FormProps) => {
     }, [photos, duration, subService]);
 
     const handleOrder = () => {
+        if (!subService) return;
         let typeLabel = '';
         switch(subService) {
             case 'birthday': typeLabel = 'Anniversaire'; break;
@@ -313,7 +328,7 @@ const VideoForm = ({ onBack, onRequest, isEmbedded }: FormProps) => {
     }
 
     const renderPricingSimulator = () => (
-        <div className="bg-slate-900/40 backdrop-blur-xl p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] shadow-2xl border border-white/5 space-y-8 relative overflow-visible z-30">
+        <div className="bg-slate-900/60 backdrop-blur-xl p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] shadow-2xl border border-white/10 space-y-8 relative overflow-visible z-30 animate-in slide-in-from-top duration-500">
             <h3 className="text-xs font-black text-[#B48646] uppercase tracking-widest flex items-center gap-2">
                 <Calculator size={14} /> Simulateur de Prix
             </h3>
@@ -361,7 +376,7 @@ const VideoForm = ({ onBack, onRequest, isEmbedded }: FormProps) => {
                 </div>
             </div>
 
-            <div className="p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] text-center text-white relative shadow-2xl border border-white/5 transition-all duration-500 bg-slate-900/60">
+            <div className="p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] text-center text-white relative shadow-2xl border border-white/10 transition-all duration-500 bg-slate-900/60">
                 <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-[70px] opacity-10 -mr-16 -mt-16 pointer-events-none bg-[#B48646]"></div>
                 <span className="block text-xs text-[#B48646] uppercase tracking-widest font-black mb-3 relative z-10">Total de votre projet</span>
                 <span className="block text-5xl sm:text-6xl font-extrabold tracking-tighter relative z-10">{price}€</span>
@@ -373,6 +388,14 @@ const VideoForm = ({ onBack, onRequest, isEmbedded }: FormProps) => {
             </button>
         </div>
     );
+
+    const videoTypes = [
+        { id: 'birthday', icon: Zap, label: 'Anniversaire / Retraite', desc: 'Émotion et souvenirs' },
+        { id: 'wedding', icon: Zap, label: 'Mariage / Baptême', desc: 'Le plus beau jour' },
+        { id: 'funeral', icon: Zap, label: 'Hommage & Obsèques', desc: 'Respect et dignité' },
+        { id: 'short', icon: Smartphone, label: 'Short / TikTok / Réel', desc: 'Format vertical dynamique' },
+        { id: 'ads', icon: Zap, label: 'Publicité Express', desc: 'Boostez votre business' }
+    ];
 
     return (
         <div className="flex flex-col min-h-full pb-32 overflow-x-visible">
@@ -391,37 +414,43 @@ const VideoForm = ({ onBack, onRequest, isEmbedded }: FormProps) => {
             )}
             <div className="max-w-5xl mx-auto px-6 w-full overflow-visible">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 overflow-visible">
-                    <div className="bg-slate-900/40 backdrop-blur-xl p-5 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] border border-white/5 shadow-sm mb-6 overflow-visible">
+                    <div className="bg-slate-900/40 backdrop-blur-xl p-5 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] border border-white/5 shadow-sm mb-6 overflow-visible h-fit">
                         <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-6">Type de projet</label>
                         <div className="grid grid-cols-1 gap-3">
-                            {[
-                                { id: 'birthday', icon: Zap, label: 'Anniversaire / Retraite', desc: 'Émotion et souvenirs' },
-                                { id: 'wedding', icon: Zap, label: 'Mariage / Baptême', desc: 'Le plus beau jour' },
-                                { id: 'funeral', icon: Zap, label: 'Hommage & Obsèques', desc: 'Respect et dignité' },
-                                { id: 'short', icon: Smartphone, label: 'Short / TikTok / Réel', desc: 'Format vertical dynamique' },
-                                { id: 'ads', icon: Zap, label: 'Publicité Express', desc: 'Boostez votre business' }
-                            ].map((type) => (
-                                <label 
-                                    key={type.id} 
-                                    onClick={() => { setSubService(type.id); setPhotos(type.id === 'short' ? 5 : (type.id === 'ads' ? 10 : 50)); }}
-                                    className={`border-2 p-4 md:p-6 rounded-2xl md:rounded-[2rem] flex items-center justify-between cursor-pointer transition-all group ${subService === type.id ? 'bg-[#B48646]/10 border-[#B48646] shadow-md' : 'bg-white/5 border-transparent hover:bg-white/10 hover:border-white/20'}`}
-                                >
-                                    <div className="flex items-center gap-4">
-                                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${subService === type.id ? 'border-[#B48646]' : 'border-white/20'}`}>
-                                            {subService === type.id && <div className="w-2.5 h-2.5 rounded-full bg-[#B48646]" />}
+                            {videoTypes.map((type) => (
+                                <React.Fragment key={type.id}>
+                                    <label 
+                                        onClick={() => { setSubService(type.id); setPhotos(type.id === 'short' ? 5 : (type.id === 'ads' ? 10 : 50)); }}
+                                        className={`border-2 p-4 md:p-6 rounded-2xl md:rounded-[2rem] flex items-center justify-between cursor-pointer transition-all group ${subService === type.id ? 'bg-[#B48646]/10 border-[#B48646] shadow-md' : 'bg-white/5 border-transparent hover:bg-white/10 hover:border-white/20'}`}
+                                    >
+                                        <div className="flex items-center gap-4">
+                                            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${subService === type.id ? 'border-[#B48646]' : 'border-white/20'}`}>
+                                                {subService === type.id && <div className="w-2.5 h-2.5 rounded-full bg-[#B48646]" />}
+                                            </div>
+                                            <div>
+                                                <span className={`text-sm md:text-lg font-bold transition-colors ${subService === type.id ? 'text-white' : 'text-slate-300'}`}>{type.label}</span>
+                                                <span className="text-[10px] md:text-xs text-slate-500 font-medium block">{type.desc}</span>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <span className={`text-sm md:text-lg font-bold transition-colors ${subService === type.id ? 'text-white' : 'text-slate-300'}`}>{type.label}</span>
-                                            <span className="text-[10px] md:text-xs text-slate-500 font-medium block">{type.desc}</span>
+                                        {type.id === 'short' && <Smartphone size={16} className={subService === type.id ? 'text-[#B48646]' : 'text-slate-500'} />}
+                                    </label>
+                                    {/* Mobile Simulator under selected item */}
+                                    {subService === type.id && (
+                                        <div className="lg:hidden animate-in zoom-in duration-300 mt-4">
+                                            {renderPricingSimulator()}
                                         </div>
-                                    </div>
-                                    {type.id === 'short' && <Smartphone size={16} className={subService === type.id ? 'text-[#B48646]' : 'text-slate-500'} />}
-                                </label>
+                                    )}
+                                </React.Fragment>
                             ))}
                         </div>
                     </div>
-                    <div className="sticky top-6 lg:mb-12 overflow-visible z-30">
-                        {renderPricingSimulator()}
+                    <div className="hidden lg:block sticky top-6 lg:mb-12 overflow-visible z-30">
+                        {subService ? renderPricingSimulator() : (
+                            <div className="bg-slate-900/40 backdrop-blur-md p-12 rounded-[2.5rem] border border-dashed border-white/10 text-center flex flex-col items-center justify-center min-h-[400px]">
+                                <Video size={48} className="text-slate-700 mb-4" />
+                                <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">Sélectionnez un type de projet pour simuler</p>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
@@ -489,7 +518,7 @@ interface FormProps {
 }
 
 const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial: () => void, onNavigateToContest: () => void}> = ({ initialService, onClearInitial, onNavigateToContest }) => {
-  const [selectedService, setSelectedService] = useState<ServiceType>(initialService || ServiceType.GRAPHIC_DESIGN);
+  const [selectedService, setSelectedService] = useState<ServiceType | null>(initialService);
   const [showProjectModal, setShowProjectModal] = useState(false);
   const [currentServiceName, setCurrentServiceName] = useState("");
   const [currentServicePrice, setCurrentServicePrice] = useState<number | string>(0);
@@ -554,6 +583,15 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
 
       {/* Zone de Formulaire Dynamique */}
       <div className="flex-1 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        {!selectedService && (
+          <div className="max-w-4xl mx-auto px-4 py-12 text-center">
+            <div className="bg-slate-900/40 backdrop-blur-xl p-12 rounded-[3rem] border border-dashed border-white/10">
+              <HelpCircle size={48} className="text-[#B48646] mx-auto mb-6 opacity-50" />
+              <h3 className="text-xl font-bold text-white mb-2">Prêt à donner vie à vos idées ?</h3>
+              <p className="text-slate-400 text-sm">Sélectionnez une catégorie ci-dessus pour commencer la configuration de votre projet.</p>
+            </div>
+          </div>
+        )}
         {selectedService === ServiceType.GRAPHIC_DESIGN && (
           <GraphicDesignForm onBack={() => {}} onRequest={handleProjectRequest} isEmbedded />
         )}

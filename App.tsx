@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Home, Calculator, Mail, Infinity as InfinityIcon, Image as ImageIcon, Timer, Facebook } from 'lucide-react';
+import { Home, Calculator, Mail, Infinity as InfinityIcon, Image as ImageIcon, Timer, Facebook, User } from 'lucide-react';
 import { Toaster } from 'react-hot-toast';
 import { generateBackground } from './src/backgroundGenerator';
 
@@ -11,6 +11,8 @@ import ContactPage from './pages/ContactPage';
 import ContestPage from './pages/ContestPage';
 import PrivacyPage from './pages/PrivacyPage';
 import LegalNoticePage from './pages/LegalNoticePage';
+import FinnPage from './pages/FinnPage';
+import ErrorBoundary from './components/ErrorBoundary';
 import CookieBanner from './components/CookieBanner';
 import { ServiceType } from './types';
 
@@ -26,6 +28,7 @@ const GlobalHeader = ({
     { name: "Accueil", index: 0 },
     { name: "Services", index: 2 },
     { name: "Réalisations", index: 1 },
+    { name: "Finn", index: 7 },
     { name: "Concours", index: 4 },
     { name: "Contact", index: 3 }
   ];
@@ -115,6 +118,7 @@ const MobileNavigation = ({ activeTab, onNavigate }: { activeTab: number; onNavi
         { icon: Home, index: 0 },
         { icon: Calculator, index: 2 },
         { icon: ImageIcon, index: 1 },
+        { icon: User, index: 7 },
         { icon: Timer, index: 4 },
         { icon: Mail, index: 3 }
       ].map((item) => (
@@ -158,6 +162,7 @@ const App = () => {
       else if (path.includes('realisations')) setActiveTab(1);
       else if (path.includes('confidentialite')) setActiveTab(5);
       else if (path.includes('mentions-legales')) setActiveTab(6);
+      else if (path.includes('finn')) setActiveTab(7);
       else setActiveTab(0);
     };
     window.addEventListener('popstate', handlePopState);
@@ -171,7 +176,8 @@ const App = () => {
 
     const paths: Record<number, string> = { 
       0: '/', 1: '/realisations', 2: '/services', 3: '/contact', 
-      4: '/concours', 5: '/confidentialite', 6: '/mentions-legales' 
+      4: '/concours', 5: '/confidentialite', 6: '/mentions-legales',
+      7: '/finn'
     };
     if (window.location.pathname !== paths[index]) {
       window.history.pushState({}, '', paths[index]);
@@ -204,7 +210,7 @@ const App = () => {
               style={{
                 left: `${Math.random() * 100}%`,
                 top: `${Math.random() * 100}%`,
-                animation: `shootingStar ${10 + Math.random() * 15}s linear infinite`,
+                animation: `shootingStar ${2 + Math.random() * 4}s linear infinite`,
                 animationDelay: `-${Math.random() * 30}s`,
                 // @ts-ignore
                 '--rotation': `${angle}deg`,
@@ -248,27 +254,71 @@ const App = () => {
       <main className="flex-1 relative z-10 overflow-y-auto no-scrollbar">
         <div className="min-h-full w-full pb-32 md:pb-0">
           {/* Sections avec gestion du montage pour la performance */}
-          <div className={activeTab === 0 ? 'block' : 'hidden'}><HomePage onNavigate={handleNavigate} /></div>
+          <div className={activeTab === 0 ? 'block' : 'hidden'}>
+            <ErrorBoundary>
+              <HomePage onNavigate={handleNavigate} />
+            </ErrorBoundary>
+          </div>
           
-          {mountedTabs.includes(4) && <div className={activeTab === 4 ? 'block' : 'hidden'}><ContestPage onNavigate={handleNavigate} /></div>}
+          {mountedTabs.includes(4) && (
+            <div className={activeTab === 4 ? 'block' : 'hidden'}>
+              <ErrorBoundary>
+                <ContestPage onNavigate={handleNavigate} />
+              </ErrorBoundary>
+            </div>
+          )}
           
-          {mountedTabs.includes(1) && <div className={activeTab === 1 ? 'block' : 'hidden'}><RealizationsPage /></div>}
+          {mountedTabs.includes(1) && (
+            <div className={activeTab === 1 ? 'block' : 'hidden'}>
+              <ErrorBoundary>
+                <RealizationsPage />
+              </ErrorBoundary>
+            </div>
+          )}
           
           {mountedTabs.includes(2) && (
             <div className={activeTab === 2 ? 'block' : 'hidden'}>
-              <ServicesPage 
-                initialService={initialService} 
-                onClearInitial={() => setInitialService(null)} 
-                onNavigateToContest={() => handleNavigate(4)}
-              />
+              <ErrorBoundary>
+                <ServicesPage 
+                  initialService={initialService} 
+                  onClearInitial={() => setInitialService(null)} 
+                  onNavigateToContest={() => handleNavigate(4)}
+                />
+              </ErrorBoundary>
             </div>
           )}
 
-          {mountedTabs.includes(3) && <div className={activeTab === 3 ? 'block' : 'hidden'}><ContactPage /></div>}
+          {mountedTabs.includes(3) && (
+            <div className={activeTab === 3 ? 'block' : 'hidden'}>
+              <ErrorBoundary>
+                <ContactPage />
+              </ErrorBoundary>
+            </div>
+          )}
           
-          {mountedTabs.includes(5) && <div className={activeTab === 5 ? 'block' : 'hidden'}><PrivacyPage onBack={() => handleNavigate(0)} /></div>}
+          {mountedTabs.includes(5) && (
+            <div className={activeTab === 5 ? 'block' : 'hidden'}>
+              <ErrorBoundary>
+                <PrivacyPage onBack={() => handleNavigate(0)} />
+              </ErrorBoundary>
+            </div>
+          )}
           
-          {mountedTabs.includes(6) && <div className={activeTab === 6 ? 'block' : 'hidden'}><LegalNoticePage onBack={() => handleNavigate(0)} /></div>}
+          {mountedTabs.includes(6) && (
+            <div className={activeTab === 6 ? 'block' : 'hidden'}>
+              <ErrorBoundary>
+                <LegalNoticePage onBack={() => handleNavigate(0)} />
+              </ErrorBoundary>
+            </div>
+          )}
+          
+          {mountedTabs.includes(7) && (
+            <div className={activeTab === 7 ? 'block' : 'hidden'}>
+              <ErrorBoundary>
+                <FinnPage onNavigate={handleNavigate} />
+              </ErrorBoundary>
+            </div>
+          )}
         </div>
       </main>
 
