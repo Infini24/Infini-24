@@ -62,28 +62,55 @@ const ContactPage: React.FC = () => {
                             ))}
                         </div>
 
-                        {/* FAQ - Optimisée pour l'espace */}
-                        <div className="bg-slate-900/60 backdrop-blur-lg rounded-[2.5rem] p-6 sm:p-8 text-white shadow-xl border border-white/5">
-                            <div className="flex items-center gap-2 mb-4 text-[#F3C06B]">
-                                <HelpCircle size={18} />
-                                <h3 className="text-xs font-bold uppercase tracking-widest">Questions fréquentes</h3>
+                        {/* FAQ - Optimisée pour l'espace avec FINN */}
+                        <div className="bg-slate-900/60 backdrop-blur-lg rounded-[2.5rem] p-6 sm:p-8 text-white shadow-xl border border-white/5 relative overflow-hidden group">
+                            {/* Filigrane Finn */}
+                            <div className="absolute -right-10 -bottom-10 w-40 h-40 opacity-10 pointer-events-none group-hover:opacity-20 transition-opacity">
+                                <img 
+                                    src="https://res.cloudinary.com/dmgqewagr/image/upload/v1773739523/Portrait.png" 
+                                    alt="" 
+                                    className="w-full h-full object-contain grayscale"
+                                    referrerPolicy="no-referrer"
+                                />
                             </div>
-                            <div className="space-y-1">
+
+                            <div className="flex items-center justify-between mb-6">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-full border border-[#B48646]/40 overflow-hidden bg-slate-950">
+                                        <img 
+                                            src="https://res.cloudinary.com/dmgqewagr/image/upload/v1773739523/Portrait.png" 
+                                            alt="Finn" 
+                                            className="w-full h-full object-cover grayscale"
+                                            referrerPolicy="no-referrer"
+                                        />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-xs font-black uppercase tracking-widest text-[#B48646]">Finn vous répond</h3>
+                                        <p className="text-[9px] text-slate-500 font-bold uppercase tracking-widest">Protocoles de support actifs</p>
+                                    </div>
+                                </div>
+                                <div className="bg-[#B48646]/10 px-3 py-1 rounded-full border border-[#B48646]/20">
+                                    <span className="text-[8px] font-black text-[#B48646] animate-pulse">LIVE_SYNC</span>
+                                </div>
+                            </div>
+
+                            <div className="space-y-1 relative z-10">
                                 {faqData.map((item, index) => (
                                     <div key={index} className="border-b border-white/5 last:border-0">
                                         <button 
                                             onClick={() => setOpenFaq(openFaq === index ? null : index)}
                                             className="w-full flex items-center justify-between text-left py-4"
                                         >
-                                            <span className={`text-[15px] font-medium transition-colors ${openFaq === index ? 'text-[#F3C06B]' : 'text-slate-200 hover:text-white'}`}>
+                                            <span className={`text-[14px] font-bold transition-colors ${openFaq === index ? 'text-[#F3C06B]' : 'text-slate-200 hover:text-white'}`}>
                                                 {item.question}
                                             </span>
-                                            {openFaq === index ? <ChevronUp size={18} className="text-[#B48646]"/> : <ChevronDown size={18} className="text-slate-600"/>}
+                                            {openFaq === index ? <ChevronUp size={16} className="text-[#B48646]"/> : <ChevronDown size={16} className="text-slate-600"/>}
                                         </button>
                                         {openFaq === index && (
-                                            <p className="pb-4 text-sm text-slate-400 leading-relaxed animate-in fade-in">
-                                                {item.answer}
-                                            </p>
+                                            <div className="pb-4 text-sm text-slate-400 leading-relaxed animate-in slide-in-from-top-2 duration-300 flex gap-3">
+                                                <div className="w-1 bg-[#B48646] rounded-full shrink-0" />
+                                                <p>{item.answer}</p>
+                                            </div>
                                         )}
                                     </div>
                                 ))}

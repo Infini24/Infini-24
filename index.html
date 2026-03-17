@@ -183,6 +183,37 @@
         -ms-overflow-style: none;
         scrollbar-width: none;
       }
+      .aura-24-hover {
+        transition: all 0.3s ease;
+        position: relative;
+      }
+      .aura-24-hover:hover {
+        box-shadow: 0 0 20px 5px rgba(180, 134, 70, 0.4);
+        transform: scale(1.02);
+      }
+      .aura-24-hover::after {
+        content: 'Finn approuve !';
+        position: absolute;
+        top: -30px;
+        left: 50%;
+        transform: translateX(-50%) translateY(10px);
+        background: #B48646;
+        color: white;
+        font-size: 8px;
+        padding: 2px 8px;
+        border-radius: 4px;
+        opacity: 0;
+        transition: all 0.3s ease;
+        pointer-events: none;
+        white-space: nowrap;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      .aura-24-hover:hover::after {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
       .app-loader {
         display: flex;
         justify-content: center;

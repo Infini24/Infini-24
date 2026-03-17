@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { ChevronLeft, Video, PenTool, LifeBuoy, Palette, Lock, X, Check, ArrowRight, Mail, Eye, Calculator, ShieldCheck, HelpCircle, Trophy, Smartphone, Zap } from 'lucide-react';
+import { ChevronLeft, Video, PenTool, LifeBuoy, Palette, Lock, X, Check, ArrowRight, Mail, Eye, Calculator, ShieldCheck, HelpCircle, Trophy, Smartphone, Zap, Cpu } from 'lucide-react';
 import { ServiceType } from '../types';
 import toast from 'react-hot-toast';
 
@@ -197,11 +197,17 @@ const GraphicDesignForm = ({ onBack, onRequest, isEmbedded }: FormProps) => {
                         </div>
                     </div>
                 </div>
-            <div className="bg-slate-950 p-8 rounded-[2.5rem] border border-white/10 text-center text-white shadow-2xl">
+            <div className="bg-slate-950 p-8 rounded-[2.5rem] border border-white/10 text-center text-white shadow-2xl relative overflow-hidden">
+                <div className="absolute top-2 right-2">
+                    <div className="flex items-center gap-1 bg-[#B48646]/10 px-2 py-0.5 rounded-full border border-[#B48646]/20">
+                        <Cpu size={8} className="text-[#B48646]" />
+                        <span className="text-[7px] font-black text-[#B48646] uppercase tracking-widest">Finn_Certified</span>
+                    </div>
+                </div>
                 <span className="block text-xs text-[#B48646] uppercase tracking-widest font-black mb-2">Tarif Estimé</span>
                 <span className="text-6xl font-extrabold tracking-tight">{price}€</span>
             </div>
-            <button type="submit" className="w-full bg-gradient-to-r from-[#B48646] via-[#E5B066] to-[#B48646] text-white font-bold text-lg py-4 sm:py-5 rounded-2xl sm:rounded-[2rem] shadow-xl shadow-[#B48646]/20 hover:scale-[1.02] transition-all active:scale-95 flex items-center justify-center gap-3 border border-white/20">
+            <button type="submit" className="w-full bg-gradient-to-r from-[#B48646] via-[#E5B066] to-[#B48646] text-white font-bold text-lg py-4 sm:py-5 rounded-2xl sm:rounded-[2rem] shadow-xl shadow-[#B48646]/20 hover:scale-[1.02] transition-all active:scale-95 flex items-center justify-center gap-3 border border-white/20 aura-24-hover">
                 Valider la configuration
             </button>
         </div>
@@ -382,7 +388,7 @@ const VideoForm = ({ onBack, onRequest, isEmbedded }: FormProps) => {
                 <span className="block text-5xl sm:text-6xl font-extrabold tracking-tighter relative z-10">{price}€</span>
             </div>
 
-            <button onClick={handleOrder} className="w-full text-white font-bold py-4 sm:py-5 rounded-2xl sm:rounded-[2rem] transition-all active:scale-95 flex justify-center items-center gap-3 shadow-xl group bg-gradient-to-r from-[#B48646] via-[#E5B066] to-[#B48646] shadow-[#B48646]/20 border border-white/20 hover:scale-[1.02]">
+            <button onClick={handleOrder} className="w-full text-white font-bold py-4 sm:py-5 rounded-2xl sm:rounded-[2rem] transition-all active:scale-95 flex justify-center items-center gap-3 shadow-xl group bg-gradient-to-r from-[#B48646] via-[#E5B066] to-[#B48646] shadow-[#B48646]/20 border border-white/20 hover:scale-[1.02] aura-24-hover">
                 <Eye size={20} className="group-hover:scale-110 transition-transform"/>
                 Lancer la création
             </button>
@@ -501,7 +507,7 @@ const AssistanceForm = ({ onBack, onRequest, isEmbedded }: FormProps) => {
                             <span className="block text-xs text-[#B48646] uppercase tracking-widest font-black mb-2">Prix fixe : 5€ / unité</span>
                             <span className="text-6xl font-black">{price}€</span>
                         </div>
-                        <button type="submit" className="w-full bg-gradient-to-r from-[#B48646] via-[#E5B066] to-[#B48646] text-white font-bold py-4 sm:py-5 rounded-2xl sm:rounded-[2rem] transition-all flex items-center justify-center gap-3 shadow-lg shadow-[#B48646]/20 border border-white/20 hover:scale-[1.02]">
+                        <button type="submit" className="w-full bg-gradient-to-r from-[#B48646] via-[#E5B066] to-[#B48646] text-white font-bold py-4 sm:py-5 rounded-2xl sm:rounded-[2rem] transition-all flex items-center justify-center gap-3 shadow-lg shadow-[#B48646]/20 border border-white/20 hover:scale-[1.02] aura-24-hover">
                              Envoyer ma demande
                         </button>
                     </div>
@@ -544,11 +550,21 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
   return (
     <div className="flex flex-col min-h-full relative bg-transparent">
       {/* Header de la page Services */}
-      <div className="pt-12 md:pt-20 pb-8 px-4 text-center">
-        <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tighter">
+      <div className="pt-12 md:pt-20 pb-8 px-4 text-center relative overflow-hidden">
+        {/* Filigrane Finn */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 opacity-[0.03] pointer-events-none">
+            <img 
+                src="https://res.cloudinary.com/dmgqewagr/image/upload/v1773739523/Portrait.png" 
+                alt="" 
+                className="w-full h-full object-contain grayscale"
+                referrerPolicy="no-referrer"
+            />
+        </div>
+        
+        <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tighter relative z-10">
           Nos <span className="text-[#B48646]">Services</span>
         </h2>
-        <p className="text-slate-400 max-w-2xl mx-auto text-sm md:text-base">
+        <p className="text-slate-400 max-w-2xl mx-auto text-sm md:text-base relative z-10">
           Choisissez une catégorie pour configurer votre projet sur-mesure et obtenir un tarif instantané.
         </p>
       </div>

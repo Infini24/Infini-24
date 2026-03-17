@@ -87,8 +87,18 @@ const RealizationsPage: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<ProjectImage | null>(null);
 
   return (
-    <div className="flex flex-col min-h-full bg-transparent relative">
-      <div className="flex-1 px-4 lg:px-8 py-12 md:py-24 max-w-7xl mx-auto w-full space-y-12">
+    <div className="flex flex-col min-h-full bg-transparent relative overflow-hidden">
+      {/* Filigrane Finn */}
+      <div className="absolute top-20 -right-20 w-96 h-96 opacity-[0.02] pointer-events-none rotate-12">
+          <img 
+              src="https://res.cloudinary.com/dmgqewagr/image/upload/v1773739523/Portrait.png" 
+              alt="" 
+              className="w-full h-full object-contain grayscale"
+              referrerPolicy="no-referrer"
+          />
+      </div>
+
+      <div className="flex-1 px-4 lg:px-8 py-12 md:py-24 max-w-7xl mx-auto w-full space-y-12 relative z-10">
         
         {/* --- PROJECTS GALLERY --- */}
         <div className="space-y-12">

@@ -12,9 +12,16 @@ import ContestPage from './pages/ContestPage';
 import PrivacyPage from './pages/PrivacyPage';
 import LegalNoticePage from './pages/LegalNoticePage';
 import FinnPage from './pages/FinnPage';
+import GazettePage from './pages/GazettePage';
 import ErrorBoundary from './components/ErrorBoundary';
 import CookieBanner from './components/CookieBanner';
+import FinnAssistant from './components/FinnAssistant';
+import ScrollProgress from './components/ScrollProgress';
+import NotFoundPage from './pages/NotFoundPage';
 import { ServiceType } from './types';
+import { useRef } from 'react';
+import toast from 'react-hot-toast';
+import { motion, AnimatePresence } from 'framer-motion';
 
 /* --- HEADER GLOBAL (FIGÉ & DORÉ) --- */
 const GlobalHeader = ({ 
@@ -28,6 +35,7 @@ const GlobalHeader = ({
     { name: "Accueil", index: 0 },
     { name: "Services", index: 2 },
     { name: "Réalisations", index: 1 },
+    { name: "Gazette", index: 8 },
     { name: "Finn", index: 7 },
     { name: "Concours", index: 4 },
     { name: "Contact", index: 3 }
@@ -144,6 +152,26 @@ const App = () => {
   const [initialService, setInitialService] = useState<ServiceType | null>(null);
   const [mountedTabs, setMountedTabs] = useState<number[]>([0]);
   const [backgroundUrl, setBackgroundUrl] = useState<string | null>(null);
+  const [isEasterEggActive, setIsEasterEggActive] = useState(false);
+  const keyBuffer = useRef<string>('');
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      keyBuffer.current = (keyBuffer.current + e.key.toUpperCase()).slice(-6);
+      if (keyBuffer.current === 'AURA24') {
+        setIsEasterEggActive(true);
+        toast.success("PROTOCOLE AURA-24 ACTIVÉ", {
+          icon: '🚀',
+          duration: 5000,
+          style: { background: '#0f172a', color: '#B48646', border: '1px solid #B48646' }
+        });
+        setTimeout(() => setIsEasterEggActive(false), 5000);
+        keyBuffer.current = '';
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   useEffect(() => {
     const loadBackground = async () => {
@@ -156,6 +184,7 @@ const App = () => {
   useEffect(() => {
     const getTabFromPath = () => {
       const path = window.location.pathname;
+      if (path === '/') return 0;
       if (path.includes('concours')) return 4;
       if (path.includes('contact')) return 3;
       if (path.includes('services')) return 2;
@@ -163,7 +192,8 @@ const App = () => {
       if (path.includes('confidentialite')) return 5;
       if (path.includes('mentions-legales')) return 6;
       if (path.includes('finn')) return 7;
-      return 0;
+      if (path.includes('gazette')) return 8;
+      return -1; // Not Found
     };
 
     const initialTab = getTabFromPath();
@@ -188,7 +218,7 @@ const App = () => {
     const paths: Record<number, string> = { 
       0: '/', 1: '/realisations', 2: '/services', 3: '/contact', 
       4: '/concours', 5: '/confidentialite', 6: '/mentions-legales',
-      7: '/finn'
+      7: '/finn', 8: '/gazette'
     };
     
     if (window.location.pathname !== paths[index]) {
@@ -200,6 +230,30 @@ const App = () => {
     // h-screen + overflow-hidden pour supprimer le scroll global inutile
     <div className="h-screen w-full flex flex-col overflow-hidden bg-gradient-to-b from-[#000814] via-[#001d3d] to-[#003566] text-slate-100 font-['Inter'] selection:bg-[#B48646]/20 selection:text-[#B48646]">
       <Toaster position="top-center" />
+      <ScrollProgress />
+
+      {/* Easter Egg Animation */}
+      <AnimatePresence>
+        {isEasterEggActive && (
+          <motion.div 
+            initial={{ x: '-100vw', y: '50vh', opacity: 0 }}
+            animate={{ x: '100vw', y: '20vh', opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 3, ease: "linear" }}
+            className="fixed inset-0 z-[200] pointer-events-none"
+          >
+            <div className="relative">
+              <div className="absolute top-0 left-0 w-64 h-1 bg-gradient-to-r from-transparent via-cyan-400 to-transparent blur-sm" />
+              <img 
+                src="https://res.cloudinary.com/dmgqewagr/image/upload/v1773739524/Intro%20%28Breaching%29.png" 
+                alt="" 
+                className="w-32 h-32 object-contain -rotate-12"
+                referrerPolicy="no-referrer"
+              />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Arrière-plan dynamique */}
       <div className="star-rain">
@@ -300,6 +354,22 @@ const App = () => {
             </div>
           )}
 
+          {activeTab === -1 && (
+            <div className="block">
+              <ErrorBoundary>
+                <NotFoundPage onNavigate={handleNavigate} />
+              </ErrorBoundary>
+            </div>
+          )}
+          
+          {mountedTabs.includes(8) && (
+            <div className={activeTab === 8 ? 'block' : 'hidden'}>
+              <ErrorBoundary>
+                <GazettePage />
+              </ErrorBoundary>
+            </div>
+          )}
+          
           {mountedTabs.includes(3) && (
             <div className={activeTab === 3 ? 'block' : 'hidden'}>
               <ErrorBoundary>
@@ -338,6 +408,7 @@ const App = () => {
       <MobileNavigation activeTab={activeTab} onNavigate={handleNavigate} />
       <GlobalFooter onNavigate={handleNavigate} />
       <CookieBanner onShowPrivacy={() => handleNavigate(5)} />
+      <FinnAssistant />
     </div>
   );
 };
