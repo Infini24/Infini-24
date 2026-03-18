@@ -169,25 +169,20 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
   const [currentServiceDetails, setCurrentServiceDetails] = useState("");
 
   const graphicFormulas = [
-    { id: 'identity_complete', label: 'Pack Identité Complète', price: 370, desc: 'Logo + Charte + Réseaux' },
-    { id: 'logo_creation', label: 'Création & Refonte Logo', price: 200, desc: 'Logo vectoriel haute qualité' },
-    { id: 'print', label: 'Cartes de Visite & Flyers', price: 50, desc: 'Design prêt pour impression' },
-    { id: 'social_kit', label: 'Kit Réseaux Sociaux', price: 120, desc: 'Bannières et avatars pro' },
-    { id: 'retouch_express', label: 'Retouche Express', price: 25, desc: 'Correction rapide & pro' }
+    { id: 'identity_complete', label: 'Pack Identité Complète', price: 370, desc: 'Logo + Charte + Réseaux', info: 'Un pack complet pour lancer votre marque : logo, charte graphique et visuels réseaux sociaux.' },
+    { id: 'logo_creation', label: 'Création & Refonte Logo', price: 200, desc: 'Logo vectoriel haute qualité', info: 'Création d\'un logo unique ou modernisation de votre logo actuel.' },
+    { id: 'print', label: 'Cartes de Visite & Flyers', price: 50, desc: 'Design prêt pour impression', info: 'Conception de supports papier professionnels prêts à être imprimés.' },
+    { id: 'social_kit', label: 'Kit Réseaux Sociaux', price: 120, desc: 'Bannières et avatars pro', info: 'Habillage complet de vos profils sociaux pour une image cohérente.' },
+    { id: 'retouch_express', label: 'Retouche Express', price: 25, desc: 'Correction rapide & pro', info: 'Retouches photo rapides : colorimétrie, suppression d\'objets, etc.' }
   ];
 
   const videoTypes = [
-    { id: 'birthday', label: 'Anniversaire / Retraite', price: 190, desc: 'Forfait 100 photos incluses' },
-    { id: 'wedding', label: 'Mariage / Baptême', price: 230, desc: 'Forfait 100 photos incluses' },
-    { id: 'funeral', label: 'Hommage & Obsèques', price: 190, desc: 'Forfait 100 photos incluses' },
-    { id: 'short', label: 'Short / TikTok / Réel', price: 20, desc: 'Format vertical dynamique' },
-    { id: 'ads', label: 'Publicité Express', price: 50, desc: 'Boostez votre business' },
-    { id: 'vhs', label: 'Numérisation VHS', price: 15, desc: 'Vos cassettes sur clé USB/Cloud' }
-  ];
-
-  const assistanceFormulas = [
-    { id: 'retouch', label: 'Retouche Express', price: 5, desc: 'Correction rapide' },
-    { id: 'support', label: 'Support Graphique', price: 10, desc: 'Aide immédiate' }
+    { id: 'birthday', label: 'Anniversaire / Retraite', price: 190, desc: 'Forfait 100 photos incluses', info: 'Un montage émouvant pour célébrer une vie ou une carrière.' },
+    { id: 'wedding', label: 'Mariage / Baptême', price: 230, desc: 'Forfait 100 photos incluses', info: 'Capturez la magie de vos plus beaux événements familiaux.' },
+    { id: 'funeral', label: 'Hommage & Obsèques', price: 190, desc: 'Forfait 100 photos incluses', info: 'Un hommage digne et respectueux pour honorer la mémoire.' },
+    { id: 'short', label: 'Short / TikTok / Réel', price: 20, desc: 'Format vertical dynamique', info: 'Vidéo courte et percutante pour vos réseaux sociaux.' },
+    { id: 'ads', label: 'Publicité Express', price: 50, desc: 'Boostez votre business', info: 'Vidéo promotionnelle pour mettre en avant vos produits ou services.' },
+    { id: 'vhs', label: 'Numérisation VHS', price: 15, desc: 'Vos cassettes sur clé USB/Cloud', info: 'Sauvegardez vos vieux souvenirs VHS sur support numérique.' }
   ];
 
   const calculatePrice = () => {
@@ -335,7 +330,16 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                       {selectedCategory === ServiceType.GRAPHIC_DESIGN && selectedFormulaId === f.id && <div className="w-3 h-3 rounded-full bg-[#B48646]" />}
                     </div>
                     <div>
-                      <span className="block font-black text-white text-base md:text-lg">{f.label}</span>
+                      <div className="flex items-center gap-2">
+                        <span className="block font-black text-white text-base md:text-lg">{f.label}</span>
+                        <div className="group relative">
+                          <HelpCircle size={14} className="text-slate-500 hover:text-[#B48646] cursor-help transition-colors" />
+                          <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-slate-900 border border-[#B48646]/30 rounded-lg text-[10px] text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-2xl">
+                            {f.info}
+                            <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-900"></div>
+                          </div>
+                        </div>
+                      </div>
                       <span className="text-xs text-slate-500 font-bold uppercase tracking-wider">{f.desc}</span>
                     </div>
                   </div>
@@ -373,7 +377,16 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                       {selectedCategory === ServiceType.VIDEO && selectedFormulaId === f.id && <div className="w-3 h-3 rounded-full bg-[#B48646]" />}
                     </div>
                     <div>
-                      <span className="block font-black text-white text-base md:text-lg">{f.label}</span>
+                      <div className="flex items-center gap-2">
+                        <span className="block font-black text-white text-base md:text-lg">{f.label}</span>
+                        <div className="group relative">
+                          <HelpCircle size={14} className="text-slate-500 hover:text-[#B48646] cursor-help transition-colors" />
+                          <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-slate-900 border border-[#B48646]/30 rounded-lg text-[10px] text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-2xl">
+                            {f.info}
+                            <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-900"></div>
+                          </div>
+                        </div>
+                      </div>
                       <span className="text-xs text-slate-500 font-bold uppercase tracking-wider">{f.desc}</span>
                     </div>
                   </div>
@@ -389,67 +402,67 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
           <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 overflow-y-auto">
             <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-md" onClick={() => setSelectedFormulaId(null)}></div>
             
-            <div className="relative bg-slate-900 sm:rounded-[2.5rem] rounded-t-[2rem] border border-white/10 shadow-2xl w-full max-w-2xl animate-in slide-in-from-bottom sm:zoom-in duration-500 overflow-hidden">
+            <div className="relative bg-slate-900 sm:rounded-[1.5rem] rounded-t-[1.5rem] border border-white/10 shadow-2xl w-full max-w-md animate-in slide-in-from-bottom sm:zoom-in duration-500 overflow-hidden">
               {/* Modal Header */}
-              <div className="p-6 border-b border-white/5 flex items-center justify-between sticky top-0 bg-slate-900 z-10">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-[#B48646]/20 rounded-lg text-[#B48646]">
-                    <Sparkles size={18} />
+              <div className="p-4 border-b border-white/5 flex items-center justify-between sticky top-0 bg-slate-900 z-10">
+                <div className="flex items-center gap-2.5">
+                  <div className="p-1.5 bg-[#B48646]/20 rounded-lg text-[#B48646]">
+                    <Sparkles size={14} />
                   </div>
                   <div>
-                    <h3 className="text-sm font-black text-white uppercase tracking-tight">Configuration du projet</h3>
-                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">
+                    <h3 className="text-[10px] font-black text-white uppercase tracking-tight">Configuration</h3>
+                    <p className="text-[7px] text-slate-500 font-bold uppercase tracking-widest">
                       {selectedCategory === ServiceType.GRAPHIC_DESIGN ? 'Design Graphique' : 'Vidéo & Souvenirs'}
                     </p>
                   </div>
                 </div>
                 <button 
                   onClick={() => setSelectedFormulaId(null)}
-                  className="p-2 bg-white/5 rounded-full text-slate-400 hover:text-white hover:bg-white/10 transition-all"
+                  className="p-1 bg-white/5 rounded-full text-slate-400 hover:text-white hover:bg-white/10 transition-all"
                 >
-                  <X size={20} />
+                  <X size={16} />
                 </button>
               </div>
 
-              <div className="p-6 sm:p-8 space-y-8 max-h-[80vh] overflow-y-auto custom-scrollbar">
-                <div className="space-y-6">
+              <div className="p-4 sm:p-5 space-y-5 max-h-[70vh] overflow-y-auto custom-scrollbar">
+                <div className="space-y-4">
                   {selectedCategory === ServiceType.GRAPHIC_DESIGN && (
                     <div>
-                      <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider ml-1 mb-2">Nom de l'entreprise</label>
+                      <label className="block text-[9px] font-bold text-slate-500 uppercase tracking-wider ml-1 mb-1">Nom de l'entreprise</label>
                       <input 
                         type="text" 
                         value={companyName} 
                         onChange={(e) => setCompanyName(e.target.value)} 
-                        className="w-full px-5 py-4 border-2 border-white/5 rounded-2xl focus:border-[#B48646] outline-none transition-all bg-white/5 text-white text-sm font-medium" 
+                        className="w-full px-3.5 py-2.5 border-2 border-white/5 rounded-xl focus:border-[#B48646] outline-none transition-all bg-white/5 text-white text-[11px] font-medium" 
                         placeholder="Ex: Boulangerie Durand" 
                       />
                     </div>
                   )}
 
                   {selectedCategory === ServiceType.VIDEO && (
-                    <div className="space-y-4">
+                    <div className="space-y-2.5">
                       <div className="flex items-center justify-between">
-                        <label className="flex items-center gap-2 text-[11px] font-bold text-slate-500 uppercase tracking-wider ml-1">
+                        <label className="flex items-center gap-2 text-[9px] font-bold text-slate-500 uppercase tracking-wider ml-1">
                           <span>
                             {selectedFormulaId === 'vhs' ? 'Nombre de cassettes' : 'Nombre de rushes / photos'}
                           </span>
                           {selectedFormulaId !== 'vhs' && (
                             <div className="group relative">
-                              <HelpCircle size={14} className="text-[#B48646] cursor-help" />
-                              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-3 bg-slate-900 border border-[#B48646]/30 rounded-xl text-[10px] text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-2xl">
+                              <HelpCircle size={10} className="text-[#B48646] cursor-help" />
+                              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-slate-900 border border-[#B48646]/30 rounded-xl text-[8px] text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-2xl">
                                 <p className="italic">
                                   {selectedFormulaId === 'short' 
-                                    ? '"Rythme ultra-dynamique (1-2s par clip). Idéal pour capter l\'attention en moins de 60 secondes. 10-15 rushes recommandés."'
+                                    ? '"Rythme ultra-dynamique (1-2s par clip). 10-15 rushes recommandés."'
                                     : selectedFormulaId === 'ads'
-                                    ? '"Format percutant axé sur la conversion. Montage nerveux avec texte et musique entraînante. Durée optimale : 15 à 30 secondes."'
-                                    : '"Rythme émotionnel (4s par photo). 100 photos = ~6min40 de souvenirs."'}
+                                    ? '"Format percutant axé sur la conversion. Durée optimale : 15 à 30 secondes."'
+                                    : '"Rythme émotionnel (4s par photo). 100 photos = ~6min40."'}
                                 </p>
-                                <div className="absolute top-full left-1/2 -translate-x-1/2 border-8 border-transparent border-t-slate-900"></div>
+                                <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-900"></div>
                               </div>
                             </div>
                           )}
                         </label>
-                        <span className="text-[#B48646] font-black">{photos}</span>
+                        <span className="text-[#B48646] font-black text-xs">{photos}</span>
                       </div>
                       
                       <input 
@@ -459,14 +472,14 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                         step="1" 
                         value={photos} 
                         onChange={(e) => setPhotos(parseInt(e.target.value))} 
-                        className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-[#B48646]" 
+                        className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-[#B48646]" 
                       />
 
                       {!['vhs', 'short', 'ads'].includes(selectedFormulaId || '') && (
-                        <div className="flex gap-4 pt-2">
-                          <div className="flex-1 bg-white/5 p-3 rounded-xl border border-white/5">
-                            <span className="block text-[8px] text-slate-500 uppercase font-black mb-1">Durée Estimée</span>
-                            <span className="text-xs font-bold text-white">
+                        <div className="flex gap-2.5 pt-0.5">
+                          <div className="flex-1 bg-white/5 p-2 rounded-lg border border-white/5">
+                            <span className="block text-[6px] text-slate-500 uppercase font-black mb-0.5">Durée Estimée</span>
+                            <span className="text-[9px] font-bold text-white">
                               {(() => {
                                 if (selectedFormulaId === 'short') {
                                   const totalSeconds = photos * 1.5;
@@ -483,9 +496,9 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                               })()}
                             </span>
                           </div>
-                          <div className="flex-1 bg-white/5 p-3 rounded-xl border border-white/5">
-                            <span className="block text-[8px] text-slate-500 uppercase font-black mb-1">Musiques</span>
-                            <span className="text-xs font-bold text-white">
+                          <div className="flex-1 bg-white/5 p-2 rounded-lg border border-white/5">
+                            <span className="block text-[6px] text-slate-500 uppercase font-black mb-0.5">Musiques</span>
+                            <span className="text-[9px] font-bold text-white">
                               {selectedFormulaId === 'short' || selectedFormulaId === 'ads' 
                                 ? '1 titre dynamique' 
                                 : (photos <= 60 ? '1 titre' : photos <= 120 ? '2 titres' : '3 titres et +')}
@@ -497,59 +510,59 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                   )}
 
                   {/* Option Express */}
-                  <div className="pt-2">
-                    <label className="flex items-center gap-4 p-5 bg-white/5 rounded-2xl border border-white/10 cursor-pointer hover:bg-white/10 transition-all group">
+                  <div className="pt-0.5">
+                    <label className="flex items-center gap-2.5 p-3 bg-white/5 rounded-xl border border-white/10 cursor-pointer hover:bg-white/10 transition-all group">
                       <div className="relative flex items-center justify-center">
                         <input 
                           type="checkbox" 
                           checked={isExpress} 
                           onChange={(e) => setIsExpress(e.target.checked)}
-                          className="peer appearance-none w-6 h-6 border-2 border-[#B48646]/30 rounded-lg checked:bg-[#B48646] checked:border-[#B48646] transition-all cursor-pointer"
+                          className="peer appearance-none w-4 h-4 border-2 border-[#B48646]/30 rounded-lg checked:bg-[#B48646] checked:border-[#B48646] transition-all cursor-pointer"
                         />
-                        <Check size={14} className="absolute text-white opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none" strokeWidth={4} />
+                        <Check size={10} className="absolute text-white opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none" strokeWidth={4} />
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center justify-between mb-0.5">
-                          <span className="text-sm font-black text-white uppercase tracking-tight">Assistance Rapide</span>
-                          <span className="text-[#B48646] font-black">+50€</span>
+                          <span className="text-[10px] font-black text-white uppercase tracking-tight">Assistance Rapide</span>
+                          <span className="text-[#B48646] font-black text-xs">+50€</span>
                         </div>
-                        <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Livraison Express 24h / 48h</p>
+                        <p className="text-[8px] text-slate-500 font-bold uppercase tracking-widest">Livraison Express 24h / 48h</p>
                       </div>
                     </label>
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider ml-1 mb-2">Détails de votre vision</label>
+                    <label className="block text-[9px] font-bold text-slate-500 uppercase tracking-wider ml-1 mb-1">Détails de votre vision</label>
                     <textarea 
                       value={details} 
                       onChange={(e) => setDetails(e.target.value)} 
-                      className="w-full px-5 py-4 border-2 border-white/5 rounded-2xl outline-none text-sm font-medium focus:border-[#B48646] bg-white/5 text-white transition-all resize-none" 
-                      rows={4} 
+                      className="w-full px-3.5 py-2.5 border-2 border-white/5 rounded-xl outline-none text-[11px] font-medium focus:border-[#B48646] bg-white/5 text-white transition-all resize-none" 
+                      rows={2} 
                       placeholder="Couleurs, ambiance, préférences..."
                     ></textarea>
                   </div>
                 </div>
 
-                <div className="pt-4 space-y-6">
-                  <div className="bg-slate-950 p-8 rounded-[2rem] border border-white/10 text-center relative overflow-hidden">
-                    <div className="absolute top-2 right-2">
-                      <div className="flex items-center gap-1 bg-[#B48646]/10 px-2 py-0.5 rounded-full border border-[#B48646]/20">
-                        <Cpu size={8} className="text-[#B48646]" />
-                        <span className="text-[7px] font-black text-[#B48646] uppercase tracking-widest">Finn_Certified</span>
+                <div className="pt-1 space-y-4">
+                  <div className="bg-slate-950 p-4 rounded-[1.25rem] border border-white/10 text-center relative overflow-hidden">
+                    <div className="absolute top-1.5 right-1.5">
+                      <div className="flex items-center gap-1 bg-[#B48646]/10 px-1 py-0.5 rounded-full border border-[#B48646]/20">
+                        <Cpu size={6} className="text-[#B48646]" />
+                        <span className="text-[5px] font-black text-[#B48646] uppercase tracking-widest">Finn_Certified</span>
                       </div>
                     </div>
                     
-                    <div className="space-y-4">
+                    <div className="space-y-2.5">
                       <div>
-                        <span className="block text-[10px] text-[#B48646] uppercase tracking-widest font-black mb-1">Prix Total</span>
-                        <span className="text-5xl font-black text-white">{currentPrice}€</span>
+                        <span className="block text-[8px] text-[#B48646] uppercase tracking-widest font-black mb-0.5">Prix Total</span>
+                        <span className="text-3xl font-black text-white">{currentPrice}€</span>
                       </div>
 
                       {selectedCategory === ServiceType.VIDEO && (
-                        <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/5">
+                        <div className="grid grid-cols-2 gap-2.5 pt-2.5 border-t border-white/5">
                           <div className="text-left">
-                            <span className="block text-[8px] text-slate-500 uppercase font-black mb-1">Durée estimée</span>
-                            <span className="text-xs font-bold text-white">
+                            <span className="block text-[6px] text-slate-500 uppercase font-black mb-0.5">Durée estimée</span>
+                            <span className="text-[9px] font-bold text-white">
                               {(() => {
                                 if (selectedFormulaId === 'short') {
                                   const totalSeconds = photos * 1.5;
@@ -570,8 +583,8 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                             </span>
                           </div>
                           <div className="text-left">
-                            <span className="block text-[8px] text-slate-500 uppercase font-black mb-1">Musiques incluses</span>
-                            <span className="text-xs font-bold text-white">
+                            <span className="block text-[6px] text-slate-500 uppercase font-black mb-0.5">Musiques incluses</span>
+                            <span className="text-[9px] font-bold text-white">
                               {selectedFormulaId === 'short' || selectedFormulaId === 'ads' 
                                 ? '1 titre dynamique' 
                                 : selectedFormulaId === 'vhs' 
@@ -581,9 +594,9 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                           </div>
                         </div>
                       )}
-                      <div className="text-left pt-4 border-t border-white/5">
-                        <span className="block text-[8px] text-slate-500 uppercase font-black mb-1">Inclus par défaut</span>
-                        <p className="text-[10px] text-slate-400 font-medium leading-relaxed">
+                      <div className="text-left pt-2.5 border-t border-white/5">
+                        <span className="block text-[6px] text-slate-500 uppercase font-black mb-0.5">Inclus par défaut</span>
+                        <p className="text-[8px] text-slate-400 font-medium leading-relaxed">
                           Support graphique complet (habillage texte, transitions pro, effets Ken Burns, générique), retouches légères
                           {isExpress && <span className="text-[#B48646] font-bold"> + Option Express (24h/48h)</span>}
                         </p>
@@ -593,7 +606,7 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
 
                   <button 
                     onClick={handleValidate}
-                    className="w-full bg-gradient-to-r from-[#B48646] via-[#E5B066] to-[#B48646] text-white font-bold text-lg py-5 rounded-[2rem] shadow-xl shadow-[#B48646]/20 hover:scale-[1.02] transition-all active:scale-95 flex items-center justify-center gap-3 border border-white/20 aura-24-hover"
+                    className="w-full bg-gradient-to-r from-[#B48646] via-[#E5B066] to-[#B48646] text-white font-bold text-sm py-3 rounded-[1.25rem] shadow-xl shadow-[#B48646]/20 hover:scale-[1.02] transition-all active:scale-95 flex items-center justify-center gap-2 border border-white/20 aura-24-hover"
                   >
                     Valider la configuration
                   </button>
