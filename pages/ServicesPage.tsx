@@ -172,12 +172,34 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
   const videoSectionRef = useRef<HTMLDivElement>(null);
   const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
 
+  // Close tooltips on scroll or click/touch outside
+  useEffect(() => {
+    const handleInteraction = () => {
+      if (activeTooltip) setActiveTooltip(null);
+    };
+    window.addEventListener('scroll', handleInteraction, { passive: true });
+    window.addEventListener('mousedown', handleInteraction);
+    window.addEventListener('touchstart', handleInteraction, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', handleInteraction);
+      window.removeEventListener('mousedown', handleInteraction);
+      window.removeEventListener('touchstart', handleInteraction);
+    };
+  }, [activeTooltip]);
+
   const scrollToSection = (category: ServiceType) => {
+    setActiveTooltip(null); // Close tooltips when switching
     const targetRef = category === ServiceType.VIDEO ? videoSectionRef : graphicSectionRef;
     if (targetRef.current) {
-      const yOffset = -100; // Offset for the sticky header
-      const y = targetRef.current.getBoundingClientRect().top + window.scrollY + yOffset;
-      window.scrollTo({ top: y, behavior: 'smooth' });
+      // Increased offset to ensure titles are fully visible below the sticky header on mobile
+      const yOffset = -240; 
+      const elementPosition = targetRef.current.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.scrollY + yOffset;
+      
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
     }
   };
 
@@ -363,7 +385,7 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                           >
                             <HelpCircle size={14} className="text-slate-500 hover:text-[#B48646] cursor-help transition-colors" />
                           </button>
-                          <div className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-slate-900 border border-[#B48646]/30 rounded-lg text-[10px] text-slate-300 transition-opacity pointer-events-none z-[110] shadow-2xl ${activeTooltip === f.id ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
+                          <div className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-slate-900 border border-[#B48646]/30 rounded-lg text-[10px] text-slate-300 transition-opacity z-[110] shadow-2xl ${activeTooltip === f.id ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
                             {f.info}
                             <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-900"></div>
                           </div>
@@ -419,7 +441,7 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                           >
                             <HelpCircle size={14} className="text-slate-500 hover:text-[#B48646] cursor-help transition-colors" />
                           </button>
-                          <div className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-slate-900 border border-[#B48646]/30 rounded-lg text-[10px] text-slate-300 transition-opacity pointer-events-none z-[110] shadow-2xl ${activeTooltip === f.id ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
+                          <div className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-slate-900 border border-[#B48646]/30 rounded-lg text-[10px] text-slate-300 transition-opacity z-[110] shadow-2xl ${activeTooltip === f.id ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
                             {f.info}
                             <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-900"></div>
                           </div>
@@ -437,10 +459,10 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
 
         {/* Floating Config Panel (Modal) */}
         {selectedFormulaId && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 overflow-y-auto">
+          <div className="fixed inset-0 z-[100] flex items-start justify-center p-4 overflow-y-auto pt-10 pb-10">
             <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-md" onClick={() => setSelectedFormulaId(null)}></div>
             
-            <div className="relative bg-slate-900 rounded-[1.5rem] sm:rounded-[2rem] border border-white/10 shadow-2xl w-full sm:max-w-lg md:max-w-xl animate-in slide-in-from-bottom sm:zoom-in duration-500 overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="relative bg-slate-900 rounded-[1.5rem] sm:rounded-[2rem] border border-white/10 shadow-2xl w-full sm:max-w-lg md:max-w-xl animate-in slide-in-from-bottom sm:zoom-in duration-500 overflow-hidden flex flex-col max-h-[90vh] my-auto">
               {/* Modal Header */}
               <div className="p-4 md:p-6 border-b border-white/5 flex items-center justify-between sticky top-0 bg-slate-900 z-20 shrink-0">
                 <div className="flex items-center gap-3">
@@ -496,7 +518,7 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                               >
                                 <HelpCircle size={10} className="text-[#B48646] cursor-help" />
                               </button>
-                              <div className={`absolute top-full left-1/2 -translate-x-1/2 mt-2 w-56 p-3 bg-slate-900 border border-[#B48646]/30 rounded-xl text-[10px] text-slate-300 transition-opacity pointer-events-none z-[110] shadow-[0_0_30px_rgba(0,0,0,0.8)] ${activeTooltip === 'config-photos' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
+                              <div className={`absolute top-full left-1/2 -translate-x-1/2 mt-2 w-56 p-3 bg-slate-900 border border-[#B48646]/30 rounded-xl text-[10px] text-slate-300 transition-opacity z-[110] shadow-[0_0_30px_rgba(0,0,0,0.8)] ${activeTooltip === 'config-photos' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
                                 <p className="italic leading-relaxed">
                                   {selectedFormulaId === 'short' 
                                     ? '"Rythme ultra-dynamique (1-2s par clip). 10-15 rushes recommandés."'
