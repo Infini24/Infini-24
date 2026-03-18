@@ -114,14 +114,14 @@ const FinnPresenceBubble: React.FC<FinnPresenceBubbleProps> = ({ onNavigate }) =
                   <motion.div 
                     initial={{ scale: 0 }}
                     animate={{ 
-                      scale: [1, 1.2, 1],
+                      scale: [1, 1.25, 1],
                     }}
                     transition={{
                       duration: 2,
                       repeat: Infinity,
                       ease: "easeInOut"
                     }}
-                    className="absolute -top-2 -right-1 bg-red-600 text-white text-[9px] md:text-[10px] font-black px-2 py-0.5 rounded-full border-2 border-slate-950 shadow-[0_0_15px_rgba(220,38,38,0.6)] z-[110]"
+                    className="absolute -top-3 -right-2 bg-red-600 text-white text-[10px] md:text-[11px] font-black px-2 py-0.5 rounded-full border-2 border-slate-950 shadow-[0_0_20px_rgba(220,38,38,0.7)] z-[110]"
                   >
                     1
                   </motion.div>

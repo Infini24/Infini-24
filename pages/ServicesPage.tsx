@@ -544,25 +544,25 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                 </div>
 
                 <div className="pt-0.5">
-                  <div className="bg-slate-950 p-3 md:p-8 rounded-[1.5rem] border border-white/10 text-center relative overflow-hidden">
-                    <div className="absolute top-2 right-2">
-                      <div className="flex items-center gap-1 bg-[#B48646]/10 px-1.5 py-0.5 rounded-full border border-[#B48646]/20">
-                        <Cpu size={8} className="text-[#B48646]" />
-                        <span className="text-[6px] md:text-[8px] font-black text-[#B48646] uppercase tracking-widest">Finn_Certified</span>
+                  <div className="bg-slate-950 p-2 md:p-8 rounded-[1.25rem] border border-white/10 text-center relative overflow-hidden">
+                    <div className="absolute top-1.5 right-1.5">
+                      <div className="flex items-center gap-1 bg-[#B48646]/10 px-1 py-0.5 rounded-full border border-[#B48646]/20">
+                        <Cpu size={7} className="text-[#B48646]" />
+                        <span className="text-[5px] md:text-[8px] font-black text-[#B48646] uppercase tracking-widest">Finn_Certified</span>
                       </div>
                     </div>
                     
-                    <div className="space-y-2 md:space-y-6">
+                    <div className="space-y-1.5 md:space-y-6">
                       <div>
-                        <span className="block text-[7px] md:text-[10px] text-[#B48646] uppercase tracking-widest font-black mb-0.5">Prix Total Estimé</span>
-                        <span className="text-xl md:text-5xl font-black text-white">{currentPrice}€</span>
+                        <span className="block text-[6px] md:text-[10px] text-[#B48646] uppercase tracking-widest font-black mb-0.5">Prix Total Estimé</span>
+                        <span className="text-lg md:text-5xl font-black text-white">{currentPrice}€</span>
                       </div>
 
                       {selectedCategory === ServiceType.VIDEO && (
-                        <div className="grid grid-cols-2 gap-2 pt-2 border-t border-white/5">
+                        <div className="grid grid-cols-2 gap-2 pt-1.5 border-t border-white/5">
                           <div className="text-left">
-                            <span className="block text-[6px] md:text-[8px] text-slate-500 uppercase font-black mb-0.5">Durée finale</span>
-                            <span className="text-[9px] md:text-base font-bold text-white">
+                            <span className="block text-[5px] md:text-[8px] text-slate-500 uppercase font-black mb-0.5">Durée finale</span>
+                            <span className="text-[8px] md:text-base font-bold text-white">
                               {(() => {
                                 if (selectedFormulaId === 'short') {
                                   const totalSeconds = photos * 1.5;
@@ -583,8 +583,8 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                             </span>
                           </div>
                           <div className="text-left">
-                            <span className="block text-[6px] md:text-[8px] text-slate-500 uppercase font-black mb-0.5">Musiques</span>
-                            <span className="text-[9px] md:text-base font-bold text-white">
+                            <span className="block text-[5px] md:text-[8px] text-slate-500 uppercase font-black mb-0.5">Musiques</span>
+                            <span className="text-[8px] md:text-base font-bold text-white">
                               {selectedFormulaId === 'short' || selectedFormulaId === 'ads' 
                                 ? '1 titre dynamique' 
                                 : selectedFormulaId === 'vhs' 
@@ -594,9 +594,9 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                           </div>
                         </div>
                       )}
-                      <div className="text-left pt-2 border-t border-white/5">
-                        <span className="block text-[6px] md:text-[8px] text-slate-500 uppercase font-black mb-1">Inclus par défaut</span>
-                        <p className="text-[8px] md:text-xs text-slate-400 font-medium leading-relaxed">
+                      <div className="text-left pt-1.5 border-t border-white/5">
+                        <span className="block text-[5px] md:text-[8px] text-slate-500 uppercase font-black mb-0.5">Inclus par défaut</span>
+                        <p className="text-[7px] md:text-xs text-slate-400 font-medium leading-tight">
                           Support graphique complet (habillage texte, transitions pro, effets Ken Burns, générique), retouches légères
                           {isExpress && <span className="text-[#B48646] font-bold"> + Option Express (24h/48h)</span>}
                         </p>
