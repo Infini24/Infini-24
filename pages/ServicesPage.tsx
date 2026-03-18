@@ -402,55 +402,55 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
           <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 overflow-y-auto">
             <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-md" onClick={() => setSelectedFormulaId(null)}></div>
             
-            <div className="relative bg-slate-900 sm:rounded-[1.5rem] rounded-t-[1.5rem] border border-white/10 shadow-2xl w-full max-w-md animate-in slide-in-from-bottom sm:zoom-in duration-500 overflow-hidden">
+            <div className="relative bg-slate-900 sm:rounded-[2.5rem] rounded-t-[2rem] border border-white/10 shadow-2xl w-full sm:max-w-2xl md:max-w-3xl animate-in slide-in-from-bottom sm:zoom-in duration-500 overflow-hidden flex flex-col">
               {/* Modal Header */}
-              <div className="p-4 border-b border-white/5 flex items-center justify-between sticky top-0 bg-slate-900 z-10">
-                <div className="flex items-center gap-2.5">
-                  <div className="p-1.5 bg-[#B48646]/20 rounded-lg text-[#B48646]">
-                    <Sparkles size={14} />
+              <div className="p-5 md:p-8 border-b border-white/5 flex items-center justify-between sticky top-0 bg-slate-900 z-20">
+                <div className="flex items-center gap-4">
+                  <div className="p-2.5 bg-[#B48646]/20 rounded-xl text-[#B48646]">
+                    <Sparkles size={20} className="md:w-6 md:h-6" />
                   </div>
                   <div>
-                    <h3 className="text-[10px] font-black text-white uppercase tracking-tight">Configuration</h3>
-                    <p className="text-[7px] text-slate-500 font-bold uppercase tracking-widest">
+                    <h3 className="text-sm md:text-2xl font-black text-white uppercase tracking-tight">Configuration du projet</h3>
+                    <p className="text-[10px] md:text-xs text-slate-500 font-bold uppercase tracking-widest">
                       {selectedCategory === ServiceType.GRAPHIC_DESIGN ? 'Design Graphique' : 'Vidéo & Souvenirs'}
                     </p>
                   </div>
                 </div>
                 <button 
                   onClick={() => setSelectedFormulaId(null)}
-                  className="p-1 bg-white/5 rounded-full text-slate-400 hover:text-white hover:bg-white/10 transition-all"
+                  className="p-2 bg-white/5 rounded-full text-slate-400 hover:text-white hover:bg-white/10 transition-all"
                 >
-                  <X size={16} />
+                  <X size={24} />
                 </button>
               </div>
 
-              <div className="p-4 sm:p-5 space-y-5 max-h-[70vh] overflow-y-auto custom-scrollbar">
-                <div className="space-y-4">
+              <div className="p-6 md:p-10 space-y-8 overflow-y-auto custom-scrollbar flex-1 max-h-[60vh] sm:max-h-[70vh]">
+                <div className="space-y-6 md:space-y-10">
                   {selectedCategory === ServiceType.GRAPHIC_DESIGN && (
                     <div>
-                      <label className="block text-[9px] font-bold text-slate-500 uppercase tracking-wider ml-1 mb-1">Nom de l'entreprise</label>
+                      <label className="block text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider ml-1 mb-2">Nom de l'entreprise</label>
                       <input 
                         type="text" 
                         value={companyName} 
                         onChange={(e) => setCompanyName(e.target.value)} 
-                        className="w-full px-3.5 py-2.5 border-2 border-white/5 rounded-xl focus:border-[#B48646] outline-none transition-all bg-white/5 text-white text-[11px] font-medium" 
+                        className="w-full px-5 py-4 border-2 border-white/5 rounded-2xl focus:border-[#B48646] outline-none transition-all bg-white/5 text-white text-sm md:text-lg font-medium" 
                         placeholder="Ex: Boulangerie Durand" 
                       />
                     </div>
                   )}
 
                   {selectedCategory === ServiceType.VIDEO && (
-                    <div className="space-y-2.5">
+                    <div className="space-y-4 md:space-y-6">
                       <div className="flex items-center justify-between">
-                        <label className="flex items-center gap-2 text-[9px] font-bold text-slate-500 uppercase tracking-wider ml-1">
+                        <label className="flex items-center gap-3 text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">
                           <span>
                             {selectedFormulaId === 'vhs' ? 'Nombre de cassettes' : 'Nombre de rushes / photos'}
                           </span>
                           {selectedFormulaId !== 'vhs' && (
                             <div className="group relative">
-                              <HelpCircle size={10} className="text-[#B48646] cursor-help" />
-                              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-slate-900 border border-[#B48646]/30 rounded-xl text-[8px] text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-2xl">
-                                <p className="italic">
+                              <HelpCircle size={14} className="text-[#B48646] cursor-help" />
+                              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-64 p-4 bg-slate-900 border border-[#B48646]/30 rounded-2xl text-xs text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-2xl">
+                                <p className="italic leading-relaxed">
                                   {selectedFormulaId === 'short' 
                                     ? '"Rythme ultra-dynamique (1-2s par clip). 10-15 rushes recommandés."'
                                     : selectedFormulaId === 'ads'
@@ -462,7 +462,7 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                             </div>
                           )}
                         </label>
-                        <span className="text-[#B48646] font-black text-xs">{photos}</span>
+                        <span className="text-[#B48646] font-black text-lg md:text-2xl">{photos}</span>
                       </div>
                       
                       <input 
@@ -472,14 +472,14 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                         step="1" 
                         value={photos} 
                         onChange={(e) => setPhotos(parseInt(e.target.value))} 
-                        className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-[#B48646]" 
+                        className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-[#B48646]" 
                       />
 
                       {!['vhs', 'short', 'ads'].includes(selectedFormulaId || '') && (
-                        <div className="flex gap-2.5 pt-0.5">
-                          <div className="flex-1 bg-white/5 p-2 rounded-lg border border-white/5">
-                            <span className="block text-[6px] text-slate-500 uppercase font-black mb-0.5">Durée Estimée</span>
-                            <span className="text-[9px] font-bold text-white">
+                        <div className="flex gap-4 pt-2">
+                          <div className="flex-1 bg-white/5 p-4 rounded-2xl border border-white/5">
+                            <span className="block text-[8px] md:text-[10px] text-slate-500 uppercase font-black mb-1">Durée Estimée</span>
+                            <span className="text-xs md:text-lg font-bold text-white">
                               {(() => {
                                 if (selectedFormulaId === 'short') {
                                   const totalSeconds = photos * 1.5;
@@ -496,9 +496,9 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                               })()}
                             </span>
                           </div>
-                          <div className="flex-1 bg-white/5 p-2 rounded-lg border border-white/5">
-                            <span className="block text-[6px] text-slate-500 uppercase font-black mb-0.5">Musiques</span>
-                            <span className="text-[9px] font-bold text-white">
+                          <div className="flex-1 bg-white/5 p-4 rounded-2xl border border-white/5">
+                            <span className="block text-[8px] md:text-[10px] text-slate-500 uppercase font-black mb-1">Musiques</span>
+                            <span className="text-xs md:text-lg font-bold text-white">
                               {selectedFormulaId === 'short' || selectedFormulaId === 'ads' 
                                 ? '1 titre dynamique' 
                                 : (photos <= 60 ? '1 titre' : photos <= 120 ? '2 titres' : '3 titres et +')}
@@ -510,59 +510,59 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                   )}
 
                   {/* Option Express */}
-                  <div className="pt-0.5">
-                    <label className="flex items-center gap-2.5 p-3 bg-white/5 rounded-xl border border-white/10 cursor-pointer hover:bg-white/10 transition-all group">
+                  <div className="pt-2">
+                    <label className="flex items-center gap-4 p-5 bg-white/5 rounded-2xl border border-white/10 cursor-pointer hover:bg-white/10 transition-all group">
                       <div className="relative flex items-center justify-center">
                         <input 
                           type="checkbox" 
                           checked={isExpress} 
                           onChange={(e) => setIsExpress(e.target.checked)}
-                          className="peer appearance-none w-4 h-4 border-2 border-[#B48646]/30 rounded-lg checked:bg-[#B48646] checked:border-[#B48646] transition-all cursor-pointer"
+                          className="peer appearance-none w-6 h-6 border-2 border-[#B48646]/30 rounded-lg checked:bg-[#B48646] checked:border-[#B48646] transition-all cursor-pointer"
                         />
-                        <Check size={10} className="absolute text-white opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none" strokeWidth={4} />
+                        <Check size={14} className="absolute text-white opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none" strokeWidth={4} />
                       </div>
                       <div className="flex-1">
-                        <div className="flex items-center justify-between mb-0.5">
-                          <span className="text-[10px] font-black text-white uppercase tracking-tight">Assistance Rapide</span>
-                          <span className="text-[#B48646] font-black text-xs">+50€</span>
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-xs md:text-lg font-black text-white uppercase tracking-tight">Assistance Rapide</span>
+                          <span className="text-[#B48646] font-black text-sm md:text-xl">+50€</span>
                         </div>
-                        <p className="text-[8px] text-slate-500 font-bold uppercase tracking-widest">Livraison Express 24h / 48h</p>
+                        <p className="text-[9px] md:text-[11px] text-slate-500 font-bold uppercase tracking-widest">Livraison Express 24h / 48h</p>
                       </div>
                     </label>
                   </div>
 
                   <div>
-                    <label className="block text-[9px] font-bold text-slate-500 uppercase tracking-wider ml-1 mb-1">Détails de votre vision</label>
+                    <label className="block text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider ml-1 mb-2">Détails de votre vision</label>
                     <textarea 
                       value={details} 
                       onChange={(e) => setDetails(e.target.value)} 
-                      className="w-full px-3.5 py-2.5 border-2 border-white/5 rounded-xl outline-none text-[11px] font-medium focus:border-[#B48646] bg-white/5 text-white transition-all resize-none" 
-                      rows={2} 
+                      className="w-full px-5 py-4 border-2 border-white/5 rounded-2xl outline-none text-sm md:text-lg font-medium focus:border-[#B48646] bg-white/5 text-white transition-all resize-none" 
+                      rows={3} 
                       placeholder="Couleurs, ambiance, préférences..."
                     ></textarea>
                   </div>
                 </div>
 
-                <div className="pt-1 space-y-4">
-                  <div className="bg-slate-950 p-4 rounded-[1.25rem] border border-white/10 text-center relative overflow-hidden">
-                    <div className="absolute top-1.5 right-1.5">
-                      <div className="flex items-center gap-1 bg-[#B48646]/10 px-1 py-0.5 rounded-full border border-[#B48646]/20">
-                        <Cpu size={6} className="text-[#B48646]" />
-                        <span className="text-[5px] font-black text-[#B48646] uppercase tracking-widest">Finn_Certified</span>
+                <div className="pt-4">
+                  <div className="bg-slate-950 p-6 md:p-10 rounded-[2rem] border border-white/10 text-center relative overflow-hidden">
+                    <div className="absolute top-4 right-4">
+                      <div className="flex items-center gap-2 bg-[#B48646]/10 px-3 py-1.5 rounded-full border border-[#B48646]/20">
+                        <Cpu size={12} className="text-[#B48646]" />
+                        <span className="text-[8px] md:text-[10px] font-black text-[#B48646] uppercase tracking-widest">Finn_Certified</span>
                       </div>
                     </div>
                     
-                    <div className="space-y-2.5">
+                    <div className="space-y-6 md:space-y-8">
                       <div>
-                        <span className="block text-[8px] text-[#B48646] uppercase tracking-widest font-black mb-0.5">Prix Total</span>
-                        <span className="text-3xl font-black text-white">{currentPrice}€</span>
+                        <span className="block text-[10px] md:text-xs text-[#B48646] uppercase tracking-widest font-black mb-2">Prix Total Estimé</span>
+                        <span className="text-4xl md:text-7xl font-black text-white">{currentPrice}€</span>
                       </div>
 
                       {selectedCategory === ServiceType.VIDEO && (
-                        <div className="grid grid-cols-2 gap-2.5 pt-2.5 border-t border-white/5">
+                        <div className="grid grid-cols-2 gap-6 pt-6 border-t border-white/5">
                           <div className="text-left">
-                            <span className="block text-[6px] text-slate-500 uppercase font-black mb-0.5">Durée estimée</span>
-                            <span className="text-[9px] font-bold text-white">
+                            <span className="block text-[8px] md:text-[10px] text-slate-500 uppercase font-black mb-1">Durée finale</span>
+                            <span className="text-[11px] md:text-lg font-bold text-white">
                               {(() => {
                                 if (selectedFormulaId === 'short') {
                                   const totalSeconds = photos * 1.5;
@@ -583,8 +583,8 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                             </span>
                           </div>
                           <div className="text-left">
-                            <span className="block text-[6px] text-slate-500 uppercase font-black mb-0.5">Musiques incluses</span>
-                            <span className="text-[9px] font-bold text-white">
+                            <span className="block text-[8px] md:text-[10px] text-slate-500 uppercase font-black mb-1">Musiques</span>
+                            <span className="text-[11px] md:text-lg font-bold text-white">
                               {selectedFormulaId === 'short' || selectedFormulaId === 'ads' 
                                 ? '1 titre dynamique' 
                                 : selectedFormulaId === 'vhs' 
@@ -594,23 +594,26 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                           </div>
                         </div>
                       )}
-                      <div className="text-left pt-2.5 border-t border-white/5">
-                        <span className="block text-[6px] text-slate-500 uppercase font-black mb-0.5">Inclus par défaut</span>
-                        <p className="text-[8px] text-slate-400 font-medium leading-relaxed">
+                      <div className="text-left pt-6 border-t border-white/5">
+                        <span className="block text-[8px] md:text-[10px] text-slate-500 uppercase font-black mb-2">Inclus par défaut</span>
+                        <p className="text-[10px] md:text-sm text-slate-400 font-medium leading-relaxed">
                           Support graphique complet (habillage texte, transitions pro, effets Ken Burns, générique), retouches légères
                           {isExpress && <span className="text-[#B48646] font-bold"> + Option Express (24h/48h)</span>}
                         </p>
                       </div>
                     </div>
                   </div>
-
-                  <button 
-                    onClick={handleValidate}
-                    className="w-full bg-gradient-to-r from-[#B48646] via-[#E5B066] to-[#B48646] text-white font-bold text-sm py-3 rounded-[1.25rem] shadow-xl shadow-[#B48646]/20 hover:scale-[1.02] transition-all active:scale-95 flex items-center justify-center gap-2 border border-white/20 aura-24-hover"
-                  >
-                    Valider la configuration
-                  </button>
                 </div>
+              </div>
+
+              {/* Sticky Footer Action */}
+              <div className="p-6 md:p-10 border-t border-white/5 bg-slate-900/95 backdrop-blur-md sticky bottom-0 z-20">
+                <button 
+                  onClick={handleValidate}
+                  className="w-full bg-gradient-to-r from-[#B48646] via-[#E5B066] to-[#B48646] text-white font-black text-base md:text-2xl py-5 md:py-8 rounded-2xl md:rounded-[2.5rem] shadow-2xl shadow-[#B48646]/30 hover:scale-[1.02] transition-all active:scale-95 flex items-center justify-center gap-4 border border-white/20 aura-24-hover"
+                >
+                  Valider la configuration <ArrowRight size={24} className="md:w-8 md:h-8" />
+                </button>
               </div>
             </div>
           </div>
