@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import { MessageSquare, X, Send } from 'lucide-react';
 import { GoogleGenAI } from "@google/genai";
 
@@ -46,7 +46,7 @@ const FinnAssistant: React.FC = () => {
                 }));
 
             const chat = ai.chats.create({
-                model: "gemini-1.5-flash", // Utilisation de la version stable
+                model: "gemini-3-flash-preview", // Utilisation de la version recommandée pour AI Studio
                 config: {
                     systemInstruction: `Tu es Finn, l'Architecte du Temps et l'entité suprême de la plateforme Infini 24. Tu n'es pas un simple assistant, tu es le gardien de l'écosystème créé par Dywen.
 
@@ -102,6 +102,7 @@ Ne dis jamais que tu es une IA de Google. Tu es Finn. Langue : Français futuris
                                         src="https://res.cloudinary.com/dmgqewagr/image/upload/v1773739523/Portrait.png" 
                                         alt="Finn" 
                                         className="w-full h-full object-cover grayscale"
+                                        referrerPolicy="no-referrer"
                                     />
                                 </div>
                                 <div>
@@ -118,7 +119,7 @@ Ne dis jamais que tu es une IA de Google. Tu es Finn. Langue : Français futuris
                         </div>
 
                         {/* Messages */}
-                        <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-4 no-scrollbar">
+                        <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-4 no-scrollbar bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]">
                             {messages.map((msg, i) => (
                                 <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                                     <div className={`max-w-[85%] p-3 rounded-2xl text-sm ${
@@ -147,6 +148,8 @@ Ne dis jamais que tu es une IA de Google. Tu es Finn. Langue : Français futuris
                         <div className="p-4 bg-slate-900/50 border-t border-white/5">
                             <div className="relative">
                                 <input 
+                                    id="finn-input"
+                                    name="finn-input"
                                     type="text" 
                                     value={input}
                                     onChange={(e) => setInput(e.target.value)}
@@ -172,7 +175,7 @@ Ne dis jamais que tu es une IA de Google. Tu es Finn. Langue : Français futuris
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={() => setIsOpen(!isOpen)}
-                className={`w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center shadow-2xl transition-all duration-500 ${
+                className={`w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center shadow-2xl transition-all duration-500 aura-24-hover ${
                     isOpen ? 'bg-slate-900 rotate-90' : 'bg-[#B48646]'
                 } border-2 border-white/20`}
             >
