@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ChevronLeft, Video, PenTool, LifeBuoy, Palette, Lock, X, Check, ArrowRight, Mail, Eye, Calculator, ShieldCheck, HelpCircle, Trophy, Smartphone, Zap, Cpu, Sparkles } from 'lucide-react';
 import { ServiceType } from '../types';
 import toast from 'react-hot-toast';
@@ -167,6 +167,16 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
   const [currentServiceName, setCurrentServiceName] = useState("");
   const [currentServicePrice, setCurrentServicePrice] = useState<number | string>(0);
   const [currentServiceDetails, setCurrentServiceDetails] = useState("");
+  const formulasRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Scroll to formulas section when category changes on mobile
+    if (window.innerWidth < 768 && formulasRef.current) {
+      const yOffset = -100; // Offset for the sticky header
+      const y = formulasRef.current.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    }
+  }, [selectedCategory]);
 
   const graphicFormulas = [
     { id: 'identity_complete', label: 'Pack Identité Complète', price: 370, desc: 'Logo + Charte + Réseaux', info: 'Un pack complet pour lancer votre marque : logo, charte graphique et visuels réseaux sociaux.' },
@@ -300,7 +310,7 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
       </div>
 
       {/* Main 3-Column Layout */}
-      <div className="max-w-[1600px] mx-auto px-4 md:px-8 w-full pb-24">
+      <div ref={formulasRef} className="max-w-[1600px] mx-auto px-4 md:px-8 w-full pb-24">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start max-w-5xl mx-auto">
           
           {/* Column 1: Design Graphique */}
