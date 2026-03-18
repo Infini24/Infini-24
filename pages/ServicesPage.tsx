@@ -168,13 +168,19 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
   const [currentServicePrice, setCurrentServicePrice] = useState<number | string>(0);
   const [currentServiceDetails, setCurrentServiceDetails] = useState("");
   const formulasRef = useRef<HTMLDivElement>(null);
+  const graphicSectionRef = useRef<HTMLDivElement>(null);
+  const videoSectionRef = useRef<HTMLDivElement>(null);
+  const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
 
   useEffect(() => {
-    // Scroll to formulas section when category changes on mobile
-    if (window.innerWidth < 768 && formulasRef.current) {
-      const yOffset = -100; // Offset for the sticky header
-      const y = formulasRef.current.getBoundingClientRect().top + window.pageYOffset + yOffset;
-      window.scrollTo({ top: y, behavior: 'smooth' });
+    // Scroll to specific section when category changes on mobile
+    if (window.innerWidth < 768) {
+      const targetRef = selectedCategory === ServiceType.VIDEO ? videoSectionRef : graphicSectionRef;
+      if (targetRef.current) {
+        const yOffset = -120; // Offset for the sticky header
+        const y = targetRef.current.getBoundingClientRect().top + window.scrollY + yOffset;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }
     }
   }, [selectedCategory]);
 
@@ -314,7 +320,7 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start max-w-5xl mx-auto">
           
           {/* Column 1: Design Graphique */}
-          <div className="space-y-6">
+          <div ref={graphicSectionRef} className="space-y-6">
             <div className="flex items-center gap-3 mb-4">
               <div className="p-3 bg-[#B48646]/10 rounded-2xl text-[#B48646]">
                 <Palette size={24} />
@@ -342,9 +348,18 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                     <div>
                       <div className="flex items-center gap-2">
                         <span className="block font-black text-white text-base md:text-lg">{f.label}</span>
-                        <div className="group relative">
-                          <HelpCircle size={14} className="text-slate-500 hover:text-[#B48646] cursor-help transition-colors" />
-                          <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-slate-900 border border-[#B48646]/30 rounded-lg text-[10px] text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-2xl">
+                        <div className="group relative z-[100]">
+                          <button 
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setActiveTooltip(activeTooltip === f.id ? null : f.id);
+                            }}
+                            className="p-1 -m-1"
+                          >
+                            <HelpCircle size={14} className="text-slate-500 hover:text-[#B48646] cursor-help transition-colors" />
+                          </button>
+                          <div className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-slate-900 border border-[#B48646]/30 rounded-lg text-[10px] text-slate-300 transition-opacity pointer-events-none z-[110] shadow-2xl ${activeTooltip === f.id ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
                             {f.info}
                             <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-900"></div>
                           </div>
@@ -360,7 +375,7 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
           </div>
 
           {/* Column 2: Vidéo & Souvenirs */}
-          <div className="space-y-6">
+          <div ref={videoSectionRef} className="space-y-6">
             <div className="flex items-center gap-3 mb-4">
               <div className="p-3 bg-[#B48646]/10 rounded-2xl text-[#B48646]">
                 <Video size={24} />
@@ -389,9 +404,18 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                     <div>
                       <div className="flex items-center gap-2">
                         <span className="block font-black text-white text-base md:text-lg">{f.label}</span>
-                        <div className="group relative">
-                          <HelpCircle size={14} className="text-slate-500 hover:text-[#B48646] cursor-help transition-colors" />
-                          <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-slate-900 border border-[#B48646]/30 rounded-lg text-[10px] text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-2xl">
+                        <div className="group relative z-[100]">
+                          <button 
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setActiveTooltip(activeTooltip === f.id ? null : f.id);
+                            }}
+                            className="p-1 -m-1"
+                          >
+                            <HelpCircle size={14} className="text-slate-500 hover:text-[#B48646] cursor-help transition-colors" />
+                          </button>
+                          <div className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-slate-900 border border-[#B48646]/30 rounded-lg text-[10px] text-slate-300 transition-opacity pointer-events-none z-[110] shadow-2xl ${activeTooltip === f.id ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
                             {f.info}
                             <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-900"></div>
                           </div>
@@ -458,8 +482,17 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                           </span>
                           {selectedFormulaId !== 'vhs' && (
                             <div className="group relative z-[100]">
-                              <HelpCircle size={10} className="text-[#B48646] cursor-help" />
-                              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 p-3 bg-slate-900 border border-[#B48646]/30 rounded-xl text-[10px] text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-[110] shadow-[0_0_30px_rgba(0,0,0,0.8)]">
+                              <button 
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setActiveTooltip(activeTooltip === 'config-photos' ? null : 'config-photos');
+                                }}
+                                className="p-1 -m-1"
+                              >
+                                <HelpCircle size={10} className="text-[#B48646] cursor-help" />
+                              </button>
+                              <div className={`absolute top-full left-1/2 -translate-x-1/2 mt-2 w-56 p-3 bg-slate-900 border border-[#B48646]/30 rounded-xl text-[10px] text-slate-300 transition-opacity pointer-events-none z-[110] shadow-[0_0_30px_rgba(0,0,0,0.8)] ${activeTooltip === 'config-photos' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
                                 <p className="italic leading-relaxed">
                                   {selectedFormulaId === 'short' 
                                     ? '"Rythme ultra-dynamique (1-2s par clip). 10-15 rushes recommandés."'
@@ -467,7 +500,7 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                                     ? '"Format percutant axé sur la conversion. Durée optimale : 15 à 30 secondes."'
                                     : '"Rythme émotionnel (4s par photo). 100 photos = ~6min40."'}
                                 </p>
-                                <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-900"></div>
+                                <div className="absolute bottom-full left-1/2 -translate-x-1/2 border-4 border-transparent border-b-slate-900"></div>
                               </div>
                             </div>
                           )}
