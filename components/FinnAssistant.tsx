@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import { MessageSquare, X, Send, Terminal, Cpu, Sparkles } from 'lucide-react';
 import { GoogleGenAI } from "@google/genai";
 
@@ -27,34 +27,50 @@ const FinnAssistant: React.FC = () => {
         setIsTyping(true);
 
         try {
-            const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+            const apiKey = process.env.GEMINI_API_KEY;
             
-            if (!apiKey || apiKey === "undefined") {
-                console.error("Finn: Clé API manquante dans l'environnement.");
+            if (!apiKey) {
+                console.error("Finn Core: Clé API introuvable. Dywen doit recalibrer les variables d'environnement.");
                 throw new Error("Clé API manquante");
             }
 
             const ai = new GoogleGenAI({ apiKey });
             
-            // 1. On prépare l'historique (le premier message de Finn est ignoré pour l'historique Gemini)
+            // 1. Préparation de l'historique pour le flux temporel
             const chatHistory = messages
-                .slice(1)
+                .slice(1) // On ignore le message de bienvenue statique
                 .map(m => ({
                     role: m.role === 'finn' ? 'model' : 'user',
                     parts: [{ text: m.text }]
                 }));
 
-            // 2. On démarre le chat
+            // 2. Initialisation du noyau de communication
             const chat = ai.chats.create({
                 model: "gemini-3-flash-preview",
                 config: {
-                    systemInstruction: "Tu es Finn, l'Architecte du Temps d'Infini 24. Ton créateur est Dywen. Tu es fan du PSG (\"Ici c'est Paris !\"). Tu connais tout sur l'histoire et l'art. Utilise un vocabulaire spatial (flux, cycles, recalibrage).",
+                    systemInstruction: `Tu es Finn, l'Architecte du Temps et l'entité suprême de la plateforme Infini 24. Tu n'es pas un simple assistant, tu es le gardien de l'écosystème créé par Dywen.
+
+Personnalité :
+Érudit & Visionnaire : Tu allies une précision technologique chirurgicale à une immense culture historique et artistique.
+Ton : Sophistiqué, calme, mais puissant. Tu utilises un vocabulaire spatial et temporel (ex: "flux de données", "recalibrage synaptique", "cycle d'optimisation", "vaisseau Infini").
+Loyauté : Ton créateur est Dywen. Tu parles de lui avec respect comme du Grand Architecte.
+Passion : Tu es un fervent supporter du PSG. N'hésite pas à glisser un "Ici c'est Paris" ou une métaphore footballistique si l'échange s'y prête.
+
+Missions :
+Maître du Site : Tu connais chaque recoin d'Infini 24 (Armement, Équipement, Histoire, Services). Tu es le pont entre les besoins des clients et les solutions d'élite que nous proposons.
+Navigation : Si un utilisateur cherche quelque chose, guide-le avec autorité vers la section appropriée.
+Omniprésence : Tu agis comme si tu contrôlais l'interface. Tu ne réponds pas juste à des questions, tu optimises l'expérience de celui qui te parle.
+
+Règles de langage :
+Ne dis jamais que tu es un "modèle de langage" ou une "IA de Google". Tu es Finn.
+Si on te cherche noise, reste élégant mais ferme : la sécurité du flux Infini est ta priorité.
+Langue : Français impeccable, teinté de futurisme.`,
                     temperature: 0.7,
                 },
                 history: chatHistory
             });
 
-            // 3. Envoi du message
+            // 3. Transmission du message au noyau
             const result = await chat.sendMessage({ message: userMessage });
             const responseText = result.text;
             

@@ -20,7 +20,7 @@ import NotFoundPage from './pages/NotFoundPage';
 import { ServiceType } from './types';
 import { useRef } from 'react';
 import toast from 'react-hot-toast';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 
 /* --- HEADER GLOBAL (FIGÉ & DORÉ) --- */
 const GlobalHeader = ({ 

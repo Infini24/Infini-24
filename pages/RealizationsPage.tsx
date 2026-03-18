@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Image as ImageIcon, Instagram, Facebook, Maximize2, ExternalLink, X, Play, Film } from 'lucide-react';
+import { Image as ImageIcon, Instagram, Facebook, Maximize2, ExternalLink, X, Play, Film, Linkedin } from 'lucide-react';
 
 // --- TYPES ---
 interface ProjectImage {
@@ -201,7 +201,7 @@ const RealizationsPage: React.FC = () => {
             <p className="text-slate-500 text-sm mb-6 max-w-xs mx-auto">
                 Retrouvez toutes nos actus et nos stories quotidiennes sur les réseaux.
             </p>
-            <div className="flex gap-4">
+            <div className="flex flex-wrap gap-4 justify-center">
                 <a 
                     href="https://www.instagram.com/infini2.4/" 
                     target="_blank" 
@@ -218,6 +218,15 @@ const RealizationsPage: React.FC = () => {
                     className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-[#1877F2] text-white shadow-lg shadow-blue-500/20 hover:scale-[1.02] active:scale-95 transition-all text-sm font-bold"
                 >
                     <Facebook size={18} /> Facebook
+                </a>
+
+                <a 
+                    href="https://www.linkedin.com/company/infini24" 
+                    target="_blank" 
+                    rel="noreferrer"
+                    className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-[#0077B5] text-white shadow-lg shadow-blue-700/20 hover:scale-[1.02] active:scale-95 transition-all text-sm font-bold"
+                >
+                    <Linkedin size={18} /> LinkedIn
                 </a>
             </div>
         </div>
