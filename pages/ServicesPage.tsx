@@ -70,10 +70,10 @@ Cordialement.`);
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[120] flex items-end sm:items-center justify-center p-0 sm:p-4">
-      <div className="absolute inset-0 bg-slate-950/90 backdrop-blur-xl" onClick={onClose}></div>
-      <div className="relative bg-slate-900 sm:rounded-[2.5rem] rounded-t-[2rem] sm:rounded-t-[2.5rem] shadow-2xl w-full max-w-lg overflow-hidden animate-in slide-in-from-bottom duration-500 border border-white/10">
-        <div className="border-b border-white/5 p-5 sm:p-6 flex items-center justify-between">
+    <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 sm:p-6">
+      <div className="absolute inset-0 bg-slate-950/95 backdrop-blur-2xl" onClick={onClose}></div>
+      <div className="relative bg-slate-900 rounded-[2.5rem] shadow-[0_0_50px_rgba(0,0,0,0.5)] w-full max-w-lg overflow-hidden animate-in zoom-in duration-300 border border-white/10 flex flex-col max-h-[90vh]">
+        <div className="border-b border-white/5 p-5 sm:p-6 flex items-center justify-between shrink-0 bg-slate-900/50 backdrop-blur-md">
           <div className="flex items-center gap-3">
             <div className="bg-[#B48646]/20 p-2.5 rounded-xl text-[#B48646]">
                  <ShieldCheck size={18} />
@@ -85,7 +85,7 @@ Cordialement.`);
           </button>
         </div>
 
-        <div className="p-5 sm:p-8">
+        <div className="p-5 sm:p-8 overflow-y-auto custom-scrollbar">
           {step === 'info' && (
             <div className="space-y-6">
               <div className="text-center mb-6">
@@ -172,17 +172,20 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
   const videoSectionRef = useRef<HTMLDivElement>(null);
   const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
 
-  useEffect(() => {
-    // Scroll to specific section when category changes on mobile
-    if (window.innerWidth < 768) {
-      const targetRef = selectedCategory === ServiceType.VIDEO ? videoSectionRef : graphicSectionRef;
-      if (targetRef.current) {
-        const yOffset = -120; // Offset for the sticky header
-        const y = targetRef.current.getBoundingClientRect().top + window.scrollY + yOffset;
-        window.scrollTo({ top: y, behavior: 'smooth' });
-      }
+  const scrollToSection = (category: ServiceType) => {
+    const targetRef = category === ServiceType.VIDEO ? videoSectionRef : graphicSectionRef;
+    if (targetRef.current) {
+      const yOffset = -100; // Offset for the sticky header
+      const y = targetRef.current.getBoundingClientRect().top + window.scrollY + yOffset;
+      window.scrollTo({ top: y, behavior: 'smooth' });
     }
-  }, [selectedCategory]);
+  };
+
+  useEffect(() => {
+    if (initialService) {
+      setTimeout(() => scrollToSection(initialService), 100);
+    }
+  }, [initialService]);
 
   const graphicFormulas = [
     { id: 'identity_complete', label: 'Pack Identité Complète', price: 370, desc: 'Logo + Charte + Réseaux', info: 'Un pack complet pour lancer votre marque : logo, charte graphique et visuels réseaux sociaux.' },
@@ -288,27 +291,28 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
       </div>
 
       {/* Top Navigation Bar */}
-      <div className="sticky top-0 z-30 bg-slate-950/50 backdrop-blur-xl border-y border-white/5 py-4 mb-8">
-        <div className="max-w-[1600px] mx-auto px-4">
-          <div className="flex bg-white/5 p-1.5 rounded-[1.5rem] md:rounded-[2rem] gap-1">
+      <div className="sticky top-0 z-30 bg-slate-950/90 backdrop-blur-3xl border-b border-white/5 py-4 mb-10 shadow-2xl shadow-black/50">
+        <div className="max-w-3xl mx-auto px-4">
+          <div className="grid grid-cols-2 bg-slate-900/50 p-2 rounded-[2.5rem] gap-2 border border-white/10 shadow-inner">
             {services.map((s) => (
               <button
                 key={s.type}
                 onClick={() => {
                   setSelectedCategory(s.type);
                   setSelectedFormulaId(null);
+                  scrollToSection(s.type);
                 }}
-                className={`flex-1 flex flex-col md:flex-row items-center justify-center gap-1 md:gap-3 py-3 md:py-4 rounded-xl md:rounded-[1.5rem] transition-all duration-500 ${
-                  selectedCategory === s.type 
-                    ? "bg-gradient-to-r from-[#B48646] to-[#E5B066] text-white shadow-lg shadow-[#B48646]/20 scale-[1.02]" 
-                    : "text-slate-400 hover:text-white hover:bg-white/5"
+                className={`flex items-center justify-center gap-3 py-4 px-6 rounded-[2rem] font-black text-xs md:text-sm uppercase tracking-widest transition-all duration-500 relative overflow-hidden group ${
+                  selectedCategory === s.type
+                    ? "bg-gradient-to-br from-[#B48646] via-[#E5B066] to-[#B48646] text-white shadow-[0_10px_20px_rgba(180,134,70,0.3)] scale-[1.02] border border-white/20"
+                    : "text-slate-500 hover:text-slate-300 hover:bg-white/5"
                 }`}
               >
-                <s.icon size={18} className={selectedCategory === s.type ? "text-white" : "text-[#B48646]"} />
-                <div className="text-center md:text-left">
-                  <span className="block text-[10px] md:text-sm font-black uppercase tracking-wider">{s.label}</span>
-                  <span className={`hidden md:block text-[8px] uppercase tracking-widest font-bold opacity-60`}>{s.desc}</span>
-                </div>
+                {selectedCategory === s.type && (
+                  <div className="absolute inset-0 bg-white/20 animate-pulse pointer-events-none" />
+                )}
+                <s.icon size={20} className={`transition-transform duration-500 ${selectedCategory === s.type ? "scale-110 rotate-3" : "group-hover:scale-110"}`} />
+                <span className="relative z-10">{s.label}</span>
               </button>
             ))}
           </div>
