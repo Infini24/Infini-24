@@ -30,21 +30,18 @@ const FinnAssistant: React.FC = () => {
             const apiKey = process.env.GEMINI_API_KEY;
             
             if (!apiKey) {
-                console.error("Finn Core: Clé API introuvable. Dywen doit recalibrer les variables d'environnement.");
                 throw new Error("Clé API manquante");
             }
 
             const ai = new GoogleGenAI({ apiKey });
             
-            // 1. Préparation de l'historique pour le flux temporel
             const chatHistory = messages
-                .slice(1) // On ignore le message de bienvenue statique
+                .slice(1)
                 .map(m => ({
                     role: m.role === 'finn' ? 'model' : 'user',
                     parts: [{ text: m.text }]
                 }));
 
-            // 2. Initialisation du noyau de communication
             const chat = ai.chats.create({
                 model: "gemini-3-flash-preview",
                 config: {
@@ -70,7 +67,6 @@ Langue : Français impeccable, teinté de futurisme.`,
                 history: chatHistory
             });
 
-            // 3. Transmission du message au noyau
             const result = await chat.sendMessage({ message: userMessage });
             const responseText = result.text;
             
