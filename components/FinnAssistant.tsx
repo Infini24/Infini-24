@@ -149,6 +149,8 @@ const FinnAssistant: React.FC = () => {
                         <div className="p-4 bg-slate-900/50 border-t border-white/5">
                             <div className="relative">
                                 <input 
+                                    id="finn-input"
+                                    name="finn-input"
                                     type="text" 
                                     value={input}
                                     onChange={(e) => setInput(e.target.value)}
