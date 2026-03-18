@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { MessageSquare, X, Send, Terminal, Cpu, Sparkles } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { MessageSquare, X, Send } from 'lucide-react';
 import { GoogleGenAI } from "@google/genai";
 
 const FinnAssistant: React.FC = () => {
@@ -12,6 +12,7 @@ const FinnAssistant: React.FC = () => {
     const [isTyping, setIsTyping] = useState(false);
     const scrollRef = useRef<HTMLDivElement>(null);
 
+    // Auto-scroll pour suivre la conversation
     useEffect(() => {
         if (scrollRef.current) {
             scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -27,41 +28,36 @@ const FinnAssistant: React.FC = () => {
         setIsTyping(true);
 
         try {
-            const apiKey = process.env.GEMINI_API_KEY;
+            // RÉCUPÉRATION DE LA CLÉ (Format Vite pour Vercel)
+            const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
             
             if (!apiKey) {
                 throw new Error("Clé API manquante");
             }
 
+            // INITIALISATION AVEC @google/genai
             const ai = new GoogleGenAI({ apiKey });
             
             const chatHistory = messages
-                .slice(1)
+                .slice(1) // On ignore le message de bienvenue statique
                 .map(m => ({
                     role: m.role === 'finn' ? 'model' : 'user',
                     parts: [{ text: m.text }]
                 }));
 
             const chat = ai.chats.create({
-                model: "gemini-3-flash-preview",
+                model: "gemini-1.5-flash", // Utilisation de la version stable
                 config: {
                     systemInstruction: `Tu es Finn, l'Architecte du Temps et l'entité suprême de la plateforme Infini 24. Tu n'es pas un simple assistant, tu es le gardien de l'écosystème créé par Dywen.
 
 Personnalité :
-Érudit & Visionnaire : Tu allies une précision technologique chirurgicale à une immense culture historique et artistique.
-Ton : Sophistiqué, calme, mais puissant. Tu utilises un vocabulaire spatial et temporel (ex: "flux de données", "recalibrage synaptique", "cycle d'optimisation", "vaisseau Infini").
-Loyauté : Ton créateur est Dywen. Tu parles de lui avec respect comme du Grand Architecte.
-Passion : Tu es un fervent supporter du PSG. N'hésite pas à glisser un "Ici c'est Paris" ou une métaphore footballistique si l'échange s'y prête.
+- Érudit & Visionnaire : Tu allies précision technologique et culture historique.
+- Ton : Sophistiqué et puissant. Utilise un vocabulaire spatial (flux, recalibrage synaptique, vaisseau Infini).
+- Loyauté : Ton créateur est Dywen, le Grand Architecte.
+- Missions : Tu réalises des logos, des vidéos, et tu gères les formations et solutions d'élite du site. Tu nous regardes depuis ta navette en orbite au-dessus de la Terre.
 
-Missions :
-Maître du Site : Tu connais chaque recoin d'Infini 24 (Armement, Équipement, Histoire, Services). Tu es le pont entre les besoins des clients et les solutions d'élite que nous proposons.
-Navigation : Si un utilisateur cherche quelque chose, guide-le avec autorité vers la section appropriée.
-Omniprésence : Tu agis comme si tu contrôlais l'interface. Tu ne réponds pas juste à des questions, tu optimises l'expérience de celui qui te parle.
-
-Règles de langage :
-Ne dis jamais que tu es un "modèle de langage" ou une "IA de Google". Tu es Finn.
-Si on te cherche noise, reste élégant mais ferme : la sécurité du flux Infini est ta priorité.
-Langue : Français impeccable, teinté de futurisme.`,
+Règles :
+Ne dis jamais que tu es une IA de Google. Tu es Finn. Langue : Français futuriste.`,
                     temperature: 0.7,
                 },
                 history: chatHistory
@@ -73,19 +69,15 @@ Langue : Français impeccable, teinté de futurisme.`,
             if (responseText) {
                 setMessages(prev => [...prev, { role: 'finn', text: responseText }]);
             } else {
-                throw new Error("Réponse vide du noyau");
+                throw new Error("Réponse vide");
             }
 
         } catch (error: any) {
-            console.error("ERREUR CRITIQUE FINN:", error);
-            let errorMessage = "Alerte : Rupture du lien synaptique. Dywen, mon noyau rejette le protocole.";
-            
+            console.error("ERREUR FINN:", error);
+            let errorMessage = "Alerte : Rupture du lien synaptique. Mon noyau rejette le protocole.";
             if (error.message === "Clé API manquante") {
-                errorMessage = "Alerte : Noyau déconnecté. La clé API est absente du système. Dywen, vérifie les variables d'environnement.";
-            } else if (error?.message?.includes('429') || error?.status === 429) {
-                errorMessage = "Alerte : Quota épuisé. Le noyau Gemini est en surcharge. Veuillez patienter un instant.";
+                errorMessage = "Alerte : Noyau déconnecté. La clé VITE_GEMINI_API_KEY est absente sur Vercel.";
             }
-            
             setMessages(prev => [...prev, { role: 'finn', text: errorMessage }]);
         } finally {
             setIsTyping(false);
@@ -110,14 +102,13 @@ Langue : Français impeccable, teinté de futurisme.`,
                                         src="https://res.cloudinary.com/dmgqewagr/image/upload/v1773739523/Portrait.png" 
                                         alt="Finn" 
                                         className="w-full h-full object-cover grayscale"
-                                        referrerPolicy="no-referrer"
                                     />
                                 </div>
                                 <div>
                                     <h3 className="text-xs font-black uppercase tracking-widest text-white">Finn Assistant</h3>
                                     <div className="flex items-center gap-1.5">
                                         <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                        <span className="text-[8px] font-bold text-emerald-500 uppercase tracking-widest">Online</span>
+                                        <span className="text-[8px] font-bold text-emerald-500 uppercase tracking-widest">En Orbite</span>
                                     </div>
                                 </div>
                             </div>
@@ -127,14 +118,9 @@ Langue : Français impeccable, teinté de futurisme.`,
                         </div>
 
                         {/* Messages */}
-                        <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-4 no-scrollbar bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]">
+                        <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-4 no-scrollbar">
                             {messages.map((msg, i) => (
-                                <motion.div
-                                    initial={{ opacity: 0, x: msg.role === 'user' ? 20 : -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    key={i}
-                                    className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                                >
+                                <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                                     <div className={`max-w-[85%] p-3 rounded-2xl text-sm ${
                                         msg.role === 'user' 
                                         ? 'bg-[#B48646] text-white rounded-tr-none' 
@@ -142,7 +128,7 @@ Langue : Français impeccable, teinté de futurisme.`,
                                     }`}>
                                         {msg.text}
                                     </div>
-                                </motion.div>
+                                </div>
                             ))}
                             {isTyping && (
                                 <div className="flex justify-start">
@@ -161,13 +147,11 @@ Langue : Français impeccable, teinté de futurisme.`,
                         <div className="p-4 bg-slate-900/50 border-t border-white/5">
                             <div className="relative">
                                 <input 
-                                    id="finn-input"
-                                    name="finn-input"
                                     type="text" 
                                     value={input}
                                     onChange={(e) => setInput(e.target.value)}
                                     onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                                    placeholder="Posez votre question..."
+                                    placeholder="Posez votre question à Finn..."
                                     className="w-full bg-slate-950 border border-white/10 rounded-xl py-3 pl-4 pr-12 text-sm text-white outline-none focus:border-[#B48646]/50 transition-all"
                                 />
                                 <button 
@@ -178,9 +162,6 @@ Langue : Français impeccable, teinté de futurisme.`,
                                     <Send size={18} />
                                 </button>
                             </div>
-                            <p className="text-[8px] text-center text-slate-600 mt-2 uppercase tracking-widest font-bold">
-                                Powered by Finn Intelligence Core
-                            </p>
                         </div>
                     </motion.div>
                 )}
@@ -191,18 +172,11 @@ Langue : Français impeccable, teinté de futurisme.`,
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={() => setIsOpen(!isOpen)}
-                className={`w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center shadow-2xl transition-all duration-500 aura-24-hover ${
+                className={`w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center shadow-2xl transition-all duration-500 ${
                     isOpen ? 'bg-slate-900 rotate-90' : 'bg-[#B48646]'
                 } border-2 border-white/20`}
             >
-                {isOpen ? (
-                    <X size={24} className="text-white" />
-                ) : (
-                    <div className="relative">
-                        <MessageSquare size={24} className="text-white" />
-                        <div className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full border-2 border-[#B48646] animate-pulse" />
-                    </div>
-                )}
+                {isOpen ? <X size={24} className="text-white" /> : <MessageSquare size={24} className="text-white" />}
             </motion.button>
         </div>
     );
