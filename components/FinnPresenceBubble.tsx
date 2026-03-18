@@ -121,7 +121,7 @@ const FinnPresenceBubble: React.FC<FinnPresenceBubbleProps> = ({ onNavigate }) =
                       repeat: Infinity,
                       ease: "easeInOut"
                     }}
-                    className="absolute -top-1 -right-1 bg-red-600 text-white text-[8px] md:text-[9px] font-black px-1.5 py-0.5 rounded-full border-2 border-slate-950 shadow-[0_0_10px_rgba(220,38,38,0.5)] z-10"
+                    className="absolute -top-2 -right-1 bg-red-600 text-white text-[9px] md:text-[10px] font-black px-2 py-0.5 rounded-full border-2 border-slate-950 shadow-[0_0_15px_rgba(220,38,38,0.6)] z-[110]"
                   >
                     1
                   </motion.div>
