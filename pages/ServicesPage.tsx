@@ -424,8 +424,8 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                 </button>
               </div>
 
-              <div className="p-5 md:p-8 space-y-6 overflow-y-auto custom-scrollbar flex-1">
-                <div className="space-y-5 md:space-y-8">
+              <div className="p-4 md:p-8 space-y-4 md:space-y-6 overflow-y-auto custom-scrollbar flex-1">
+                <div className="space-y-4 md:space-y-8">
                   {selectedCategory === ServiceType.GRAPHIC_DESIGN && (
                     <div>
                       <label className="block text-[9px] md:text-[10px] font-bold text-slate-500 uppercase tracking-wider ml-1 mb-1.5">Nom de l'entreprise</label>
@@ -510,23 +510,23 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                   )}
 
                   {/* Option Express */}
-                  <div className="pt-1">
-                    <label className="flex items-center gap-3 p-4 bg-white/5 rounded-xl border border-white/10 cursor-pointer hover:bg-white/10 transition-all group">
+                  <div className="pt-0.5">
+                    <label className="flex items-center gap-2 p-3 bg-white/5 rounded-xl border border-white/10 cursor-pointer hover:bg-white/10 transition-all group">
                       <div className="relative flex items-center justify-center">
                         <input 
                           type="checkbox" 
                           checked={isExpress} 
                           onChange={(e) => setIsExpress(e.target.checked)}
-                          className="peer appearance-none w-5 h-5 border-2 border-[#B48646]/30 rounded-lg checked:bg-[#B48646] checked:border-[#B48646] transition-all cursor-pointer"
+                          className="peer appearance-none w-4 h-4 border-2 border-[#B48646]/30 rounded-lg checked:bg-[#B48646] checked:border-[#B48646] transition-all cursor-pointer"
                         />
-                        <Check size={12} className="absolute text-white opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none" strokeWidth={4} />
+                        <Check size={10} className="absolute text-white opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none" strokeWidth={4} />
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center justify-between mb-0.5">
-                          <span className="text-[11px] md:text-base font-black text-white uppercase tracking-tight">Assistance Rapide</span>
+                          <span className="text-[10px] md:text-base font-black text-white uppercase tracking-tight">Assistance Rapide</span>
                           <span className="text-[#B48646] font-black text-xs md:text-lg">+50€</span>
                         </div>
-                        <p className="text-[8px] md:text-[9px] text-slate-500 font-bold uppercase tracking-widest">Livraison Express 24h / 48h</p>
+                        <p className="text-[7px] md:text-[9px] text-slate-500 font-bold uppercase tracking-widest">Livraison Express 24h / 48h</p>
                       </div>
                     </label>
                   </div>
@@ -543,23 +543,23 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                   </div>
                 </div>
 
-                <div className="pt-2">
-                  <div className="bg-slate-950 p-5 md:p-8 rounded-[1.5rem] border border-white/10 text-center relative overflow-hidden">
-                    <div className="absolute top-3 right-3">
-                      <div className="flex items-center gap-1.5 bg-[#B48646]/10 px-2 py-1 rounded-full border border-[#B48646]/20">
-                        <Cpu size={10} className="text-[#B48646]" />
-                        <span className="text-[7px] md:text-[8px] font-black text-[#B48646] uppercase tracking-widest">Finn_Certified</span>
+                <div className="pt-1">
+                  <div className="bg-slate-950 p-4 md:p-8 rounded-[1.5rem] border border-white/10 text-center relative overflow-hidden">
+                    <div className="absolute top-2 right-2">
+                      <div className="flex items-center gap-1 bg-[#B48646]/10 px-1.5 py-0.5 rounded-full border border-[#B48646]/20">
+                        <Cpu size={8} className="text-[#B48646]" />
+                        <span className="text-[6px] md:text-[8px] font-black text-[#B48646] uppercase tracking-widest">Finn_Certified</span>
                       </div>
                     </div>
                     
-                    <div className="space-y-4 md:space-y-6">
+                    <div className="space-y-3 md:space-y-6">
                       <div>
-                        <span className="block text-[9px] md:text-[10px] text-[#B48646] uppercase tracking-widest font-black mb-1">Prix Total Estimé</span>
-                        <span className="text-3xl md:text-5xl font-black text-white">{currentPrice}€</span>
+                        <span className="block text-[8px] md:text-[10px] text-[#B48646] uppercase tracking-widest font-black mb-0.5">Prix Total Estimé</span>
+                        <span className="text-2xl md:text-5xl font-black text-white">{currentPrice}€</span>
                       </div>
 
                       {selectedCategory === ServiceType.VIDEO && (
-                        <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/5">
+                        <div className="grid grid-cols-2 gap-2 pt-3 border-t border-white/5">
                           <div className="text-left">
                             <span className="block text-[7px] md:text-[8px] text-slate-500 uppercase font-black mb-0.5">Durée finale</span>
                             <span className="text-[10px] md:text-base font-bold text-white">
@@ -607,12 +607,12 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
               </div>
 
               {/* Sticky Footer Action */}
-              <div className="p-5 md:p-8 border-t border-white/5 bg-slate-900/95 backdrop-blur-md sticky bottom-0 z-20 shrink-0">
+              <div className="p-4 md:p-8 border-t border-white/5 bg-slate-900/95 backdrop-blur-md sticky bottom-0 z-20 shrink-0">
                 <button 
                   onClick={handleValidate}
-                  className="w-full bg-gradient-to-r from-[#B48646] via-[#E5B066] to-[#B48646] text-white font-black text-sm md:text-xl py-4 md:py-6 rounded-xl md:rounded-2xl shadow-2xl shadow-[#B48646]/30 hover:scale-[1.02] transition-all active:scale-95 flex items-center justify-center gap-3 border border-white/20 aura-24-hover"
+                  className="w-full bg-gradient-to-r from-[#B48646] via-[#E5B066] to-[#B48646] text-white font-black text-xs md:text-xl py-3.5 md:py-6 rounded-xl md:rounded-2xl shadow-2xl shadow-[#B48646]/30 hover:scale-[1.02] transition-all active:scale-95 flex items-center justify-center gap-2 border border-white/20 aura-24-hover"
                 >
-                  Valider la configuration <ArrowRight size={20} className="md:w-6 md:h-6" />
+                  Valider la configuration <ArrowRight size={16} className="md:w-6 md:h-6" />
                 </button>
               </div>
             </div>
