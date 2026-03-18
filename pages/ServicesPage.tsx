@@ -447,9 +447,9 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                             {selectedFormulaId === 'vhs' ? 'Nombre de cassettes' : 'Nombre de rushes / photos'}
                           </span>
                           {selectedFormulaId !== 'vhs' && (
-                            <div className="group relative">
+                            <div className="group relative z-[100]">
                               <HelpCircle size={10} className="text-[#B48646] cursor-help" />
-                              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 p-3 bg-slate-900 border border-[#B48646]/30 rounded-xl text-[10px] text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-2xl">
+                              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 p-3 bg-slate-900 border border-[#B48646]/30 rounded-xl text-[10px] text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-[110] shadow-[0_0_30px_rgba(0,0,0,0.8)]">
                                 <p className="italic leading-relaxed">
                                   {selectedFormulaId === 'short' 
                                     ? '"Rythme ultra-dynamique (1-2s par clip). 10-15 rushes recommandés."'
@@ -544,25 +544,25 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                 </div>
 
                 <div className="pt-0.5">
-                  <div className="bg-slate-950 p-2 md:p-8 rounded-[1.25rem] border border-white/10 text-center relative overflow-hidden">
-                    <div className="absolute top-1.5 right-1.5">
+                  <div className="bg-slate-950 p-2 md:p-6 rounded-xl border border-white/10 text-center relative overflow-hidden">
+                    <div className="absolute top-1 right-1">
                       <div className="flex items-center gap-1 bg-[#B48646]/10 px-1 py-0.5 rounded-full border border-[#B48646]/20">
-                        <Cpu size={7} className="text-[#B48646]" />
-                        <span className="text-[5px] md:text-[8px] font-black text-[#B48646] uppercase tracking-widest">Finn_Certified</span>
+                        <Cpu size={6} className="text-[#B48646]" />
+                        <span className="text-[5px] md:text-[7px] font-black text-[#B48646] uppercase tracking-widest">Finn_Certified</span>
                       </div>
                     </div>
                     
-                    <div className="space-y-1.5 md:space-y-6">
+                    <div className="space-y-1 md:space-y-4">
                       <div>
-                        <span className="block text-[6px] md:text-[10px] text-[#B48646] uppercase tracking-widest font-black mb-0.5">Prix Total Estimé</span>
-                        <span className="text-lg md:text-5xl font-black text-white">{currentPrice}€</span>
+                        <span className="block text-[6px] md:text-[9px] text-[#B48646] uppercase tracking-widest font-black mb-0">Prix Total Estimé</span>
+                        <span className="text-base md:text-4xl font-black text-white leading-none">{currentPrice}€</span>
                       </div>
 
                       {selectedCategory === ServiceType.VIDEO && (
-                        <div className="grid grid-cols-2 gap-2 pt-1.5 border-t border-white/5">
+                        <div className="grid grid-cols-2 gap-2 pt-1 border-t border-white/5">
                           <div className="text-left">
-                            <span className="block text-[5px] md:text-[8px] text-slate-500 uppercase font-black mb-0.5">Durée finale</span>
-                            <span className="text-[8px] md:text-base font-bold text-white">
+                            <span className="block text-[5px] md:text-[7px] text-slate-500 uppercase font-black mb-0">Durée finale</span>
+                            <span className="text-[8px] md:text-sm font-bold text-white">
                               {(() => {
                                 if (selectedFormulaId === 'short') {
                                   const totalSeconds = photos * 1.5;
@@ -583,8 +583,8 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                             </span>
                           </div>
                           <div className="text-left">
-                            <span className="block text-[5px] md:text-[8px] text-slate-500 uppercase font-black mb-0.5">Musiques</span>
-                            <span className="text-[8px] md:text-base font-bold text-white">
+                            <span className="block text-[5px] md:text-[7px] text-slate-500 uppercase font-black mb-0">Musiques</span>
+                            <span className="text-[8px] md:text-sm font-bold text-white">
                               {selectedFormulaId === 'short' || selectedFormulaId === 'ads' 
                                 ? '1 titre dynamique' 
                                 : selectedFormulaId === 'vhs' 
@@ -594,11 +594,10 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                           </div>
                         </div>
                       )}
-                      <div className="text-left pt-1.5 border-t border-white/5">
-                        <span className="block text-[5px] md:text-[8px] text-slate-500 uppercase font-black mb-0.5">Inclus par défaut</span>
-                        <p className="text-[7px] md:text-xs text-slate-400 font-medium leading-tight">
-                          Support graphique complet (habillage texte, transitions pro, effets Ken Burns, générique), retouches légères
-                          {isExpress && <span className="text-[#B48646] font-bold"> + Option Express (24h/48h)</span>}
+                      <div className="text-left pt-1 border-t border-white/5">
+                        <p className="text-[7px] md:text-xs text-slate-500 font-medium leading-tight">
+                          Support graphique complet, transitions pro, effets Ken Burns, générique, retouches légères
+                          {isExpress && <span className="text-[#B48646] font-bold"> + Option Express</span>}
                         </p>
                       </div>
                     </div>

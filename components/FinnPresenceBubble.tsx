@@ -98,18 +98,20 @@ const FinnPresenceBubble: React.FC<FinnPresenceBubbleProps> = ({ onNavigate }) =
               </div>
 
               {/* Portrait Bubble */}
-              <div className="relative w-12 h-12 md:w-14 md:h-14 bg-slate-950/80 backdrop-blur-xl border-2 border-[#B48646]/60 rounded-full p-0.5 shadow-[0_0_20px_rgba(180,134,70,0.3)] overflow-hidden transition-transform duration-500 group-hover:scale-110 group-hover:border-[#B48646]">
-                <img 
-                  src="https://res.cloudinary.com/dmgqewagr/image/upload/v1773739523/Portrait.png" 
-                  alt="Finn" 
-                  className="w-full h-full object-cover rounded-full grayscale group-hover:grayscale-0 transition-all duration-700"
-                  referrerPolicy="no-referrer"
-                />
+              <div className="relative w-12 h-12 md:w-14 md:h-14">
+                <div className="w-full h-full bg-slate-950/80 backdrop-blur-xl border-2 border-[#B48646]/60 rounded-full p-0.5 shadow-[0_0_20px_rgba(180,134,70,0.3)] overflow-hidden transition-transform duration-500 group-hover:scale-110 group-hover:border-[#B48646]">
+                  <img 
+                    src="https://res.cloudinary.com/dmgqewagr/image/upload/v1773739523/Portrait.png" 
+                    alt="Finn" 
+                    className="w-full h-full object-cover rounded-full grayscale group-hover:grayscale-0 transition-all duration-700"
+                    referrerPolicy="no-referrer"
+                  />
+                  
+                  {/* Online Indicator */}
+                  <div className="absolute bottom-1.5 right-1.5 w-3 h-3 bg-emerald-500 rounded-full border-2 border-slate-950 shadow-lg" />
+                </div>
                 
-                {/* Online Indicator */}
-                <div className="absolute bottom-1.5 right-1.5 w-3 h-3 bg-emerald-500 rounded-full border-2 border-slate-950 shadow-lg" />
-                
-                {/* Notification Badge (if not expanded) */}
+                {/* Notification Badge (if not expanded) - NOW OUTSIDE overflow-hidden */}
                 {!isExpanded && (
                   <motion.div 
                     initial={{ scale: 0 }}
@@ -121,7 +123,7 @@ const FinnPresenceBubble: React.FC<FinnPresenceBubbleProps> = ({ onNavigate }) =
                       repeat: Infinity,
                       ease: "easeInOut"
                     }}
-                    className="absolute -top-3 -right-2 bg-red-600 text-white text-[10px] md:text-[11px] font-black px-2 py-0.5 rounded-full border-2 border-slate-950 shadow-[0_0_20px_rgba(220,38,38,0.7)] z-[110]"
+                    className="absolute -top-1.5 -right-1.5 bg-red-600 text-white text-[10px] md:text-[11px] font-black px-2 py-0.5 rounded-full border-2 border-slate-950 shadow-[0_0_20px_rgba(220,38,38,0.8)] z-[120]"
                   >
                     1
                   </motion.div>
