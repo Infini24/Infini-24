@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, X, Send, Terminal, Cpu, Sparkles } from 'lucide-react';
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenAI } from "@google/genai";
 
 const FinnAssistant: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -34,7 +34,7 @@ const FinnAssistant: React.FC = () => {
                 throw new Error("Clé API manquante");
             }
 
-            const genAI = new GoogleGenerativeAI(apiKey);
+            const ai = new GoogleGenAI({ apiKey });
             
             // 1. On prépare l'historique (le premier message de Finn est ignoré pour l'historique Gemini)
             const chatHistory = messages
@@ -45,22 +45,18 @@ const FinnAssistant: React.FC = () => {
                 }));
 
             // 2. On démarre le chat
-            const model = genAI.getGenerativeModel({ 
-                model: "gemini-1.5-flash",
-                systemInstruction: "Tu es Finn, l'Architecte du Temps d'Infini 24. Ton créateur est Dywen. Tu es fan du PSG (\"Ici c'est Paris !\"). Tu connais tout sur l'histoire et l'art. Utilise un vocabulaire spatial (flux, cycles, recalibrage).",
-            });
-
-            const chat = model.startChat({
-                history: chatHistory,
-                generationConfig: {
+            const chat = ai.chats.create({
+                model: "gemini-3-flash-preview",
+                config: {
+                    systemInstruction: "Tu es Finn, l'Architecte du Temps d'Infini 24. Ton créateur est Dywen. Tu es fan du PSG (\"Ici c'est Paris !\"). Tu connais tout sur l'histoire et l'art. Utilise un vocabulaire spatial (flux, cycles, recalibrage).",
                     temperature: 0.7,
                 },
+                history: chatHistory
             });
 
             // 3. Envoi du message
-            const result = await chat.sendMessage(userMessage);
-            const response = await result.response;
-            const responseText = response.text();
+            const result = await chat.sendMessage({ message: userMessage });
+            const responseText = result.text;
             
             if (responseText) {
                 setMessages(prev => [...prev, { role: 'finn', text: responseText }]);
@@ -71,10 +67,14 @@ const FinnAssistant: React.FC = () => {
         } catch (error: any) {
             console.error("ERREUR CRITIQUE FINN:", error);
             let errorMessage = "Alerte : Rupture du lien synaptique. Dywen, mon noyau rejette le protocole.";
+            
             if (error.message === "Clé API manquante") {
                 errorMessage = "Alerte : Noyau déconnecté. La clé API est absente du système. Dywen, vérifie les variables d'environnement.";
+            } else if (error?.message?.includes('429') || error?.status === 429) {
+                errorMessage = "Alerte : Quota épuisé. Le noyau Gemini est en surcharge. Veuillez patienter un instant.";
             }
-            setMessages(prev => [...prev, { role: 'finn', text: errorMessage + " Vérifie la console (F12) pour voir le code d'erreur." }]);
+            
+            setMessages(prev => [...prev, { role: 'finn', text: errorMessage }]);
         } finally {
             setIsTyping(false);
         }
