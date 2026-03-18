@@ -160,7 +160,8 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
   // Config state
   const [companyName, setCompanyName] = useState('');
   const [details, setDetails] = useState('');
-  const [photos, setPhotos] = useState<number>(50);
+  const [photos, setPhotos] = useState<number>(60);
+  const [isExpress, setIsExpress] = useState(false);
   
   const [showProjectModal, setShowProjectModal] = useState(false);
   const [currentServiceName, setCurrentServiceName] = useState("");
@@ -171,15 +172,17 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
     { id: 'identity_complete', label: 'Pack Identité Complète', price: 370, desc: 'Logo + Charte + Réseaux' },
     { id: 'logo_creation', label: 'Création & Refonte Logo', price: 200, desc: 'Logo vectoriel haute qualité' },
     { id: 'print', label: 'Cartes de Visite & Flyers', price: 50, desc: 'Design prêt pour impression' },
-    { id: 'social_kit', label: 'Kit Réseaux Sociaux', price: 120, desc: 'Bannières et avatars pro' }
+    { id: 'social_kit', label: 'Kit Réseaux Sociaux', price: 120, desc: 'Bannières et avatars pro' },
+    { id: 'retouch_express', label: 'Retouche Express', price: 25, desc: 'Correction rapide & pro' }
   ];
 
   const videoTypes = [
-    { id: 'birthday', label: 'Anniversaire / Retraite', price: 40, desc: 'Émotion et souvenirs' },
-    { id: 'wedding', label: 'Mariage / Baptême', price: 60, desc: 'Le plus beau jour' },
-    { id: 'funeral', label: 'Hommage & Obsèques', price: 40, desc: 'Respect et dignité' },
+    { id: 'birthday', label: 'Anniversaire / Retraite', price: 190, desc: 'Forfait 100 photos incluses' },
+    { id: 'wedding', label: 'Mariage / Baptême', price: 230, desc: 'Forfait 100 photos incluses' },
+    { id: 'funeral', label: 'Hommage & Obsèques', price: 190, desc: 'Forfait 100 photos incluses' },
     { id: 'short', label: 'Short / TikTok / Réel', price: 20, desc: 'Format vertical dynamique' },
-    { id: 'ads', label: 'Publicité Express', price: 50, desc: 'Boostez votre business' }
+    { id: 'ads', label: 'Publicité Express', price: 50, desc: 'Boostez votre business' },
+    { id: 'vhs', label: 'Numérisation VHS', price: 15, desc: 'Vos cassettes sur clé USB/Cloud' }
   ];
 
   const assistanceFormulas = [
@@ -190,31 +193,33 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
   const calculatePrice = () => {
     if (!selectedFormulaId) return 0;
 
-    if (selectedCategory === ServiceType.GRAPHIC_DESIGN) {
-      const f = graphicFormulas.find(f => f.id === selectedFormulaId);
-      return f ? f.price : 0;
-    }
-
     if (selectedCategory === ServiceType.VIDEO) {
       const f = videoTypes.find(f => f.id === selectedFormulaId);
       if (!f) return 0;
       
       let basePrice = f.price;
-      let photoCost = 0;
+      let extraCost = 0;
       
-      if (selectedFormulaId === 'short') {
-        photoCost = Math.max(0, (photos - 5) * 2);
+      if (selectedFormulaId === 'vhs') {
+        basePrice = basePrice * photos;
+      } else if (selectedFormulaId === 'short') {
+        extraCost = Math.max(0, (photos - 10) * 1);
       } else if (selectedFormulaId === 'ads') {
-        photoCost = Math.max(0, (photos - 10) * 3);
+        extraCost = Math.max(0, (photos - 15) * 2);
       } else {
-        photoCost = photos * 0.5;
+        // Forfaits 190€ / 230€
+        // Inclut 100 photos, puis 1€ par photo sup
+        extraCost = Math.max(0, (photos - 100) * 1);
       }
-      return basePrice + photoCost;
+      
+      const total = basePrice + extraCost + (isExpress ? 50 : 0);
+      return Math.round(total);
     }
 
-    if (selectedCategory === ServiceType.ASSISTANCE) {
-      const f = assistanceFormulas.find(f => f.id === selectedFormulaId);
-      return f ? f.price * photos : 0;
+    if (selectedCategory === ServiceType.GRAPHIC_DESIGN) {
+      const f = graphicFormulas.find(f => f.id === selectedFormulaId);
+      if (!f) return 0;
+      return f.price + (isExpress ? 50 : 0);
     }
 
     return 0;
@@ -234,27 +239,29 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
     if (selectedCategory === ServiceType.GRAPHIC_DESIGN) {
       const f = graphicFormulas.find(f => f.id === selectedFormulaId);
       serviceName = f?.label || "";
-      fullDetails = `• Entreprise : ${companyName}\n• Préférences : ${details}`;
+      fullDetails = `• Entreprise : ${companyName}\n• Option Express : ${isExpress ? 'OUI (+50€)' : 'NON'}\n• Préférences : ${details}`;
     } else if (selectedCategory === ServiceType.VIDEO) {
       const f = videoTypes.find(f => f.id === selectedFormulaId);
-      serviceName = `Vidéo: ${f?.label}`;
-      fullDetails = `• Médias : ${photos}\n• Détails : ${details}`;
-    } else {
-      const f = assistanceFormulas.find(f => f.id === selectedFormulaId);
       serviceName = f?.label || "";
-      fullDetails = `• Quantité : ${photos}\n• Détails : ${details}`;
+      const unitLabel = selectedFormulaId === 'vhs' ? 'Cassettes' : 'Médias';
+      const totalSeconds = photos < 60 ? 240 : photos * 4;
+      const m = Math.floor(totalSeconds / 60);
+      const s = totalSeconds % 60;
+      const musicCount = photos <= 60 ? 1 : photos <= 120 ? 2 : 3;
+      
+      fullDetails = `• ${unitLabel} : ${photos}\n• Durée estimée : ${m}min${s > 0 ? s : ''}\n• Musiques : ${musicCount}\n• Option Express : ${isExpress ? 'OUI (+50€)' : 'NON'}\n• Inclus : Support graphique complet (habillage texte, transitions pro, effets Ken Burns, générique), retouches légères\n• Détails : ${details}`;
     }
 
     setCurrentServiceName(serviceName);
     setCurrentServicePrice(currentPrice);
     setCurrentServiceDetails(fullDetails);
     setShowProjectModal(true);
+    setSelectedFormulaId(null); // Close the config modal
   };
 
   const services = [
     { type: ServiceType.GRAPHIC_DESIGN, icon: Palette, label: "Design Graphique", desc: "Logos & Identité" },
-    { type: ServiceType.VIDEO, icon: Video, label: "Vidéo & Souvenirs", desc: "Montages Pro" },
-    { type: ServiceType.ASSISTANCE, icon: Zap, label: "Assistance Rapide", desc: "Retouches Express" }
+    { type: ServiceType.VIDEO, icon: Video, label: "Vidéo & Souvenirs", desc: "Montages Pro" }
   ];
 
   return (
@@ -299,7 +306,7 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
 
       {/* Main 3-Column Layout */}
       <div className="max-w-[1600px] mx-auto px-4 md:px-8 w-full pb-24">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start max-w-5xl mx-auto">
           
           {/* Column 1: Design Graphique */}
           <div className="space-y-6">
@@ -353,7 +360,7 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                   onClick={() => {
                     setSelectedCategory(ServiceType.VIDEO);
                     setSelectedFormulaId(f.id);
-                    setPhotos(f.id === 'short' ? 5 : (f.id === 'ads' ? 10 : 50));
+                    setPhotos(f.id === 'short' ? 5 : (f.id === 'ads' ? 10 : (f.id === 'vhs' ? 1 : 60)));
                   }}
                   className={`w-full text-left p-6 rounded-[2rem] border-2 transition-all flex items-center justify-between group ${
                     selectedCategory === ServiceType.VIDEO && selectedFormulaId === f.id
@@ -375,54 +382,36 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
               ))}
             </div>
           </div>
+        </div>
 
-          {/* Column 3: Assistance Rapide */}
-          <div className="space-y-6">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="p-3 bg-[#B48646]/10 rounded-2xl text-[#B48646]">
-                <Zap size={24} />
-              </div>
-              <h3 className="text-2xl font-black text-white tracking-tight">Assistance Rapide</h3>
-            </div>
-            <div className="space-y-4">
-              {assistanceFormulas.map((f) => (
-                <button
-                  key={f.id}
-                  onClick={() => {
-                    setSelectedCategory(ServiceType.ASSISTANCE);
-                    setSelectedFormulaId(f.id);
-                    setPhotos(1);
-                  }}
-                  className={`w-full text-left p-6 rounded-[2rem] border-2 transition-all flex items-center justify-between group ${
-                    selectedCategory === ServiceType.ASSISTANCE && selectedFormulaId === f.id
-                      ? "bg-[#B48646]/10 border-[#B48646] shadow-xl shadow-[#B48646]/10"
-                      : "bg-slate-900/40 border-transparent hover:border-white/10 hover:bg-slate-900/60"
-                  }`}
-                >
-                  <div className="flex items-center gap-4">
-                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${selectedCategory === ServiceType.ASSISTANCE && selectedFormulaId === f.id ? 'border-[#B48646]' : 'border-slate-600'}`}>
-                      {selectedCategory === ServiceType.ASSISTANCE && selectedFormulaId === f.id && <div className="w-3 h-3 rounded-full bg-[#B48646]" />}
-                    </div>
-                    <div>
-                      <span className="block font-black text-white text-base md:text-lg">{f.label}</span>
-                      <span className="text-xs text-slate-500 font-bold uppercase tracking-wider">{f.desc}</span>
-                    </div>
-                  </div>
-                  <span className="font-black text-[#B48646] text-lg md:text-xl">{f.price}€</span>
-                </button>
-              ))}
-            </div>
-
-            {/* Config Panel Integrated below Assistance or as a separate section */}
-            {selectedFormulaId && (
-              <div className="bg-slate-900/60 backdrop-blur-xl p-8 rounded-[2.5rem] border border-white/10 shadow-2xl space-y-8 animate-in zoom-in duration-500 mt-8">
+        {/* Floating Config Panel (Modal) */}
+        {selectedFormulaId && (
+          <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 overflow-y-auto">
+            <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-md" onClick={() => setSelectedFormulaId(null)}></div>
+            
+            <div className="relative bg-slate-900 sm:rounded-[2.5rem] rounded-t-[2rem] border border-white/10 shadow-2xl w-full max-w-2xl animate-in slide-in-from-bottom sm:zoom-in duration-500 overflow-hidden">
+              {/* Modal Header */}
+              <div className="p-6 border-b border-white/5 flex items-center justify-between sticky top-0 bg-slate-900 z-10">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-[#B48646]/20 rounded-lg text-[#B48646]">
-                    <Sparkles size={16} />
+                    <Sparkles size={18} />
                   </div>
-                  <h3 className="text-xs font-black text-[#B48646] uppercase tracking-widest">Personnalisation</h3>
+                  <div>
+                    <h3 className="text-sm font-black text-white uppercase tracking-tight">Configuration du projet</h3>
+                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">
+                      {selectedCategory === ServiceType.GRAPHIC_DESIGN ? 'Design Graphique' : 'Vidéo & Souvenirs'}
+                    </p>
+                  </div>
                 </div>
+                <button 
+                  onClick={() => setSelectedFormulaId(null)}
+                  className="p-2 bg-white/5 rounded-full text-slate-400 hover:text-white hover:bg-white/10 transition-all"
+                >
+                  <X size={20} />
+                </button>
+              </div>
 
+              <div className="p-6 sm:p-8 space-y-8 max-h-[80vh] overflow-y-auto custom-scrollbar">
                 <div className="space-y-6">
                   {selectedCategory === ServiceType.GRAPHIC_DESIGN && (
                     <div>
@@ -437,23 +426,97 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                     </div>
                   )}
 
-                  {(selectedCategory === ServiceType.VIDEO || selectedCategory === ServiceType.ASSISTANCE) && (
-                    <div>
-                      <label className="flex justify-between text-[11px] font-bold text-slate-500 uppercase tracking-wider ml-1 mb-3">
-                        <span>{selectedCategory === ServiceType.VIDEO ? 'Nombre de rushes / photos' : 'Quantité'}</span>
-                        <span className="text-[#B48646]">{photos}</span>
-                      </label>
+                  {selectedCategory === ServiceType.VIDEO && (
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <label className="flex items-center gap-2 text-[11px] font-bold text-slate-500 uppercase tracking-wider ml-1">
+                          <span>
+                            {selectedFormulaId === 'vhs' ? 'Nombre de cassettes' : 'Nombre de rushes / photos'}
+                          </span>
+                          {selectedFormulaId !== 'vhs' && (
+                            <div className="group relative">
+                              <HelpCircle size={14} className="text-[#B48646] cursor-help" />
+                              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-3 bg-slate-900 border border-[#B48646]/30 rounded-xl text-[10px] text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-2xl">
+                                <p className="italic">
+                                  {selectedFormulaId === 'short' 
+                                    ? '"Rythme ultra-dynamique (1-2s par clip). Idéal pour capter l\'attention en moins de 60 secondes. 10-15 rushes recommandés."'
+                                    : selectedFormulaId === 'ads'
+                                    ? '"Format percutant axé sur la conversion. Montage nerveux avec texte et musique entraînante. Durée optimale : 15 à 30 secondes."'
+                                    : '"Rythme émotionnel (4s par photo). 100 photos = ~6min40 de souvenirs."'}
+                                </p>
+                                <div className="absolute top-full left-1/2 -translate-x-1/2 border-8 border-transparent border-t-slate-900"></div>
+                              </div>
+                            </div>
+                          )}
+                        </label>
+                        <span className="text-[#B48646] font-black">{photos}</span>
+                      </div>
+                      
                       <input 
                         type="range" 
-                        min={selectedCategory === ServiceType.ASSISTANCE ? "1" : "5"} 
-                        max={selectedCategory === ServiceType.ASSISTANCE ? "20" : "500"} 
-                        step={selectedCategory === ServiceType.ASSISTANCE ? "1" : "5"} 
+                        min={!['vhs', 'short', 'ads'].includes(selectedFormulaId || '') ? "60" : "1"} 
+                        max={selectedFormulaId === 'vhs' ? "50" : "500"} 
+                        step="1" 
                         value={photos} 
                         onChange={(e) => setPhotos(parseInt(e.target.value))} 
                         className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-[#B48646]" 
                       />
+
+                      {!['vhs', 'short', 'ads'].includes(selectedFormulaId || '') && (
+                        <div className="flex gap-4 pt-2">
+                          <div className="flex-1 bg-white/5 p-3 rounded-xl border border-white/5">
+                            <span className="block text-[8px] text-slate-500 uppercase font-black mb-1">Durée Estimée</span>
+                            <span className="text-xs font-bold text-white">
+                              {(() => {
+                                if (selectedFormulaId === 'short') {
+                                  const totalSeconds = photos * 1.5;
+                                  return `~${Math.round(totalSeconds)}s`;
+                                }
+                                if (selectedFormulaId === 'ads') {
+                                  const totalSeconds = photos * 2;
+                                  return `~${Math.round(totalSeconds)}s`;
+                                }
+                                const totalSeconds = photos < 60 ? 240 : photos * 4;
+                                const m = Math.floor(totalSeconds / 60);
+                                const s = totalSeconds % 60;
+                                return `~${m}min${s > 0 ? s : ''}`;
+                              })()}
+                            </span>
+                          </div>
+                          <div className="flex-1 bg-white/5 p-3 rounded-xl border border-white/5">
+                            <span className="block text-[8px] text-slate-500 uppercase font-black mb-1">Musiques</span>
+                            <span className="text-xs font-bold text-white">
+                              {selectedFormulaId === 'short' || selectedFormulaId === 'ads' 
+                                ? '1 titre dynamique' 
+                                : (photos <= 60 ? '1 titre' : photos <= 120 ? '2 titres' : '3 titres et +')}
+                            </span>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )}
+
+                  {/* Option Express */}
+                  <div className="pt-2">
+                    <label className="flex items-center gap-4 p-5 bg-white/5 rounded-2xl border border-white/10 cursor-pointer hover:bg-white/10 transition-all group">
+                      <div className="relative flex items-center justify-center">
+                        <input 
+                          type="checkbox" 
+                          checked={isExpress} 
+                          onChange={(e) => setIsExpress(e.target.checked)}
+                          className="peer appearance-none w-6 h-6 border-2 border-[#B48646]/30 rounded-lg checked:bg-[#B48646] checked:border-[#B48646] transition-all cursor-pointer"
+                        />
+                        <Check size={14} className="absolute text-white opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none" strokeWidth={4} />
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between mb-0.5">
+                          <span className="text-sm font-black text-white uppercase tracking-tight">Assistance Rapide</span>
+                          <span className="text-[#B48646] font-black">+50€</span>
+                        </div>
+                        <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Livraison Express 24h / 48h</p>
+                      </div>
+                    </label>
+                  </div>
 
                   <div>
                     <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider ml-1 mb-2">Détails de votre vision</label>
@@ -475,8 +538,57 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                         <span className="text-[7px] font-black text-[#B48646] uppercase tracking-widest">Finn_Certified</span>
                       </div>
                     </div>
-                    <span className="block text-[10px] text-[#B48646] uppercase tracking-widest font-black mb-1">Tarif Estimé</span>
-                    <span className="text-5xl font-black text-white">{currentPrice}€</span>
+                    
+                    <div className="space-y-4">
+                      <div>
+                        <span className="block text-[10px] text-[#B48646] uppercase tracking-widest font-black mb-1">Prix Total</span>
+                        <span className="text-5xl font-black text-white">{currentPrice}€</span>
+                      </div>
+
+                      {selectedCategory === ServiceType.VIDEO && (
+                        <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/5">
+                          <div className="text-left">
+                            <span className="block text-[8px] text-slate-500 uppercase font-black mb-1">Durée estimée</span>
+                            <span className="text-xs font-bold text-white">
+                              {(() => {
+                                if (selectedFormulaId === 'short') {
+                                  const totalSeconds = photos * 1.5;
+                                  return `~${Math.round(totalSeconds)}s`;
+                                }
+                                if (selectedFormulaId === 'ads') {
+                                  const totalSeconds = photos * 2;
+                                  return `~${Math.round(totalSeconds)}s`;
+                                }
+                                if (selectedFormulaId === 'vhs') {
+                                  return `${photos} cassette(s)`;
+                                }
+                                const totalSeconds = photos < 60 ? 240 : photos * 4;
+                                const m = Math.floor(totalSeconds / 60);
+                                const s = totalSeconds % 60;
+                                return `${m} min ${s > 0 ? s + ' sec' : '00 sec'}`;
+                              })()}
+                            </span>
+                          </div>
+                          <div className="text-left">
+                            <span className="block text-[8px] text-slate-500 uppercase font-black mb-1">Musiques incluses</span>
+                            <span className="text-xs font-bold text-white">
+                              {selectedFormulaId === 'short' || selectedFormulaId === 'ads' 
+                                ? '1 titre dynamique' 
+                                : selectedFormulaId === 'vhs' 
+                                ? 'N/A'
+                                : (photos <= 60 ? '1' : photos <= 120 ? '2' : '3')}
+                            </span>
+                          </div>
+                        </div>
+                      )}
+                      <div className="text-left pt-4 border-t border-white/5">
+                        <span className="block text-[8px] text-slate-500 uppercase font-black mb-1">Inclus par défaut</span>
+                        <p className="text-[10px] text-slate-400 font-medium leading-relaxed">
+                          Support graphique complet (habillage texte, transitions pro, effets Ken Burns, générique), retouches légères
+                          {isExpress && <span className="text-[#B48646] font-bold"> + Option Express (24h/48h)</span>}
+                        </p>
+                      </div>
+                    </div>
                   </div>
 
                   <button 
@@ -487,10 +599,10 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                   </button>
                 </div>
               </div>
-            )}
+            </div>
           </div>
+        )}
         </div>
-      </div>
 
       <ProjectWorkflowModal 
           serviceName={currentServiceName}
