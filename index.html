@@ -191,6 +191,13 @@
       h1, h2, h3, h4, h5, h6, button {
         font-family: 'Poppins', sans-serif;
       }
+      @keyframes scanline {
+        0% { transform: translateY(-100%); }
+        100% { transform: translateY(100%); }
+      }
+      .animate-scanline {
+        animation: scanline 4s linear infinite;
+      }
       .no-scrollbar::-webkit-scrollbar {
         display: none;
       }
