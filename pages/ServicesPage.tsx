@@ -399,12 +399,12 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
 
         {/* Floating Config Panel (Modal) */}
         {selectedFormulaId && (
-          <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 overflow-y-auto">
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 overflow-y-auto">
             <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-md" onClick={() => setSelectedFormulaId(null)}></div>
             
-            <div className="relative bg-slate-900 sm:rounded-[2rem] rounded-t-[1.5rem] border border-white/10 shadow-2xl w-full sm:max-w-lg md:max-w-xl animate-in slide-in-from-bottom sm:zoom-in duration-500 overflow-hidden flex flex-col">
+            <div className="relative bg-slate-900 rounded-[1.5rem] sm:rounded-[2rem] border border-white/10 shadow-2xl w-full sm:max-w-lg md:max-w-xl animate-in slide-in-from-bottom sm:zoom-in duration-500 overflow-hidden flex flex-col max-h-[90vh]">
               {/* Modal Header */}
-              <div className="p-4 md:p-6 border-b border-white/5 flex items-center justify-between sticky top-0 bg-slate-900 z-20">
+              <div className="p-4 md:p-6 border-b border-white/5 flex items-center justify-between sticky top-0 bg-slate-900 z-20 shrink-0">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-[#B48646]/20 rounded-xl text-[#B48646]">
                     <Sparkles size={18} className="md:w-5 md:h-5" />
@@ -424,7 +424,7 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                 </button>
               </div>
 
-              <div className="p-5 md:p-8 space-y-6 overflow-y-auto custom-scrollbar flex-1 max-h-[60vh] sm:max-h-[70vh]">
+              <div className="p-5 md:p-8 space-y-6 overflow-y-auto custom-scrollbar flex-1">
                 <div className="space-y-5 md:space-y-8">
                   {selectedCategory === ServiceType.GRAPHIC_DESIGN && (
                     <div>
@@ -607,7 +607,7 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
               </div>
 
               {/* Sticky Footer Action */}
-              <div className="p-5 md:p-8 border-t border-white/5 bg-slate-900/95 backdrop-blur-md sticky bottom-0 z-20">
+              <div className="p-5 md:p-8 border-t border-white/5 bg-slate-900/95 backdrop-blur-md sticky bottom-0 z-20 shrink-0">
                 <button 
                   onClick={handleValidate}
                   className="w-full bg-gradient-to-r from-[#B48646] via-[#E5B066] to-[#B48646] text-white font-black text-sm md:text-xl py-4 md:py-6 rounded-xl md:rounded-2xl shadow-2xl shadow-[#B48646]/30 hover:scale-[1.02] transition-all active:scale-95 flex items-center justify-center gap-3 border border-white/20 aura-24-hover"
