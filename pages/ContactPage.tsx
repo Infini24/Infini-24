@@ -37,7 +37,7 @@ const ContactPage: React.FC = () => {
             
             <main className="flex-1 flex items-center justify-center px-4 lg:px-12 py-8 md:py-12">
                 
-                <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                <div className="max-w-[1600px] w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                     
                     {/* --- COLONNE GAUCHE (Infos & FAQ) --- */}
                     <div className="lg:col-span-5 flex flex-col gap-8 animate-in fade-in slide-in-from-left duration-700">

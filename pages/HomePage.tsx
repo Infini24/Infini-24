@@ -16,7 +16,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
         <div className="absolute top-1/4 -left-20 w-96 h-96 bg-[#B48646]/10 rounded-full blur-[100px] pointer-events-none"></div>
         <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-blue-500/10 rounded-full blur-[100px] pointer-events-none"></div>
 
-        <div className="max-w-7xl mx-auto px-4 md:px-12 flex flex-col md:grid md:grid-cols-12 md:gap-12 items-center py-8 md:py-16">
+        <div className="max-w-[1600px] mx-auto px-4 md:px-12 flex flex-col md:grid md:grid-cols-12 md:gap-12 items-center py-8 md:py-16">
           
           {/* Left Column: Hero Content */}
           <div className="col-span-12 md:col-span-6 text-center md:text-left animate-in fade-in slide-in-from-left duration-700 mb-8 md:mb-0">

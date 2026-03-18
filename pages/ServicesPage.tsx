@@ -235,11 +235,11 @@ const GraphicDesignForm = ({ onBack, onRequest, isEmbedded }: FormProps) => {
                     </div>
                 </header>
             )}
-            <div className="max-w-5xl mx-auto px-4 sm:px-6 w-full">
-                <form className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8" onSubmit={handleFormSubmit}>
-                    <div className="bg-slate-900/40 backdrop-blur-md p-5 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] border border-white/5 shadow-sm overflow-visible h-fit">
+            <div className="max-w-[1600px] mx-auto px-4 sm:px-6 w-full">
+                <form className="grid grid-cols-1 xl:grid-cols-3 gap-6 md:gap-8" onSubmit={handleFormSubmit}>
+                    <div className="xl:col-span-2 bg-slate-900/40 backdrop-blur-md p-5 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] border border-white/5 shadow-sm overflow-visible h-fit">
                         <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-6">Choisissez votre formule</label>
-                        <div className="grid gap-3 md:gap-5">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-5">
                             {formulas.map((item) => (
                                 <React.Fragment key={item.id}>
                                     <label 
@@ -267,7 +267,7 @@ const GraphicDesignForm = ({ onBack, onRequest, isEmbedded }: FormProps) => {
                             ))}
                         </div>
                     </div>
-                    <div className="hidden lg:block sticky top-6 overflow-visible">
+                    <div className="hidden xl:block sticky top-6 overflow-visible">
                         {subService ? renderConfigPanel() : (
                             <div className="bg-slate-900/40 backdrop-blur-md p-12 rounded-[2.5rem] border border-dashed border-white/10 text-center flex flex-col items-center justify-center min-h-[400px]">
                                 <Palette size={48} className="text-slate-700 mb-4" />
@@ -418,11 +418,11 @@ const VideoForm = ({ onBack, onRequest, isEmbedded }: FormProps) => {
                     </div>
                 </header>
             )}
-            <div className="max-w-5xl mx-auto px-6 w-full overflow-visible">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 overflow-visible">
-                    <div className="bg-slate-900/40 backdrop-blur-xl p-5 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] border border-white/5 shadow-sm mb-6 overflow-visible h-fit">
+            <div className="max-w-[1600px] mx-auto px-6 w-full overflow-visible">
+                <div className="grid grid-cols-1 xl:grid-cols-3 gap-10 overflow-visible">
+                    <div className="xl:col-span-2 bg-slate-900/40 backdrop-blur-xl p-5 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] border border-white/5 shadow-sm mb-6 overflow-visible h-fit">
                         <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-6">Type de projet</label>
-                        <div className="grid grid-cols-1 gap-3">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                             {videoTypes.map((type) => (
                                 <React.Fragment key={type.id}>
                                     <label 
@@ -450,7 +450,7 @@ const VideoForm = ({ onBack, onRequest, isEmbedded }: FormProps) => {
                             ))}
                         </div>
                     </div>
-                    <div className="hidden lg:block sticky top-6 lg:mb-12 overflow-visible z-30">
+                    <div className="hidden xl:block sticky top-6 lg:mb-12 overflow-visible z-30">
                         {subService ? renderPricingSimulator() : (
                             <div className="bg-slate-900/40 backdrop-blur-md p-12 rounded-[2.5rem] border border-dashed border-white/10 text-center flex flex-col items-center justify-center min-h-[400px]">
                                 <Video size={48} className="text-slate-700 mb-4" />
@@ -490,9 +490,9 @@ const AssistanceForm = ({ onBack, onRequest, isEmbedded }: FormProps) => {
                     </div>
                 </header>
             )}
-            <div className="max-w-5xl mx-auto px-6 w-full">
-                <form className="grid grid-cols-1 lg:grid-cols-2 gap-8" onSubmit={handleFormSubmit}>
-                    <div className="bg-slate-900/40 backdrop-blur-md p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] shadow-sm border border-white/5 space-y-6">
+            <div className="max-w-[1600px] mx-auto px-6 w-full">
+                <form className="grid grid-cols-1 xl:grid-cols-3 gap-8" onSubmit={handleFormSubmit}>
+                    <div className="xl:col-span-2 bg-slate-900/40 backdrop-blur-md p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] shadow-sm border border-white/5 space-y-6">
                          <div>
                             <label className="flex justify-between text-sm font-bold text-slate-300 mb-3">
                                 <span>Nombre de photos</span>
@@ -564,28 +564,27 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
         <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tighter relative z-10">
           Nos <span className="text-[#B48646]">Services</span>
         </h2>
-        <p className="text-slate-400 max-w-2xl mx-auto text-sm md:text-base relative z-10">
+        <p className="text-slate-400 max-w-5xl mx-auto text-sm md:text-base relative z-10">
           Choisissez une catégorie pour configurer votre projet sur-mesure et obtenir un tarif instantané.
         </p>
       </div>
 
-      {/* Sélecteur de Service Centralisé (Tabs) */}
+      {/* Sélecteur de Service Centralisé (Tabs) - Now acts as anchor links */}
       <div className="sticky top-0 z-30 bg-slate-950/50 backdrop-blur-xl border-y border-white/5 py-4 mb-8">
-        <div className="max-w-4xl mx-auto px-4">
+        <div className="max-w-[1600px] mx-auto px-4">
           <div className="flex bg-white/5 p-1.5 rounded-[1.5rem] md:rounded-[2rem] gap-1">
             {services.map((s) => {
-              const isActive = selectedService === s.type;
+              const sectionId = s.type === ServiceType.GRAPHIC_DESIGN ? 'design' : (s.type === ServiceType.VIDEO ? 'video' : 'assistance');
               return (
                 <button
                   key={s.type}
-                  onClick={() => setSelectedService(s.type)}
-                  className={`flex-1 flex flex-col md:flex-row items-center justify-center gap-1 md:gap-3 py-3 md:py-4 rounded-xl md:rounded-[1.5rem] transition-all duration-500 ${
-                    isActive 
-                      ? "bg-gradient-to-r from-[#B48646] to-[#E5B066] text-white shadow-lg shadow-[#B48646]/20 scale-[1.02]" 
-                      : "text-slate-400 hover:text-white hover:bg-white/5"
-                  }`}
+                  onClick={() => {
+                    const el = document.getElementById(sectionId);
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className={`flex-1 flex flex-col md:flex-row items-center justify-center gap-1 md:gap-3 py-3 md:py-4 rounded-xl md:rounded-[1.5rem] transition-all duration-500 text-slate-400 hover:text-white hover:bg-white/5`}
                 >
-                  <s.icon size={18} className={isActive ? "text-white" : "text-[#B48646]"} />
+                  <s.icon size={18} className="text-[#B48646]" />
                   <div className="text-center md:text-left">
                     <span className="block text-[10px] md:text-sm font-black uppercase tracking-wider">{s.label}</span>
                     <span className={`hidden md:block text-[8px] uppercase tracking-widest font-bold opacity-60`}>{s.desc}</span>
@@ -598,25 +597,45 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
       </div>
 
       {/* Zone de Formulaire Dynamique */}
-      <div className="flex-1 animate-in fade-in slide-in-from-bottom-4 duration-700">
-        {!selectedService && (
-          <div className="max-w-4xl mx-auto px-4 py-12 text-center">
-            <div className="bg-slate-900/40 backdrop-blur-xl p-12 rounded-[3rem] border border-dashed border-white/10">
-              <HelpCircle size={48} className="text-[#B48646] mx-auto mb-6 opacity-50" />
-              <h3 className="text-xl font-bold text-white mb-2">Prêt à donner vie à vos idées ?</h3>
-              <p className="text-slate-400 text-sm">Sélectionnez une catégorie ci-dessus pour commencer la configuration de votre projet.</p>
+      <div className="flex-1 animate-in fade-in slide-in-from-bottom-4 duration-700 space-y-24 pb-24">
+        <section id="design" className="scroll-mt-32">
+          <div className="max-w-[1600px] mx-auto px-4 mb-8">
+            <div className="flex items-center gap-4 mb-2">
+              <div className="p-3 bg-[#B48646]/10 rounded-2xl text-[#B48646]">
+                <Palette size={24} />
+              </div>
+              <h3 className="text-2xl font-bold text-white">Design Graphique</h3>
             </div>
+            <p className="text-slate-400 text-sm ml-16">Logos, identité visuelle et supports de communication.</p>
           </div>
-        )}
-        {selectedService === ServiceType.GRAPHIC_DESIGN && (
           <GraphicDesignForm onBack={() => {}} onRequest={handleProjectRequest} isEmbedded />
-        )}
-        {selectedService === ServiceType.VIDEO && (
+        </section>
+
+        <section id="video" className="scroll-mt-32">
+          <div className="max-w-[1600px] mx-auto px-4 mb-8">
+            <div className="flex items-center gap-4 mb-2">
+              <div className="p-3 bg-[#B48646]/10 rounded-2xl text-[#B48646]">
+                <Video size={24} />
+              </div>
+              <h3 className="text-2xl font-bold text-white">Vidéo & Souvenirs</h3>
+            </div>
+            <p className="text-slate-400 text-sm ml-16">Montages professionnels pour vos événements et réseaux sociaux.</p>
+          </div>
           <VideoForm onBack={() => {}} onRequest={handleProjectRequest} isEmbedded />
-        )}
-        {selectedService === ServiceType.ASSISTANCE && (
+        </section>
+
+        <section id="assistance" className="scroll-mt-32">
+          <div className="max-w-[1600px] mx-auto px-4 mb-8">
+            <div className="flex items-center gap-4 mb-2">
+              <div className="p-3 bg-[#B48646]/10 rounded-2xl text-[#B48646]">
+                <Zap size={24} />
+              </div>
+              <h3 className="text-2xl font-bold text-white">Assistance Rapide</h3>
+            </div>
+            <p className="text-slate-400 text-sm ml-16">Retouches express et support graphique immédiat.</p>
+          </div>
           <AssistanceForm onBack={() => {}} onRequest={handleProjectRequest} isEmbedded />
-        )}
+        </section>
       </div>
 
       <ProjectWorkflowModal 

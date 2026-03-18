@@ -9,7 +9,7 @@ interface PrivacyPageProps {
 const PrivacyPage: React.FC<PrivacyPageProps> = ({ onBack }) => {
   return (
     <div className="flex flex-col min-h-full bg-transparent relative">
-      <div className="flex-1 px-6 lg:px-8 py-12 md:py-24 max-w-4xl mx-auto w-full">
+      <div className="flex-1 px-6 lg:px-8 py-12 md:py-24 max-w-[1600px] mx-auto w-full">
         <div className="bg-slate-900/40 backdrop-blur-xl p-8 md:p-12 rounded-[2.5rem] shadow-xl border border-white/5 space-y-12">
           <button 
              onClick={onBack}

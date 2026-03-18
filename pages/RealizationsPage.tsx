@@ -98,7 +98,7 @@ const RealizationsPage: React.FC = () => {
           />
       </div>
 
-      <div className="flex-1 px-4 lg:px-8 py-12 md:py-24 max-w-7xl mx-auto w-full space-y-12 relative z-10">
+      <div className="flex-1 px-4 lg:px-8 py-12 md:py-24 max-w-[1600px] mx-auto w-full space-y-12 relative z-10">
         
         {/* --- PROJECTS GALLERY --- */}
         <div className="space-y-12">

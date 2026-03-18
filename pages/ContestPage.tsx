@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Trophy, Gift, Info, X, AlertCircle, Home, Facebook, Hourglass, Timer } from 'lucide-react';
+import { Trophy, Gift, Info, X, AlertCircle, Home, Facebook, Hourglass, Timer, Instagram, Linkedin } from 'lucide-react';
 
 interface ContestPageProps {
   onNavigate?: (index: number) => void;
@@ -55,7 +55,7 @@ const ContestPage: React.FC<ContestPageProps> = ({ onNavigate }) => {
         {/* Background Decorative Elements */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#B48646]/5 rounded-full blur-[120px] pointer-events-none"></div>
 
-        <div className="max-w-2xl w-full animate-in fade-in slide-in-from-bottom-4 duration-700 pb-20 md:pb-0">
+        <div className="max-w-5xl w-full animate-in fade-in slide-in-from-bottom-4 duration-700 pb-20 md:pb-0">
           {/* Main Card - Reduced Size */}
           <div className="bg-slate-900/40 backdrop-blur-xl rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-10 text-white relative overflow-hidden shadow-xl border border-white/5 group">
               {/* Subtle Background Decoration */}
@@ -76,15 +76,33 @@ const ContestPage: React.FC<ContestPageProps> = ({ onNavigate }) => {
                       Nous préparons actuellement notre prochain événement pour vous remercier de votre fidélité. Suivez-nous sur nos réseaux sociaux pour ne rien manquer du lancement !
                   </p>
                   
-                      <div className="flex flex-col md:flex-row items-center gap-3 md:gap-4 w-full md:w-auto pt-2">
+                      <div className="flex flex-wrap items-center justify-center gap-3 md:gap-4 w-full pt-2">
                           <a 
                               href="https://www.facebook.com/profile.php?id=61584316950503" 
                               target="_blank" 
                               rel="noopener noreferrer"
-                              className="w-full md:w-auto bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 md:px-8 py-3 md:py-4 rounded-xl md:rounded-2xl font-bold flex items-center justify-center gap-2 hover:scale-[1.02] transition-all shadow-lg shadow-blue-600/20 text-xs md:text-sm active:scale-95 border border-white/10"
+                              className="flex-1 md:flex-none bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 md:px-8 py-3 md:py-4 rounded-xl md:rounded-2xl font-bold flex items-center justify-center gap-2 hover:scale-[1.02] transition-all shadow-lg shadow-blue-600/20 text-[10px] md:text-sm active:scale-95 border border-white/10"
                           >
-                              <Facebook size={16} className="md:w-5 md:h-5" /> Suivre sur Facebook
+                              <Facebook size={16} className="md:w-5 md:h-5" /> Facebook
                           </a>
+                          <a 
+                              href="https://www.instagram.com/infini24_officiel" 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="flex-1 md:flex-none bg-gradient-to-r from-pink-600 to-purple-600 text-white px-6 md:px-8 py-3 md:py-4 rounded-xl md:rounded-2xl font-bold flex items-center justify-center gap-2 hover:scale-[1.02] transition-all shadow-lg shadow-pink-600/20 text-[10px] md:text-sm active:scale-95 border border-white/10"
+                          >
+                              <Instagram size={16} className="md:w-5 md:h-5" /> Instagram
+                          </a>
+                          <a 
+                              href="https://www.linkedin.com/company/infini24" 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="flex-1 md:flex-none bg-gradient-to-r from-blue-700 to-blue-800 text-white px-6 md:px-8 py-3 md:py-4 rounded-xl md:rounded-2xl font-bold flex items-center justify-center gap-2 hover:scale-[1.02] transition-all shadow-lg shadow-blue-800/20 text-[10px] md:text-sm active:scale-95 border border-white/10"
+                          >
+                              <Linkedin size={16} className="md:w-5 md:h-5" /> LinkedIn
+                          </a>
+                      </div>
+                      <div className="flex flex-col md:flex-row items-center gap-3 md:gap-4 w-full md:w-auto pt-2">
                           <button 
                               onClick={() => onNavigate && onNavigate(0)}
                               className="w-full md:w-auto bg-white/5 text-white border border-white/10 px-6 md:px-8 py-3 md:py-4 rounded-xl md:rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-white/10 transition-all text-xs md:text-sm active:scale-95 backdrop-blur-md"

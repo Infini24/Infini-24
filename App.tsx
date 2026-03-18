@@ -41,7 +41,7 @@ const GlobalHeader = ({
 
   return (
     <header className="sticky top-0 w-full bg-slate-950/80 backdrop-blur-md border-b border-white/5 shadow-sm z-50 flex-none transition-all">
-      <div className="max-w-7xl mx-auto px-3 lg:px-6 h-20 md:h-24 flex items-center justify-between">
+      <div className="max-w-[1600px] mx-auto px-3 lg:px-6 h-20 md:h-24 flex items-center justify-between">
         
         {/* LOGO */}
         <div className="flex items-center gap-2 lg:gap-3 group cursor-pointer shrink-0" onClick={() => onNavigate(0)}>
@@ -101,7 +101,7 @@ const GlobalHeader = ({
 const GlobalFooter = ({ onNavigate }: { onNavigate: (index: number) => void }) => {
   return (
     <footer className="flex-none py-4 px-12 bg-slate-950/80 backdrop-blur-md border-t border-white/5 z-20 hidden md:block">
-      <div className="max-w-7xl mx-auto flex items-center justify-between text-slate-500">
+      <div className="max-w-[1600px] mx-auto flex items-center justify-between text-slate-500">
         <p className="text-[10px] font-bold uppercase tracking-widest">© 2026 Infini 24 • Tous droits réservés</p>
         <div className="flex items-center gap-6">
           <button onClick={() => onNavigate(5)} className="text-[10px] font-bold hover:text-[#B48646] uppercase tracking-widest transition-colors">Confidentialité</button>

@@ -614,7 +614,7 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
           <div className="absolute inset-0" />
         </div>
 
-        <div className="max-w-7xl mx-auto px-4 md:px-12 py-8 md:py-16 relative z-10">
+        <div className="max-w-[1600px] mx-auto px-4 md:px-12 py-8 md:py-16 relative z-10">
           
           {/* Header Section - Ultra-Structured */}
           <div className="mb-12 flex flex-col md:flex-row md:items-start justify-between gap-6 border-b-2 border-[#B48646]/40 pb-8 animate-in fade-in slide-in-from-top duration-1000">
