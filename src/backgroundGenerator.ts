@@ -34,9 +34,8 @@ export const generateBackground = async () => {
 
   // 3. Try Generate
   try {
-    // @ts-ignore
-    const apiKey = import.meta.env?.VITE_GEMINI_API_KEY || process.env.GEMINI_API_KEY;
-    if (!apiKey) return FALLBACK_BG;
+    const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+    if (!apiKey || apiKey === "undefined") return FALLBACK_BG;
 
     const ai = new GoogleGenAI({ apiKey });
     const prompt = "Hyper-realistic deep space galaxy sky for a premium website. Elegant Navy Blue Gradient transition from midnight blue to deep sapphire. A cinematic cycle of a glowing crescent moon and a distant soft golden sun, never appearing together. Vast fields of thousands of tiny, sharp, distant stars with varying brightness drifting slowly. Faint, ethereal cosmic nebulas and stardust. Occasional subtle shooting stars in random directions. Magical, sophisticated, and immersive atmosphere. Panoramic 16:9 format. No text. Clear central area for website content. High resolution, cinematic depth and texture.";
