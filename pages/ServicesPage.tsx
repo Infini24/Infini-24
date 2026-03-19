@@ -168,8 +168,8 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
   const [currentServicePrice, setCurrentServicePrice] = useState<number | string>(0);
   const [currentServiceDetails, setCurrentServiceDetails] = useState("");
   const formulasRef = useRef<HTMLDivElement>(null);
-  const graphicSectionRef = useRef<HTMLDivElement>(null);
-  const videoSectionRef = useRef<HTMLDivElement>(null);
+  const refDesign = useRef<HTMLDivElement>(null);
+  const refVideo = useRef<HTMLDivElement>(null);
   const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
 
   // Close tooltips on scroll or click/touch outside
@@ -189,18 +189,15 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
 
   const scrollToSection = (category: ServiceType) => {
     setActiveTooltip(null); // Close tooltips when switching
-    const targetRef = category === ServiceType.VIDEO ? videoSectionRef : graphicSectionRef;
+    const targetRef = category === ServiceType.VIDEO ? refVideo : refDesign;
     if (targetRef.current) {
-      // Increased offset to ensure titles are fully visible below the sticky header on mobile
-      const yOffset = -120; 
-      const elementPosition = targetRef.current.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.scrollY + yOffset;
-      
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
-      });
+      targetRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+  };
+
+  const handleTabClick = (category: ServiceType) => {
+    setSelectedCategory(category);
+    scrollToSection(category);
   };
 
   useEffect(() => {
@@ -313,17 +310,13 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
       </div>
 
       {/* Top Navigation Bar */}
-      <div className="sticky top-0 z-[100] bg-slate-950/90 backdrop-blur-3xl border-b border-white/5 py-4 mb-10 shadow-2xl shadow-black/50">
+      <div className="sticky top-0 z-[150] bg-slate-950/90 backdrop-blur-3xl border-b border-white/5 py-4 mb-10 shadow-2xl shadow-black/50">
         <div className="max-w-3xl mx-auto px-4">
           <div className="grid grid-cols-2 bg-slate-900/50 p-2 rounded-[2.5rem] gap-2 border border-white/10 shadow-inner">
             {services.map((s) => (
               <button
                 key={s.type}
-                onClick={() => {
-                  setSelectedCategory(s.type);
-                  setSelectedFormulaId(null);
-                  scrollToSection(s.type);
-                }}
+                onClick={() => handleTabClick(s.type)}
                 className={`flex items-center justify-center gap-3 py-4 px-6 rounded-[2rem] font-black text-xs md:text-sm uppercase tracking-widest transition-all duration-500 relative overflow-hidden group ${
                   selectedCategory === s.type
                     ? "bg-gradient-to-br from-[#B48646] via-[#E5B066] to-[#B48646] text-white shadow-[0_10px_20px_rgba(180,134,70,0.3)] scale-[1.02] border border-white/20"
@@ -346,7 +339,7 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start max-w-5xl mx-auto">
           
           {/* Column 1: Design Graphique */}
-          <div ref={graphicSectionRef} className="space-y-6">
+          <div ref={refDesign} className="space-y-6 scroll-mt-32">
             <div className="flex items-center gap-3 mb-4">
               <div className="p-3 bg-[#B48646]/10 rounded-2xl text-[#B48646]">
                 <Palette size={24} />
@@ -385,7 +378,7 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                           >
                             <HelpCircle size={14} className="text-slate-500 hover:text-[#B48646] cursor-help transition-colors" />
                           </button>
-                          <div className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-slate-900 border border-[#B48646]/30 rounded-lg text-[10px] text-slate-300 transition-opacity z-[90] shadow-2xl ${activeTooltip === f.id ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+                          <div className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-slate-900 border border-[#B48646]/30 rounded-lg text-[10px] text-slate-300 transition-opacity z-[50] shadow-2xl ${activeTooltip === f.id ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
                             {f.info}
                             <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-900"></div>
                           </div>
@@ -401,7 +394,7 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
           </div>
 
           {/* Column 2: Vidéo & Souvenirs */}
-          <div ref={videoSectionRef} className="space-y-6">
+          <div ref={refVideo} className="space-y-6 scroll-mt-32">
             <div className="flex items-center gap-3 mb-4">
               <div className="p-3 bg-[#B48646]/10 rounded-2xl text-[#B48646]">
                 <Video size={24} />
@@ -441,7 +434,7 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                           >
                             <HelpCircle size={14} className="text-slate-500 hover:text-[#B48646] cursor-help transition-colors" />
                           </button>
-                          <div className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-slate-900 border border-[#B48646]/30 rounded-lg text-[10px] text-slate-300 transition-opacity z-[90] shadow-2xl ${activeTooltip === f.id ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+                          <div className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-slate-900 border border-[#B48646]/30 rounded-lg text-[10px] text-slate-300 transition-opacity z-[50] shadow-2xl ${activeTooltip === f.id ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
                             {f.info}
                             <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-900"></div>
                           </div>
@@ -453,13 +446,22 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                   <span className="font-black text-[#B48646] text-lg md:text-xl">{f.price}€</span>
                 </button>
               ))}
+
+              {/* Return to Design Button (Mobile optimization) */}
+              <button 
+                onClick={() => handleTabClick(ServiceType.GRAPHIC_DESIGN)}
+                className="w-full mt-8 p-6 rounded-[2rem] border-2 border-[#B48646]/30 bg-slate-900/20 text-[#B48646] font-black text-sm uppercase tracking-widest hover:bg-[#B48646]/10 transition-all flex items-center justify-center gap-3 md:hidden"
+              >
+                <Palette size={20} />
+                Voir Design Graphique
+              </button>
             </div>
           </div>
         </div>
 
         {/* Floating Config Panel (Modal) */}
         {selectedFormulaId && (
-          <div className="fixed inset-0 z-[150] flex items-start justify-center p-4 overflow-y-auto pt-10 pb-10">
+          <div className="fixed inset-0 z-[200] flex items-start justify-center p-4 overflow-y-auto pt-10 pb-10">
             <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-md" onClick={() => setSelectedFormulaId(null)}></div>
             
             <div className="relative bg-slate-900 rounded-[1.5rem] sm:rounded-[2rem] border border-white/10 shadow-2xl w-full sm:max-w-md md:max-w-lg animate-in slide-in-from-bottom sm:zoom-in duration-500 overflow-hidden flex flex-col max-h-[90vh] my-auto">
@@ -470,7 +472,7 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                     <Sparkles size={18} className="md:w-5 md:h-5" />
                   </div>
                   <div>
-                    <h3 className="text-xs md:text-xl font-black text-white uppercase tracking-tight">Configuration du projet</h3>
+                    <h3 className="text-xs md:text-lg font-black text-white uppercase tracking-tight">Configuration du projet</h3>
                     <p className="text-[9px] md:text-[10px] text-slate-500 font-bold uppercase tracking-widest">
                       {selectedCategory === ServiceType.GRAPHIC_DESIGN ? 'Design Graphique' : 'Vidéo & Souvenirs'}
                     </p>
@@ -484,23 +486,23 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                 </button>
               </div>
 
-              <div className="p-3 md:p-5 space-y-2 md:space-y-4 overflow-y-auto custom-scrollbar flex-1">
-                <div className="space-y-2 md:space-y-5">
+              <div className="p-3 md:p-4 space-y-2 md:space-y-3 overflow-y-auto custom-scrollbar flex-1">
+                <div className="space-y-2 md:space-y-4">
                   {selectedCategory === ServiceType.GRAPHIC_DESIGN && (
                     <div>
-                      <label className="block text-[9px] md:text-[10px] font-bold text-slate-500 uppercase tracking-wider ml-1 mb-1.5">Nom de l'entreprise</label>
+                      <label className="block text-[9px] md:text-[10px] font-bold text-slate-500 uppercase tracking-wider ml-1 mb-1">Nom de l'entreprise</label>
                       <input 
                         type="text" 
                         value={companyName} 
                         onChange={(e) => setCompanyName(e.target.value)} 
-                        className="w-full px-4 py-3 border-2 border-white/5 rounded-xl focus:border-[#B48646] outline-none transition-all bg-white/5 text-white text-xs md:text-base font-medium" 
+                        className="w-full px-3 py-2 border-2 border-white/5 rounded-xl focus:border-[#B48646] outline-none transition-all bg-white/5 text-white text-xs md:text-sm font-medium" 
                         placeholder="Ex: Boulangerie Durand" 
                       />
                     </div>
                   )}
 
                   {selectedCategory === ServiceType.VIDEO && (
-                    <div className="space-y-1 md:space-y-3">
+                    <div className="space-y-1 md:space-y-2">
                       <div className="flex items-center justify-between">
                         <label className="flex items-center gap-2 text-[8px] md:text-[10px] font-bold text-slate-500 uppercase tracking-wider ml-1">
                           <span>
@@ -518,7 +520,7 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                               >
                                 <HelpCircle size={10} className="text-[#B48646] cursor-help" />
                               </button>
-                              <div className={`absolute top-full left-1/2 -translate-x-1/2 mt-2 w-56 p-3 bg-slate-900 border border-[#B48646]/30 rounded-xl text-[10px] text-slate-300 transition-opacity z-[90] shadow-[0_0_30px_rgba(0,0,0,0.8)] ${activeTooltip === 'config-photos' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+                              <div className={`absolute top-full left-1/2 -translate-x-1/2 mt-2 w-56 p-3 bg-slate-900 border border-[#B48646]/30 rounded-xl text-[10px] text-slate-300 transition-opacity z-[50] shadow-[0_0_30px_rgba(0,0,0,0.8)] ${activeTooltip === 'config-photos' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
                                 <p className="italic leading-relaxed">
                                   {selectedFormulaId === 'short' 
                                     ? '"Rythme ultra-dynamique (1-2s par clip). 10-15 rushes recommandés."'
@@ -531,7 +533,7 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                             </div>
                           )}
                         </label>
-                        <span className="text-[#B48646] font-black text-sm md:text-lg">{photos}</span>
+                        <span className="text-[#B48646] font-black text-sm md:text-base">{photos}</span>
                       </div>
                       
                       <input 
@@ -546,9 +548,9 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
 
                       {!['vhs', 'short', 'ads'].includes(selectedFormulaId || '') && (
                         <div className="flex gap-2 pt-0.5">
-                          <div className="flex-1 bg-white/5 p-2 rounded-xl border border-white/5">
+                          <div className="flex-1 bg-white/5 p-1.5 rounded-xl border border-white/5">
                             <span className="block text-[6px] md:text-[8px] text-slate-500 uppercase font-black mb-0.5">Durée Estimée</span>
-                            <span className="text-[10px] md:text-base font-bold text-white">
+                            <span className="text-[10px] md:text-sm font-bold text-white">
                               {(() => {
                                 if (selectedFormulaId === 'short') {
                                   const totalSeconds = photos * 1.5;
@@ -565,12 +567,12 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                               })()}
                             </span>
                           </div>
-                          <div className="flex-1 bg-white/5 p-2 rounded-xl border border-white/5">
+                          <div className="flex-1 bg-white/5 p-1.5 rounded-xl border border-white/5">
                             <span className="block text-[6px] md:text-[8px] text-slate-500 uppercase font-black mb-0.5">Musiques</span>
-                            <span className="text-[10px] md:text-base font-bold text-white">
+                            <span className="text-[10px] md:text-sm font-bold text-white">
                               {selectedFormulaId === 'short' || selectedFormulaId === 'ads' 
-                                ? '1 titre dynamique' 
-                                : (photos <= 60 ? '1 titre' : photos <= 120 ? '2 titres' : '3 titres et +')}
+                                ? '1 titre' 
+                                : (photos <= 60 ? '1' : photos <= 120 ? '2' : '3+')}
                             </span>
                           </div>
                         </div>
@@ -580,22 +582,22 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
 
                   {/* Option Express */}
                   <div className="pt-0.5">
-                    <label className="flex items-center gap-2 p-2 bg-white/5 rounded-xl border border-white/10 cursor-pointer hover:bg-white/10 transition-all group">
+                    <label className="flex items-center gap-2 p-1.5 bg-white/5 rounded-xl border border-white/10 cursor-pointer hover:bg-white/10 transition-all group">
                       <div className="relative flex items-center justify-center">
                         <input 
                           type="checkbox" 
                           checked={isExpress} 
                           onChange={(e) => setIsExpress(e.target.checked)}
-                          className="peer appearance-none w-3.5 h-3.5 border-2 border-[#B48646]/30 rounded-lg checked:bg-[#B48646] checked:border-[#B48646] transition-all cursor-pointer"
+                          className="peer appearance-none w-3 h-3 border-2 border-[#B48646]/30 rounded-lg checked:bg-[#B48646] checked:border-[#B48646] transition-all cursor-pointer"
                         />
-                        <Check size={9} className="absolute text-white opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none" strokeWidth={4} />
+                        <Check size={8} className="absolute text-white opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none" strokeWidth={4} />
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center justify-between mb-0.5">
-                          <span className="text-[9px] md:text-base font-black text-white uppercase tracking-tight">Assistance Rapide</span>
-                          <span className="text-[#B48646] font-black text-[10px] md:text-lg">+50€</span>
+                          <span className="text-[8px] md:text-sm font-black text-white uppercase tracking-tight">Assistance Rapide</span>
+                          <span className="text-[#B48646] font-black text-[9px] md:text-base">+50€</span>
                         </div>
-                        <p className="text-[6px] md:text-[9px] text-slate-500 font-bold uppercase tracking-widest">Livraison Express 24h / 48h</p>
+                        <p className="text-[5px] md:text-[8px] text-slate-500 font-bold uppercase tracking-widest">Livraison Express 24h / 48h</p>
                       </div>
                     </label>
                   </div>
@@ -605,7 +607,7 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                     <textarea 
                       value={details} 
                       onChange={(e) => setDetails(e.target.value)} 
-                      className="w-full px-3 py-2 border-2 border-white/5 rounded-xl outline-none text-[10px] md:text-base font-medium focus:border-[#B48646] bg-white/5 text-white transition-all resize-none" 
+                      className="w-full px-2 py-1.5 border-2 border-white/5 rounded-xl outline-none text-[9px] md:text-sm font-medium focus:border-[#B48646] bg-white/5 text-white transition-all resize-none" 
                       rows={2} 
                       placeholder="Couleurs, ambiance, préférences..."
                     ></textarea>
@@ -613,7 +615,7 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                 </div>
 
                 <div className="pt-0.5">
-                  <div className="bg-slate-950 p-2 md:p-4 rounded-xl border border-white/10 text-center relative overflow-hidden">
+                  <div className="bg-slate-950 p-2 md:p-3 rounded-xl border border-white/10 text-center relative overflow-hidden">
                     <div className="absolute top-1 right-1">
                       <div className="flex items-center gap-1 bg-[#B48646]/10 px-1 py-0.5 rounded-full border border-[#B48646]/20">
                         <Cpu size={6} className="text-[#B48646]" />
@@ -621,17 +623,17 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                       </div>
                     </div>
                     
-                    <div className="space-y-1 md:space-y-4">
+                    <div className="space-y-1 md:space-y-2">
                       <div>
-                        <span className="block text-[6px] md:text-[9px] text-[#B48646] uppercase tracking-widest font-black mb-0">Prix Total Estimé</span>
-                        <span className="text-base md:text-3xl font-black text-white leading-none">{currentPrice}€</span>
+                        <span className="block text-[6px] md:text-[8px] text-[#B48646] uppercase tracking-widest font-black mb-0">Prix Total Estimé</span>
+                        <span className="text-base md:text-2xl font-black text-white leading-none">{currentPrice}€</span>
                       </div>
 
                       {selectedCategory === ServiceType.VIDEO && (
                         <div className="grid grid-cols-2 gap-2 pt-1 border-t border-white/5">
                           <div className="text-left">
                             <span className="block text-[5px] md:text-[7px] text-slate-500 uppercase font-black mb-0">Durée finale</span>
-                            <span className="text-[8px] md:text-sm font-bold text-white">
+                            <span className="text-[8px] md:text-xs font-bold text-white">
                               {(() => {
                                 if (selectedFormulaId === 'short') {
                                   const totalSeconds = photos * 1.5;
@@ -653,9 +655,9 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                           </div>
                           <div className="text-left">
                             <span className="block text-[5px] md:text-[7px] text-slate-500 uppercase font-black mb-0">Musiques</span>
-                            <span className="text-[8px] md:text-sm font-bold text-white">
+                            <span className="text-[8px] md:text-xs font-bold text-white">
                               {selectedFormulaId === 'short' || selectedFormulaId === 'ads' 
-                                ? '1 titre dynamique' 
+                                ? '1 titre' 
                                 : selectedFormulaId === 'vhs' 
                                 ? 'N/A'
                                 : (photos <= 60 ? '1' : photos <= 120 ? '2' : '3')}
@@ -663,24 +665,18 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                           </div>
                         </div>
                       )}
-                      <div className="text-left pt-1 border-t border-white/5">
-                        <p className="text-[7px] md:text-xs text-slate-500 font-medium leading-tight">
-                          Support graphique complet, transitions pro, effets Ken Burns, générique, retouches légères
-                          {isExpress && <span className="text-[#B48646] font-bold"> + Option Express</span>}
-                        </p>
-                      </div>
                     </div>
                   </div>
                 </div>
               </div>
 
               {/* Sticky Footer Action */}
-              <div className="p-3 md:p-5 border-t border-white/5 bg-slate-900/95 backdrop-blur-md sticky bottom-0 z-20 shrink-0">
+              <div className="p-2 md:p-3 border-t border-white/5 bg-slate-900/95 backdrop-blur-md sticky bottom-0 z-20 shrink-0">
                 <button 
                   onClick={handleValidate}
-                  className="w-full bg-gradient-to-r from-[#B48646] via-[#E5B066] to-[#B48646] text-white font-black text-xs md:text-xl py-3 md:py-4 rounded-xl md:rounded-2xl shadow-2xl shadow-[#B48646]/30 hover:scale-[1.02] transition-all active:scale-95 flex items-center justify-center gap-2 border border-white/20 aura-24-hover"
+                  className="w-full bg-gradient-to-r from-[#B48646] via-[#E5B066] to-[#B48646] text-white font-black text-[10px] md:text-base py-2 md:py-3 rounded-xl md:rounded-2xl shadow-2xl shadow-[#B48646]/30 hover:scale-[1.02] transition-all active:scale-95 flex items-center justify-center gap-2 border border-white/20 aura-24-hover"
                 >
-                  Valider la configuration <ArrowRight size={14} className="md:w-6 md:h-6" />
+                  Valider la configuration <ArrowRight size={12} className="md:w-5 md:h-5" />
                 </button>
               </div>
             </div>
