@@ -70,7 +70,7 @@ Cordialement.`);
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 sm:p-6">
+    <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6">
       <div className="absolute inset-0 bg-slate-950/95 backdrop-blur-2xl" onClick={onClose}></div>
       <div className="relative bg-slate-900 rounded-[2.5rem] shadow-[0_0_50px_rgba(0,0,0,0.5)] w-full max-w-lg overflow-hidden animate-in zoom-in duration-300 border border-white/10 flex flex-col max-h-[90vh]">
         <div className="border-b border-white/5 p-5 sm:p-6 flex items-center justify-between shrink-0 bg-slate-900/50 backdrop-blur-md">
@@ -192,7 +192,7 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
     const targetRef = category === ServiceType.VIDEO ? videoSectionRef : graphicSectionRef;
     if (targetRef.current) {
       // Increased offset to ensure titles are fully visible below the sticky header on mobile
-      const yOffset = -240; 
+      const yOffset = -120; 
       const elementPosition = targetRef.current.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.scrollY + yOffset;
       
@@ -313,7 +313,7 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
       </div>
 
       {/* Top Navigation Bar */}
-      <div className="sticky top-0 z-30 bg-slate-950/90 backdrop-blur-3xl border-b border-white/5 py-4 mb-10 shadow-2xl shadow-black/50">
+      <div className="sticky top-0 z-[100] bg-slate-950/90 backdrop-blur-3xl border-b border-white/5 py-4 mb-10 shadow-2xl shadow-black/50">
         <div className="max-w-3xl mx-auto px-4">
           <div className="grid grid-cols-2 bg-slate-900/50 p-2 rounded-[2.5rem] gap-2 border border-white/10 shadow-inner">
             {services.map((s) => (
@@ -385,7 +385,7 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                           >
                             <HelpCircle size={14} className="text-slate-500 hover:text-[#B48646] cursor-help transition-colors" />
                           </button>
-                          <div className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-slate-900 border border-[#B48646]/30 rounded-lg text-[10px] text-slate-300 transition-opacity z-[110] shadow-2xl ${activeTooltip === f.id ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+                          <div className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-slate-900 border border-[#B48646]/30 rounded-lg text-[10px] text-slate-300 transition-opacity z-[90] shadow-2xl ${activeTooltip === f.id ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
                             {f.info}
                             <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-900"></div>
                           </div>
@@ -441,7 +441,7 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                           >
                             <HelpCircle size={14} className="text-slate-500 hover:text-[#B48646] cursor-help transition-colors" />
                           </button>
-                          <div className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-slate-900 border border-[#B48646]/30 rounded-lg text-[10px] text-slate-300 transition-opacity z-[110] shadow-2xl ${activeTooltip === f.id ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+                          <div className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-slate-900 border border-[#B48646]/30 rounded-lg text-[10px] text-slate-300 transition-opacity z-[90] shadow-2xl ${activeTooltip === f.id ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
                             {f.info}
                             <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-900"></div>
                           </div>
@@ -459,12 +459,12 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
 
         {/* Floating Config Panel (Modal) */}
         {selectedFormulaId && (
-          <div className="fixed inset-0 z-[100] flex items-start justify-center p-4 overflow-y-auto pt-10 pb-10">
+          <div className="fixed inset-0 z-[150] flex items-start justify-center p-4 overflow-y-auto pt-10 pb-10">
             <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-md" onClick={() => setSelectedFormulaId(null)}></div>
             
-            <div className="relative bg-slate-900 rounded-[1.5rem] sm:rounded-[2rem] border border-white/10 shadow-2xl w-full sm:max-w-lg md:max-w-xl animate-in slide-in-from-bottom sm:zoom-in duration-500 overflow-hidden flex flex-col max-h-[90vh] my-auto">
+            <div className="relative bg-slate-900 rounded-[1.5rem] sm:rounded-[2rem] border border-white/10 shadow-2xl w-full sm:max-w-md md:max-w-lg animate-in slide-in-from-bottom sm:zoom-in duration-500 overflow-hidden flex flex-col max-h-[90vh] my-auto">
               {/* Modal Header */}
-              <div className="p-4 md:p-6 border-b border-white/5 flex items-center justify-between sticky top-0 bg-slate-900 z-20 shrink-0">
+              <div className="p-3 md:p-4 border-b border-white/5 flex items-center justify-between sticky top-0 bg-slate-900 z-20 shrink-0">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-[#B48646]/20 rounded-xl text-[#B48646]">
                     <Sparkles size={18} className="md:w-5 md:h-5" />
@@ -484,8 +484,8 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                 </button>
               </div>
 
-              <div className="p-3 md:p-8 space-y-3 md:space-y-6 overflow-y-auto custom-scrollbar flex-1">
-                <div className="space-y-3 md:space-y-8">
+              <div className="p-3 md:p-5 space-y-2 md:space-y-4 overflow-y-auto custom-scrollbar flex-1">
+                <div className="space-y-2 md:space-y-5">
                   {selectedCategory === ServiceType.GRAPHIC_DESIGN && (
                     <div>
                       <label className="block text-[9px] md:text-[10px] font-bold text-slate-500 uppercase tracking-wider ml-1 mb-1.5">Nom de l'entreprise</label>
@@ -500,7 +500,7 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                   )}
 
                   {selectedCategory === ServiceType.VIDEO && (
-                    <div className="space-y-2 md:space-y-5">
+                    <div className="space-y-1 md:space-y-3">
                       <div className="flex items-center justify-between">
                         <label className="flex items-center gap-2 text-[8px] md:text-[10px] font-bold text-slate-500 uppercase tracking-wider ml-1">
                           <span>
@@ -518,7 +518,7 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                               >
                                 <HelpCircle size={10} className="text-[#B48646] cursor-help" />
                               </button>
-                              <div className={`absolute top-full left-1/2 -translate-x-1/2 mt-2 w-56 p-3 bg-slate-900 border border-[#B48646]/30 rounded-xl text-[10px] text-slate-300 transition-opacity z-[110] shadow-[0_0_30px_rgba(0,0,0,0.8)] ${activeTooltip === 'config-photos' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+                              <div className={`absolute top-full left-1/2 -translate-x-1/2 mt-2 w-56 p-3 bg-slate-900 border border-[#B48646]/30 rounded-xl text-[10px] text-slate-300 transition-opacity z-[90] shadow-[0_0_30px_rgba(0,0,0,0.8)] ${activeTooltip === 'config-photos' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
                                 <p className="italic leading-relaxed">
                                   {selectedFormulaId === 'short' 
                                     ? '"Rythme ultra-dynamique (1-2s par clip). 10-15 rushes recommandés."'
@@ -531,7 +531,7 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                             </div>
                           )}
                         </label>
-                        <span className="text-[#B48646] font-black text-sm md:text-xl">{photos}</span>
+                        <span className="text-[#B48646] font-black text-sm md:text-lg">{photos}</span>
                       </div>
                       
                       <input 
@@ -613,7 +613,7 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                 </div>
 
                 <div className="pt-0.5">
-                  <div className="bg-slate-950 p-2 md:p-6 rounded-xl border border-white/10 text-center relative overflow-hidden">
+                  <div className="bg-slate-950 p-2 md:p-4 rounded-xl border border-white/10 text-center relative overflow-hidden">
                     <div className="absolute top-1 right-1">
                       <div className="flex items-center gap-1 bg-[#B48646]/10 px-1 py-0.5 rounded-full border border-[#B48646]/20">
                         <Cpu size={6} className="text-[#B48646]" />
@@ -624,7 +624,7 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                     <div className="space-y-1 md:space-y-4">
                       <div>
                         <span className="block text-[6px] md:text-[9px] text-[#B48646] uppercase tracking-widest font-black mb-0">Prix Total Estimé</span>
-                        <span className="text-base md:text-4xl font-black text-white leading-none">{currentPrice}€</span>
+                        <span className="text-base md:text-3xl font-black text-white leading-none">{currentPrice}€</span>
                       </div>
 
                       {selectedCategory === ServiceType.VIDEO && (
@@ -675,10 +675,10 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
               </div>
 
               {/* Sticky Footer Action */}
-              <div className="p-3 md:p-8 border-t border-white/5 bg-slate-900/95 backdrop-blur-md sticky bottom-0 z-20 shrink-0">
+              <div className="p-3 md:p-5 border-t border-white/5 bg-slate-900/95 backdrop-blur-md sticky bottom-0 z-20 shrink-0">
                 <button 
                   onClick={handleValidate}
-                  className="w-full bg-gradient-to-r from-[#B48646] via-[#E5B066] to-[#B48646] text-white font-black text-xs md:text-xl py-3 md:py-6 rounded-xl md:rounded-2xl shadow-2xl shadow-[#B48646]/30 hover:scale-[1.02] transition-all active:scale-95 flex items-center justify-center gap-2 border border-white/20 aura-24-hover"
+                  className="w-full bg-gradient-to-r from-[#B48646] via-[#E5B066] to-[#B48646] text-white font-black text-xs md:text-xl py-3 md:py-4 rounded-xl md:rounded-2xl shadow-2xl shadow-[#B48646]/30 hover:scale-[1.02] transition-all active:scale-95 flex items-center justify-center gap-2 border border-white/20 aura-24-hover"
                 >
                   Valider la configuration <ArrowRight size={14} className="md:w-6 md:h-6" />
                 </button>
