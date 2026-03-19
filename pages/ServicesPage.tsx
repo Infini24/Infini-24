@@ -446,15 +446,6 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                   <span className="font-black text-[#B48646] text-lg md:text-xl">{f.price}€</span>
                 </button>
               ))}
-
-              {/* Return to Design Button (Mobile optimization) */}
-              <button 
-                onClick={() => handleTabClick(ServiceType.GRAPHIC_DESIGN)}
-                className="w-full mt-8 p-6 rounded-[2rem] border-2 border-[#B48646]/30 bg-slate-900/20 text-[#B48646] font-black text-sm uppercase tracking-widest hover:bg-[#B48646]/10 transition-all flex items-center justify-center gap-3 md:hidden"
-              >
-                <Palette size={20} />
-                Voir Design Graphique
-              </button>
             </div>
           </div>
         </div>
