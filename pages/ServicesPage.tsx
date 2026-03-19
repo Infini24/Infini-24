@@ -114,13 +114,13 @@ Cordialement.`);
           {step === 'contact' && (
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="text-center mb-4">
-                    <h3 className="text-xl font-bold text-slate-900">Vos coordonnées</h3>
+                    <h3 className="text-xl font-bold text-white">Vos coordonnées</h3>
                     <p className="text-slate-400 text-xs font-medium uppercase tracking-wide">Pour créer votre dossier</p>
                 </div>
                 <div className="space-y-4">
                     <div>
                         <label className="block text-xs font-bold text-slate-500 ml-3 mb-1">Votre Nom</label>
-                        <input type="text" required value={name} onChange={(e) => setName(e.target.value)} className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:border-[#B48646] outline-none text-sm font-medium" placeholder="Prénom Nom" />
+                        <input type="text" required value={name} onChange={(e) => setName(e.target.value)} className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:border-[#B48646] outline-none text-sm font-medium text-slate-900" placeholder="Prénom Nom" />
                     </div>
                     <div>
                         <label className="block text-xs font-bold text-slate-500 ml-3 mb-2">Préférence de contact</label>
@@ -128,7 +128,7 @@ Cordialement.`);
                              <button type="button" onClick={() => setContactMethod('email')} className={`flex-1 py-3 rounded-xl text-xs font-bold border transition-all ${contactMethod === 'email' ? 'bg-gradient-to-r from-[#B48646] to-[#E5B066] border-white/20 text-white shadow-md' : 'bg-white/5 border-white/10 text-slate-400'}`}>Email</button>
                              <button type="button" onClick={() => setContactMethod('phone')} className={`flex-1 py-3 rounded-xl text-xs font-bold border transition-all ${contactMethod === 'phone' ? 'bg-gradient-to-r from-[#B48646] to-[#E5B066] border-white/20 text-white shadow-md' : 'bg-white/5 border-white/10 text-slate-400'}`}>Tél / SMS</button>
                         </div>
-                        <input type={contactMethod === 'email' ? 'email' : 'tel'} required value={contactInfo} onChange={(e) => setContactInfo(e.target.value)} className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:border-[#B48646] outline-none text-sm font-medium" placeholder={contactMethod === 'email' ? 'votre@email.com' : '06 00 00 00 00'} />
+                        <input type={contactMethod === 'email' ? 'email' : 'tel'} required value={contactInfo} onChange={(e) => setContactInfo(e.target.value)} className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:border-[#B48646] outline-none text-sm font-medium text-slate-900" placeholder={contactMethod === 'email' ? 'votre@email.com' : '06 00 00 00 00'} />
                     </div>
                 </div>
                 <button type="submit" className="w-full bg-gradient-to-r from-[#B48646] via-[#E5B066] to-[#B48646] text-white font-bold py-4 sm:py-5 rounded-2xl sm:rounded-[1.5rem] transition-all active:scale-95 text-lg flex items-center justify-center gap-2 group shadow-lg shadow-[#B48646]/20 border border-white/20 hover:scale-[1.02]">
@@ -142,7 +142,7 @@ Cordialement.`);
               <div className="w-24 h-24 bg-[#B48646]/10 text-[#B48646] rounded-full flex items-center justify-center mb-6 shadow-xl shadow-[#B48646]/10">
                 <Check size={48} strokeWidth={3} />
               </div>
-              <h3 className="text-2xl font-bold text-slate-900 mb-2">Demande envoyée !</h3>
+              <h3 className="text-2xl font-bold text-white mb-2">Demande envoyée !</h3>
               <p className="text-sm text-slate-500">Vérifiez votre application Mail pour finaliser l'envoi.</p>
             </div>
           )}
