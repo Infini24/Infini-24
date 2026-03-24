@@ -574,8 +574,22 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setZoomedImage(null)}
-              className="fixed inset-0 z-[400] bg-slate-950/95 backdrop-blur-2xl flex items-center justify-center p-4 md:p-10 cursor-zoom-out"
+              className="fixed inset-0 z-[500] bg-slate-950/98 backdrop-blur-3xl flex items-center justify-center p-4 md:p-10 cursor-zoom-out"
             >
+              {/* Top Right Exit Button (Only if in story mode) */}
+              {showStory && (
+                <button 
+                  onClick={(e) => { 
+                    e.stopPropagation(); 
+                    setZoomedImage(null); 
+                    setShowStory(false); 
+                  }}
+                  className="absolute top-6 right-6 md:top-10 md:right-10 flex items-center gap-3 px-6 py-3 bg-red-600/20 hover:bg-red-600 text-white transition-all border border-red-500/50 rounded-full group z-[520] cursor-pointer shadow-2xl"
+                >
+                  <span className="text-xs font-black uppercase tracking-[0.2em]">Quitter l'histoire</span>
+                  <X size={24} className="group-hover:rotate-90 transition-transform" />
+                </button>
+              )}
               <motion.div
                 initial={{ scale: 0.9, opacity: 0, y: 20 }}
                 animate={{ 
@@ -609,19 +623,32 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
                   <div className="absolute inset-0 z-10" />
                 </div>
                 
-                <div className="flex flex-col items-center gap-4">
+                <div className="flex flex-col md:flex-row items-center gap-4 z-[510]">
                   <button 
                     onClick={(e) => {
                       e.stopPropagation();
                       setZoomedImage(null);
                     }}
-                    className="px-10 py-4 bg-[#B48646] hover:bg-[#E5B066] text-slate-950 font-black text-sm uppercase tracking-[0.3em] transition-all rounded-full shadow-[0_0_30px_rgba(180,134,70,0.4)] active:scale-95"
+                    className="px-10 py-4 bg-[#B48646] hover:bg-[#E5B066] text-slate-950 font-black text-sm uppercase tracking-[0.3em] transition-all rounded-full shadow-[0_0_30px_rgba(180,134,70,0.4)] active:scale-95 cursor-pointer whitespace-nowrap"
                   >
                     RETOUR À L'HISTOIRE
                   </button>
-                  <div className="text-white/40 font-mono text-[10px] uppercase tracking-widest">
-                    OU CLIQUEZ N'IMPORTE OÙ POUR QUITTER
-                  </div>
+
+                  {showStory && (
+                    <button 
+                      onClick={(e) => { 
+                        e.stopPropagation(); 
+                        setZoomedImage(null); 
+                        setShowStory(false); 
+                      }}
+                      className="px-10 py-4 border-2 border-red-500 bg-red-500/10 hover:bg-red-500 text-white font-mono text-sm font-black uppercase tracking-[0.3em] transition-all rounded-full shadow-lg active:scale-95 cursor-pointer whitespace-nowrap"
+                    >
+                      RETOUR À L'INTERFACE
+                    </button>
+                  )}
+                </div>
+                <div className="text-white/40 font-mono text-[10px] uppercase tracking-widest animate-pulse pointer-events-none">
+                  OU CLIQUEZ N'IMPORTE OÙ POUR QUITTER
                 </div>
               </motion.div>
             </motion.div>
@@ -674,10 +701,13 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
                 <span className="border border-[#B48646]/40 px-2 py-1 rounded bg-[#B48646]/5">AUTH: LVL_4</span>
                 <button 
                   onClick={() => { playClickSound(); setShowStory(true); }}
-                  className="border-2 border-[#B48646] px-4 py-1.5 rounded bg-[#B48646] text-slate-950 hover:bg-transparent hover:text-[#B48646] transition-all flex items-center gap-2 group/story shadow-[0_0_20px_rgba(180,134,70,0.5)] animate-pulse hover:animate-none"
+                  className="border-2 border-[#B48646] px-6 py-3 rounded-xl bg-[#B48646] text-slate-950 hover:bg-transparent hover:text-[#B48646] transition-all flex flex-col items-center gap-1 group/story shadow-[0_0_40px_rgba(180,134,70,0.6)] animate-pulse hover:animate-none active:scale-95"
                 >
-                  <BookOpen size={12} className="group-hover/story:animate-bounce" />
-                  <span className="font-black">MON HISTOIRE</span>
+                  <div className="flex items-center gap-3">
+                    <BookOpen size={20} className="group-hover/story:animate-bounce" />
+                    <span className="font-black text-xl tracking-tighter">MON HISTOIRE</span>
+                  </div>
+                  <span className="text-[8px] font-mono opacity-70">Dossier: FINN_ORIGINS</span>
                 </button>
               </div>
             </div>
@@ -1024,22 +1054,22 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
             </div>
 
             {/* Header */}
-            <div className="relative z-10 p-6 md:p-10 flex items-center justify-between border-b border-[#B48646]/20 bg-slate-950/80 backdrop-blur-md">
-              <div className="space-y-1">
-                <div className="flex items-center gap-3 text-[#B48646] font-mono text-[10px] uppercase tracking-[0.4em]">
-                  <BookOpen size={14} />
+            <div className="relative z-10 p-6 md:p-10 flex items-center justify-between border-b border-[#B48646]/20 bg-slate-950/90 backdrop-blur-xl shadow-[0_10px_50px_rgba(0,0,0,0.5)]">
+              <div className="space-y-2">
+                <div className="flex items-center gap-3 text-[#B48646] font-mono text-[10px] md:text-[12px] uppercase tracking-[0.4em]">
+                  <BookOpen size={16} />
                   <span>Archives Temporelles // Dossier: FINN_ORIGINS</span>
                 </div>
-                <h2 className="text-2xl md:text-5xl font-black text-white tracking-tighter uppercase drop-shadow-[0_0_15px_rgba(180,134,70,0.3)]">
-                  Chapitre 1 : <span className="text-[#B48646] animate-pulse">Le grand saut de l'architecte</span>
+                <h2 className="text-3xl md:text-6xl font-black text-white tracking-tighter uppercase drop-shadow-[0_0_25px_rgba(180,134,70,0.5)] leading-none">
+                  Chapitre 1 : <span className="text-[#B48646] animate-pulse inline-block">Le grand saut de l'architecte</span>
                 </h2>
               </div>
               <button 
                 onClick={() => setShowStory(false)}
-                className="flex items-center gap-3 px-4 py-2 bg-white/5 hover:bg-[#B48646]/20 rounded-full text-white transition-all border border-white/10 group shadow-lg"
+                className="flex items-center gap-3 px-6 py-3 bg-red-600/10 hover:bg-red-600 text-white transition-all border border-red-500/30 rounded-full group shadow-2xl active:scale-90"
               >
-                <span className="text-[10px] font-black uppercase tracking-[0.2em] hidden md:block">Quitter l'histoire</span>
-                <X size={20} className="group-hover:rotate-90 transition-transform" />
+                <span className="text-[12px] font-black uppercase tracking-[0.2em] hidden md:block">Quitter l'histoire</span>
+                <X size={24} className="group-hover:rotate-90 transition-transform" />
               </button>
             </div>
 
