@@ -424,7 +424,7 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
   const [activeSection, setActiveSection] = useState<string>('identity');
   const [selectedAbility, setSelectedAbility] = useState<number>(0);
   const [hasSeenSecrets, setHasSeenSecrets] = useState(false);
-  const [zoomedImage, setZoomedImage] = useState<string | null>(null);
+  const [activeImage, setActiveImage] = useState<string | null>(null);
 
   const sections = [
     {
@@ -777,7 +777,7 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
                               onClick={() => { 
                                 playClickSound(); 
                                 const img = activeSectionData?.items?.[selectedAbility]?.image;
-                                if (img) setZoomedImage(img); 
+                                if (img) setActiveImage(img); 
                               }}
                               className="aspect-square bg-slate-900 border border-[#B48646]/20 p-6 relative group cursor-default overflow-hidden"
                             >
@@ -787,7 +787,7 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
                                 <img 
                                   src={activeSectionData?.items?.[selectedAbility].image} 
                                   alt={activeSectionData?.items?.[selectedAbility].name}
-                                  className="w-full h-full object-contain drop-shadow-[0_0_20px_rgba(180,134,70,0.3)] z-10 grayscale group-hover:grayscale-0 transition-all duration-700 pointer-events-auto cursor-zoom-in select-none"
+                                  className="w-full h-full object-contain drop-shadow-[0_0_20px_rgba(180,134,70,0.3)] z-10 grayscale group-hover:grayscale-0 transition-all duration-700 pointer-events-auto cursor-pointer select-none"
                                   referrerPolicy="no-referrer"
                                 />
                                 {/* Shield */}
@@ -1002,7 +1002,7 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
                   >
                     <div 
                       className="relative flex-none h-[40vh] md:flex-1 group overflow-hidden border-2 border-[#B48646]/30 bg-slate-900 cursor-default"
-                      onClick={() => setZoomedImage(panel.img)}
+                      onClick={() => setActiveImage(panel.img)}
                     >
                       {/* Technical Frame */}
                       <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-[#B48646] z-20 pointer-events-none" />
@@ -1011,7 +1011,7 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
                       <img 
                         src={panel.img} 
                         alt={`Story Panel ${i+1}`}
-                        className="w-full h-full object-cover transition-all duration-1000 scale-105 group-hover:scale-100 cursor-zoom-in"
+                        className="w-full h-full object-cover transition-all duration-1000 scale-105 group-hover:scale-100 cursor-pointer"
                         referrerPolicy="no-referrer"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-60 pointer-events-none" />
@@ -1020,11 +1020,11 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
                         {panel.sub}
                       </div>
 
-                      {/* Zoom Hint */}
+                      {/* Preview Hint */}
                       <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-slate-950/20 pointer-events-none">
                         <div className="bg-[#B48646] text-slate-950 px-4 py-2 rounded-full font-black text-[10px] uppercase tracking-widest flex items-center gap-2">
                           <Eye size={14} />
-                          ZOOMER L'IMAGE
+                          AFFICHER L'IMAGE
                         </div>
                       </div>
                     </div>
@@ -1065,14 +1065,14 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
         )}
       </AnimatePresence>
 
-      {/* Zoom Modal */}
+      {/* Floating Preview Modal */}
       <AnimatePresence>
-        {zoomedImage && (
+        {activeImage && (
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={() => setZoomedImage(null)}
+            onClick={() => setActiveImage(null)}
             className="fixed inset-0 z-[500] bg-slate-950/98 backdrop-blur-3xl flex items-center justify-center p-4 md:p-10 cursor-default"
           >
             {/* Top Right Exit Button (Only if in story mode) */}
@@ -1080,7 +1080,7 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
               <button 
                 onClick={(e) => { 
                   e.stopPropagation(); 
-                  setZoomedImage(null); 
+                  setActiveImage(null); 
                   setShowStory(false); 
                 }}
                 className="absolute top-6 right-6 md:top-10 md:right-10 flex items-center gap-3 px-6 py-3 bg-red-600/20 hover:bg-red-600 text-white transition-all border border-red-500/50 rounded-full group z-[520] cursor-pointer shadow-2xl"
@@ -1112,15 +1112,15 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
             >
               <div 
                 className="relative w-full h-[80vh] flex items-center justify-center cursor-default"
-                onClick={() => setZoomedImage(null)}
+                onClick={() => setActiveImage(null)}
               >
                 {/* Decorative Glow behind image */}
                 <div className="absolute inset-0 bg-[#B48646]/10 blur-[120px] rounded-full animate-pulse pointer-events-none" />
                 
                 <img 
-                  src={zoomedImage} 
-                  alt="Zoomed Story Content" 
-                  className="max-w-full max-h-full object-contain drop-shadow-[0_0_80px_rgba(180,134,70,0.4)] pointer-events-auto cursor-zoom-out select-none border border-[#B48646]/20"
+                  src={activeImage} 
+                  alt="Floating Preview Content" 
+                  className="max-w-full max-h-full object-contain drop-shadow-[0_0_80px_rgba(180,134,70,0.4)] pointer-events-auto cursor-pointer select-none border border-[#B48646]/20"
                   referrerPolicy="no-referrer"
                 />
                 {/* Shield */}
@@ -1131,18 +1131,18 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
                 <button 
                   onClick={(e) => {
                     e.stopPropagation();
-                    setZoomedImage(null);
+                    setActiveImage(null);
                   }}
                   className="px-10 py-4 bg-[#B48646] hover:bg-[#E5B066] text-slate-950 font-black text-sm uppercase tracking-[0.3em] transition-all rounded-full shadow-[0_0_30px_rgba(180,134,70,0.4)] active:scale-95 cursor-pointer whitespace-nowrap"
                 >
-                  RETOUR À L'HISTOIRE
+                  FERMER LA VUE
                 </button>
 
                 {showStory && (
                   <button 
                     onClick={(e) => { 
                       e.stopPropagation(); 
-                      setZoomedImage(null); 
+                      setActiveImage(null); 
                       setShowStory(false); 
                     }}
                     className="px-10 py-4 border-2 border-red-500 bg-red-500/10 hover:bg-red-500 text-white font-mono text-sm font-black uppercase tracking-[0.3em] transition-all rounded-full shadow-lg active:scale-95 cursor-pointer whitespace-nowrap"
