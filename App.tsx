@@ -315,7 +315,7 @@ const App = () => {
       <GlobalHeader activeTab={activeTab} onNavigate={handleNavigate} />
       
       {/* Zone de contenu principale (le scroll ne se fait qu'ici) */}
-      <main className="flex-1 relative z-10 overflow-y-auto overflow-x-hidden no-scrollbar">
+      <main className="flex-1 relative overflow-y-auto overflow-x-hidden no-scrollbar">
         <div className="min-h-full w-full pb-32 md:pb-0">
           {/* Sections avec gestion du montage pour la performance */}
           <div className={activeTab === 0 ? 'block' : 'hidden'}>
