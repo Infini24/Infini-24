@@ -609,12 +609,18 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
                   <div className="absolute inset-0 z-10" />
                 </div>
                 
-                <div className="flex flex-col items-center gap-2">
-                  <div className="px-4 py-1 bg-[#B48646] text-slate-950 font-mono text-[10px] font-black uppercase tracking-[0.3em]">
-                    Visualisation Immersive
-                  </div>
-                  <div className="text-white/40 font-mono text-[9px] uppercase tracking-widest">
-                    CLIQUEZ N'IMPORTE OÙ POUR QUITTER
+                <div className="flex flex-col items-center gap-4">
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setZoomedImage(null);
+                    }}
+                    className="px-10 py-4 bg-[#B48646] hover:bg-[#E5B066] text-slate-950 font-black text-sm uppercase tracking-[0.3em] transition-all rounded-full shadow-[0_0_30px_rgba(180,134,70,0.4)] active:scale-95"
+                  >
+                    RETOUR À L'HISTOIRE
+                  </button>
+                  <div className="text-white/40 font-mono text-[10px] uppercase tracking-widest">
+                    OU CLIQUEZ N'IMPORTE OÙ POUR QUITTER
                   </div>
                 </div>
               </motion.div>
@@ -668,10 +674,10 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
                 <span className="border border-[#B48646]/40 px-2 py-1 rounded bg-[#B48646]/5">AUTH: LVL_4</span>
                 <button 
                   onClick={() => { playClickSound(); setShowStory(true); }}
-                  className="border-2 border-[#B48646] px-3 py-1 rounded bg-[#B48646] text-slate-950 hover:bg-transparent hover:text-[#B48646] transition-all flex items-center gap-2 group/story"
+                  className="border-2 border-[#B48646] px-4 py-1.5 rounded bg-[#B48646] text-slate-950 hover:bg-transparent hover:text-[#B48646] transition-all flex items-center gap-2 group/story shadow-[0_0_20px_rgba(180,134,70,0.5)] animate-pulse hover:animate-none"
                 >
-                  <BookOpen size={10} className="group-hover/story:animate-bounce" />
-                  MON HISTOIRE
+                  <BookOpen size={12} className="group-hover/story:animate-bounce" />
+                  <span className="font-black">MON HISTOIRE</span>
                 </button>
               </div>
             </div>
@@ -1024,8 +1030,8 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
                   <BookOpen size={14} />
                   <span>Archives Temporelles // Dossier: FINN_ORIGINS</span>
                 </div>
-                <h2 className="text-2xl md:text-4xl font-black text-white tracking-tighter uppercase">
-                  Chapitre 1 : <span className="text-[#B48646]">Le grand saut de l'architecte</span>
+                <h2 className="text-2xl md:text-5xl font-black text-white tracking-tighter uppercase drop-shadow-[0_0_15px_rgba(180,134,70,0.3)]">
+                  Chapitre 1 : <span className="text-[#B48646] animate-pulse">Le grand saut de l'architecte</span>
                 </h2>
               </div>
               <button 
@@ -1104,11 +1110,11 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
               <div className="flex items-center gap-6">
                 <button 
                   onClick={() => setShowStory(false)}
-                  className="px-6 py-2 border border-[#B48646]/40 hover:bg-[#B48646] hover:text-slate-950 text-[#B48646] font-mono text-[10px] font-black uppercase tracking-[0.3em] transition-all rounded-sm"
+                  className="px-10 py-4 border-2 border-[#B48646] bg-[#B48646]/10 hover:bg-[#B48646] hover:text-slate-950 text-[#B48646] font-mono text-sm font-black uppercase tracking-[0.3em] transition-all rounded-full shadow-lg active:scale-95"
                 >
                   RETOUR À L'INTERFACE
                 </button>
-                <div className="text-[#B48646] font-mono text-[10px] uppercase tracking-widest animate-pulse hidden md:block">
+                <div className="text-[#B48646] font-mono text-[10px] uppercase tracking-widest animate-pulse hidden lg:block">
                   [FINN_ORIGINS_V1.0]
                 </div>
               </div>
