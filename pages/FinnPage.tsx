@@ -17,7 +17,8 @@ import {
   Sparkles,
   Layers,
   Eye,
-  Rocket
+  Rocket,
+  X
 } from 'lucide-react';
 
 // --- TYPES ---
@@ -419,6 +420,7 @@ interface FinnPageProps {
 
 const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
   const [showIntro, setShowIntro] = useState(true);
+  const [showStory, setShowStory] = useState(false);
   const [activeSection, setActiveSection] = useState<string>('identity');
   const [selectedAbility, setSelectedAbility] = useState<number>(0);
   const [hasSeenSecrets, setHasSeenSecrets] = useState(false);
@@ -572,26 +574,48 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setZoomedImage(null)}
-              className="fixed inset-0 z-[200] bg-black/90 backdrop-blur-xl flex items-center justify-center p-4 md:p-20 cursor-zoom-out"
+              className="fixed inset-0 z-[400] bg-slate-950/95 backdrop-blur-2xl flex items-center justify-center p-4 md:p-10 cursor-zoom-out"
             >
               <motion.div
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.8, opacity: 0 }}
-                className="relative max-w-5xl w-full h-full flex items-center justify-center"
+                initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                animate={{ 
+                  scale: 1, 
+                  opacity: 1, 
+                  y: [0, -15, 0],
+                }}
+                exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                transition={{
+                  y: {
+                    duration: 4,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  },
+                  scale: { duration: 0.4 },
+                  opacity: { duration: 0.4 }
+                }}
+                className="relative max-w-6xl w-full h-full flex flex-col items-center justify-center gap-8"
               >
-                <div className="relative w-full h-full flex items-center justify-center">
+                <div className="relative w-full h-[80vh] flex items-center justify-center">
+                  {/* Decorative Glow behind image */}
+                  <div className="absolute inset-0 bg-[#B48646]/10 blur-[120px] rounded-full animate-pulse" />
+                  
                   <img 
                     src={zoomedImage} 
-                    alt="Zoomed Equipment" 
-                    className="max-w-full max-h-full object-contain drop-shadow-[0_0_50px_rgba(180,134,70,0.5)] pointer-events-none select-none"
+                    alt="Zoomed Story Content" 
+                    className="max-w-full max-h-full object-contain drop-shadow-[0_0_80px_rgba(180,134,70,0.4)] pointer-events-none select-none border border-[#B48646]/20"
                     referrerPolicy="no-referrer"
                   />
                   {/* Shield */}
                   <div className="absolute inset-0 z-10" />
                 </div>
-                <div className="absolute top-0 right-0 text-white/50 font-mono text-[10px] uppercase tracking-widest">
-                  ESC TO CLOSE // CLIC TO EXIT
+                
+                <div className="flex flex-col items-center gap-2">
+                  <div className="px-4 py-1 bg-[#B48646] text-slate-950 font-mono text-[10px] font-black uppercase tracking-[0.3em]">
+                    Visualisation Immersive
+                  </div>
+                  <div className="text-white/40 font-mono text-[9px] uppercase tracking-widest">
+                    CLIQUEZ N'IMPORTE OÙ POUR QUITTER
+                  </div>
                 </div>
               </motion.div>
             </motion.div>
@@ -642,6 +666,13 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
                 <span className="border border-[#B48646]/40 px-2 py-1 rounded bg-[#B48646]/5">STATUS: ACTIVE</span>
                 <span className="border border-[#B48646]/40 px-2 py-1 rounded bg-[#B48646]/5">PRIORITY: OMEGA</span>
                 <span className="border border-[#B48646]/40 px-2 py-1 rounded bg-[#B48646]/5">AUTH: LVL_4</span>
+                <button 
+                  onClick={() => { playClickSound(); setShowStory(true); }}
+                  className="border-2 border-[#B48646] px-3 py-1 rounded bg-[#B48646] text-slate-950 hover:bg-transparent hover:text-[#B48646] transition-all flex items-center gap-2 group/story"
+                >
+                  <BookOpen size={10} className="group-hover/story:animate-bounce" />
+                  MON HISTOIRE
+                </button>
               </div>
             </div>
           </div>
@@ -970,6 +1001,121 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
           </div>
         </div>
       </main>
+
+      {/* Story Viewer Overlay */}
+      <AnimatePresence>
+        {showStory && (
+          <motion.div
+            initial={{ opacity: 0, scale: 1.1 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            className="fixed inset-0 z-[300] bg-slate-950 flex flex-col overflow-hidden"
+          >
+            {/* Background Atmosphere */}
+            <div className="absolute inset-0 pointer-events-none">
+              <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,#B4864610,transparent_70%)]" />
+              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10" />
+            </div>
+
+            {/* Header */}
+            <div className="relative z-10 p-6 md:p-10 flex items-center justify-between border-b border-[#B48646]/20 bg-slate-950/80 backdrop-blur-md">
+              <div className="space-y-1">
+                <div className="flex items-center gap-3 text-[#B48646] font-mono text-[10px] uppercase tracking-[0.4em]">
+                  <BookOpen size={14} />
+                  <span>Archives Temporelles // Dossier: FINN_ORIGINS</span>
+                </div>
+                <h2 className="text-2xl md:text-4xl font-black text-white tracking-tighter uppercase">
+                  Chapitre 1 : <span className="text-[#B48646]">Le grand saut de l'architecte</span>
+                </h2>
+              </div>
+              <button 
+                onClick={() => setShowStory(false)}
+                className="flex items-center gap-3 px-4 py-2 bg-white/5 hover:bg-[#B48646]/20 rounded-full text-white transition-all border border-white/10 group shadow-lg"
+              >
+                <span className="text-[10px] font-black uppercase tracking-[0.2em] hidden md:block">Quitter l'histoire</span>
+                <X size={20} className="group-hover:rotate-90 transition-transform" />
+              </button>
+            </div>
+
+            {/* Horizontal Story Scroller */}
+            <div className="flex-1 overflow-x-auto overflow-y-hidden snap-x snap-mandatory custom-scrollbar-horizontal flex items-center">
+              <div className="flex h-full min-w-max px-[10vw] md:px-[20vw] gap-10 md:gap-20 items-center">
+                {/* Story Panels */}
+                {[
+                  {
+                    img: "https://res.cloudinary.com/dmgqewagr/image/upload/v1774343437/Chp1-planche1-1_syhiqz.bmp",
+                    text: "Le silence règne dans le cockpit de l’Aura-24. À travers la vaste baie vitrée, une galaxie spirale déploie ses bras de lumière au milieu d'un vide abyssal. C’est une région oubliée, un recoin du cosmos où les lois de la physique semblent s’essouffler. Finn, immobile, observe l'immensité de dos.\n\n« Dans une région oubliée de l'univers… là où le temps lui-même hésite à avancer… » s'affiche dans ses pensées.",
+                    sub: "01 // L'OBSERVATEUR"
+                  }
+                ].map((panel, i) => (
+                  <div 
+                    key={i} 
+                    className="w-[80vw] md:w-[60vw] h-[60vh] md:h-[70vh] snap-center flex flex-col gap-6 md:gap-10"
+                  >
+                    <div 
+                      className="relative flex-1 group overflow-hidden border-2 border-[#B48646]/30 bg-slate-900 cursor-zoom-in"
+                      onClick={() => setZoomedImage(panel.img)}
+                    >
+                      {/* Technical Frame */}
+                      <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-[#B48646] z-20" />
+                      <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-[#B48646] z-20" />
+                      
+                      <img 
+                        src={panel.img} 
+                        alt={`Story Panel ${i+1}`}
+                        className="w-full h-full object-cover transition-all duration-1000 scale-105 group-hover:scale-100"
+                        referrerPolicy="no-referrer"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-60" />
+                      
+                      <div className="absolute bottom-4 left-4 font-mono text-[10px] text-[#B48646] font-black tracking-widest">
+                        {panel.sub}
+                      </div>
+
+                      {/* Zoom Hint */}
+                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-slate-950/20">
+                        <div className="bg-[#B48646] text-slate-950 px-4 py-2 rounded-full font-black text-[10px] uppercase tracking-widest flex items-center gap-2">
+                          <Eye size={14} />
+                          ZOOMER L'IMAGE
+                        </div>
+                      </div>
+                    </div>
+                    <div className="space-y-4 max-w-2xl">
+                      <div className="text-white text-lg md:text-xl font-bold leading-relaxed tracking-tight whitespace-pre-line">
+                        <Typewriter text={panel.text} speed={30} delay={500} />
+                      </div>
+                      <div className="h-1 w-20 bg-[#B48646]" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Footer Navigation Hint */}
+            <div className="p-6 md:p-10 border-t border-white/5 flex items-center justify-between bg-slate-950/80 backdrop-blur-md relative z-10">
+              <div className="flex items-center gap-4 text-slate-500 font-mono text-[10px] uppercase tracking-widest">
+                <div className="flex gap-1">
+                  <div className="w-2 h-2 bg-[#B48646] rounded-full" />
+                  <div className="w-2 h-2 bg-[#B48646]/20 rounded-full" />
+                  <div className="w-2 h-2 bg-[#B48646]/20 rounded-full" />
+                </div>
+                <span>FIN DU CHAPITRE ACTUEL</span>
+              </div>
+              <div className="flex items-center gap-6">
+                <button 
+                  onClick={() => setShowStory(false)}
+                  className="px-6 py-2 border border-[#B48646]/40 hover:bg-[#B48646] hover:text-slate-950 text-[#B48646] font-mono text-[10px] font-black uppercase tracking-[0.3em] transition-all rounded-sm"
+                >
+                  RETOUR À L'INTERFACE
+                </button>
+                <div className="text-[#B48646] font-mono text-[10px] uppercase tracking-widest animate-pulse hidden md:block">
+                  [FINN_ORIGINS_V1.0]
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 };

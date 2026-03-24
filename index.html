@@ -205,6 +205,19 @@
         -ms-overflow-style: none;
         scrollbar-width: none;
       }
+      .custom-scrollbar-horizontal::-webkit-scrollbar {
+        height: 4px;
+      }
+      .custom-scrollbar-horizontal::-webkit-scrollbar-track {
+        background: rgba(180, 134, 70, 0.05);
+      }
+      .custom-scrollbar-horizontal::-webkit-scrollbar-thumb {
+        background: rgba(180, 134, 70, 0.3);
+        border-radius: 10px;
+      }
+      .custom-scrollbar-horizontal::-webkit-scrollbar-thumb:hover {
+        background: rgba(180, 134, 70, 0.6);
+      }
       .aura-24-hover {
         transition: all 0.3s ease;
         position: relative;
