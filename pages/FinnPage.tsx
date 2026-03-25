@@ -77,28 +77,25 @@ const CLOUDINARY_URLS = {
 // --- TYPEWRITER COMPONENT ---
 const Typewriter = ({ text, speed = 20, delay = 0 }: { text: string, speed?: number, delay?: number }) => {
   const [displayedText, setDisplayedText] = useState('');
-  const [started, setStarted] = useState(false);
+  const [done, setDone] = useState(false);
 
   useEffect(() => {
-    const timeout = setTimeout(() => setStarted(true), delay);
+    const timeout = setTimeout(() => {
+      let i = 0;
+      const timer = setInterval(() => {
+        setDisplayedText(text.substring(0, i + 1));
+        i++;
+        if (i >= text.length) {
+          clearInterval(timer);
+          setDone(true);
+        }
+      }, speed);
+      return () => clearInterval(timer);
+    }, delay);
     return () => clearTimeout(timeout);
-  }, [delay]);
+  }, [text, speed, delay]);
 
-  useEffect(() => {
-    if (!started) return;
-    
-    setDisplayedText('');
-    let i = 0;
-    const timer = setInterval(() => {
-      setDisplayedText((prev) => text.substring(0, i + 1));
-      i++;
-      if (i >= text.length) clearInterval(timer);
-    }, speed);
-
-    return () => clearInterval(timer);
-  }, [text, speed, started]);
-
-  return <span>{displayedText}</span>;
+  return <span>{done ? text : (displayedText || ' ')}</span>;
 };
 
 // --- SOUND HELPER ---
@@ -453,12 +450,12 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
       sub: "04 // LE ZOOM"
     },
     {
-      img: "https://res.cloudinary.com/dmgqewagr/image/upload/v1774430591/Chp1-planche1-5_f9aqvt.bmp",
+      img: "https://res.cloudinary.com/dmgqewagr/image/upload/v1774438912/Chp1-planche1-5_syt9v4.bmp",
       text: "Au centre de l’Aura-24, un hologramme géant de la Terre apparaît. La planète bleue est encerclée par un halo vibrant et un signal infini qui l'enveloppe comme une barrière d'énergie. Finn retient son souffle devant la projection.\n\nBulle de dialogue (Finn) : — « La Terre… un point de convergence constant. »",
       sub: "05 // LA DÉCOUVERTE"
     },
     {
-      img: "https://res.cloudinary.com/dmgqewagr/image/upload/v1774430592/Chp1-planche1-6_ldmb1k.bmp",
+      img: "https://res.cloudinary.com/dmgqewagr/image/upload/v1774438911/Chp1-planche1-6_qccd6t.png",
       text: "La tension monte. Finn fait face au lecteur, son visage marqué par une détermination froide. L'Unité Dorsale \"Zen-Infinity v2.0\" incrustée dans sa poitrine (le symbole de l'infini sur son armure) s'illumine violemment, projetant des rayons de lumière à travers la pièce sombre.\n\nBulle de pensée (Finn) : « Une signature… que je n’ai pas ressentie depuis des éternités… »",
       sub: "06 // LA RÉVÉLATION"
     },
@@ -1088,16 +1085,17 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
                           {panel.sub}
                         </div>
                       </div>
-                      <div className="space-y-6 max-w-4xl mx-auto px-6 md:px-0">
-                        <div className="text-white text-lg md:text-2xl font-bold leading-relaxed tracking-tight whitespace-pre-line text-center drop-shadow-lg">
-                          {currentStoryIndex === i ? (
-                            <Typewriter key={i} text={panel.text} speed={25} delay={300} />
-                          ) : (
-                            <span className="opacity-0">{panel.text}</span>
-                          )}
+                      <motion.div 
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ amount: 0.3, once: true }}
+                        className="space-y-6 max-w-4xl mx-auto px-6 md:px-0"
+                      >
+                        <div className="text-white text-lg md:text-2xl font-bold leading-relaxed tracking-tight whitespace-pre-line text-center drop-shadow-lg min-h-[4em]">
+                          <Typewriter text={panel.text} speed={25} delay={300} />
                         </div>
                         <div className="h-1 w-24 bg-[#B48646] mx-auto shadow-[0_0_10px_rgba(180,134,70,0.5)]" />
-                      </div>
+                      </motion.div>
                     </div>
                   ))}
                 </div>
