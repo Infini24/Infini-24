@@ -38,6 +38,14 @@ interface Report {
 
 const reports: Report[] = [
     {
+        id: 4,
+        title: "PROTOCOLE_NARRATIF_01_STABLE",
+        date: "25 Mars 2026",
+        category: "Système",
+        content: "INITIAL_NARRATIVE_STREAM: [COMPLETED]. SÉQUENCE_01_STABILISÉE. CHARGEMENT_SÉQUENCE_SUIVANTE: [IN_PROGRESS]. SIGNAL_INFINI_24_ATTENDU_PROCHAINEMENT...",
+        tags: ["Histoire", "Signal"]
+    },
+    {
         id: 1,
         title: "L'Ascension du Minimalisme Spatial",
         date: "15 Mars 2026",
