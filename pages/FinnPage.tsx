@@ -994,6 +994,36 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
                     img: "https://res.cloudinary.com/dmgqewagr/image/upload/v1774343437/Chp1-planche1-1_syhiqz.bmp",
                     text: "Le silence règne dans le cockpit de l’Aura-24. À travers la vaste baie vitrée, une galaxie spirale déploie ses bras de lumière au milieu d'un vide abyssal. C’est une région oubliée, un recoin du cosmos où les lois de la physique semblent s’essouffler. Finn, immobile, observe l'immensité de dos.\n\n« Dans une région oubliée de l'univers… là où le temps lui-même hésite à avancer… » s'affiche dans ses pensées.",
                     sub: "01 // L'OBSERVATEUR"
+                  },
+                  {
+                    img: "https://res.cloudinary.com/dmgqewagr/image/upload/v1774430590/Chp1-planche1-2_vbeohk.bmp",
+                    text: "Les systèmes s'activent. Finn manipule les commandes avec une précision chirurgicale. L'Aura-24 répond à chaque impulsion, glissant silencieusement vers l'inconnu.",
+                    sub: "02 // MANOEUVRE"
+                  },
+                  {
+                    img: "https://res.cloudinary.com/dmgqewagr/image/upload/v1774430590/Chp1-planche1-3_dmloym.bmp",
+                    text: "Une anomalie visuelle apparaît sur les radars. Une distorsion chromatique qui défie toute logique esthétique. Finn ajuste ses lunettes, son regard s'intensifie.",
+                    sub: "03 // DÉTECTION"
+                  },
+                  {
+                    img: "https://res.cloudinary.com/dmgqewagr/image/upload/v1774430591/Chp1-planche1-4_cq4cmc.bmp",
+                    text: "Le saut dimensionnel est imminent. Les particules de lumière commencent à se courber autour du vaisseau, créant un tunnel de pixels scintillants.",
+                    sub: "04 // ACCÉLÉRATION"
+                  },
+                  {
+                    img: "https://res.cloudinary.com/dmgqewagr/image/upload/v1774430591/Chp1-planche1-5_f9aqvt.bmp",
+                    text: "La réalité se fragmente. Finn ressent chaque vibration du code source de l'univers. Il n'est plus seulement un pilote, il devient le flux.",
+                    sub: "05 // HYBRIDATION"
+                  },
+                  {
+                    img: "https://res.cloudinary.com/dmgqewagr/image/upload/v1774430592/Chp1-planche1-6_ldmb1k.bmp",
+                    text: "Au cœur de la faille, une vision se dessine. Des structures impossibles, des couleurs jamais vues par l'œil humain. Le futur d'Infini24 prend racine ici.",
+                    sub: "06 // RÉVÉLATION"
+                  },
+                  {
+                    img: "https://res.cloudinary.com/dmgqewagr/image/upload/v1774430590/Chp1-planche1-7_tlxsh4.bmp",
+                    text: "Le saut est réussi. Finn émerge de l'autre côté, transformé. La mission ne fait que commencer, et le destin de la création visuelle est entre ses mains.",
+                    sub: "07 // ÉMERGENCE"
                   }
                 ].map((panel, i) => (
                   <div 
