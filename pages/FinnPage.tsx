@@ -74,30 +74,6 @@ const CLOUDINARY_URLS = {
   logo: 'https://res.cloudinary.com/dmgqewagr/image/upload/v1773739550/Logo%20de%20fond.png'
 };
 
-// --- TYPEWRITER COMPONENT ---
-const Typewriter = ({ text, speed = 20, delay = 0 }: { text: string, speed?: number, delay?: number }) => {
-  const [displayedText, setDisplayedText] = useState('');
-  const [done, setDone] = useState(false);
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      let i = 0;
-      const timer = setInterval(() => {
-        setDisplayedText(text.substring(0, i + 1));
-        i++;
-        if (i >= text.length) {
-          clearInterval(timer);
-          setDone(true);
-        }
-      }, speed);
-      return () => clearInterval(timer);
-    }, delay);
-    return () => clearTimeout(timeout);
-  }, [text, speed, delay]);
-
-  return <span>{done ? text : (displayedText || ' ')}</span>;
-};
-
 // --- SOUND HELPER ---
 const playSound = (url: string, volume = 0.2) => {
   const audio = new Audio(url);
@@ -878,7 +854,7 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
                                 {activeSectionData?.items?.[selectedAbility]?.name}
                               </h4>
                               <p className="text-[#B48646] text-[10px] font-mono uppercase tracking-widest">
-                                <Typewriter text={activeSectionData?.items?.[selectedAbility]?.tagline || ''} speed={20} />
+                                {activeSectionData?.items?.[selectedAbility]?.tagline || ''}
                               </p>
                             </div>
 
@@ -898,7 +874,7 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
                         <div className="bg-[#B48646]/5 border-l-4 border-[#B48646] p-6 mb-6">
                           <p className="text-slate-300 leading-relaxed text-sm md:text-base font-mono uppercase">
                             <span className="text-[#B48646] font-black block mb-2">[SUMMARY]</span>
-                            <Typewriter text={activeSectionData?.description || ''} speed={15} />
+                            {activeSectionData?.description || ''}
                           </p>
                         </div>
                         
@@ -933,7 +909,7 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
                         <div className="bg-[#B48646]/5 border-l-4 border-[#B48646] p-6">
                           <p className="text-slate-300 leading-relaxed text-sm md:text-base font-mono uppercase">
                             <span className="text-[#B48646] font-black block mb-2">[SUMMARY]</span>
-                            <Typewriter text={activeSectionData?.description || ''} speed={15} />
+                            {activeSectionData?.description || ''}
                           </p>
                         </div>
 
@@ -948,7 +924,7 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
                             >
                               <span className="text-[8px] font-mono font-bold text-slate-500 uppercase tracking-widest group-hover/item:text-[#B48646]">{item.label}</span>
                               <span className="text-[11px] font-mono font-bold text-white">
-                                <Typewriter text={item.value} speed={30} delay={i * 50 + 500} />
+                                {item.value}
                               </span>
                             </motion.div>
                           ))}
@@ -1069,19 +1045,19 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
                   {storyPanels.map((panel, i) => (
                     <div 
                       key={i} 
-                      className="w-full md:w-[85vw] min-h-screen snap-center flex flex-col items-center justify-center gap-6 md:gap-12 py-20 shrink-0"
+                      className="w-full max-w-6xl min-h-screen snap-center flex flex-col items-center justify-center gap-4 md:gap-8 py-10 shrink-0 mx-auto"
                     >
                       <div 
-                        className="relative w-full max-w-6xl aspect-video md:aspect-[21/9] bg-slate-950 overflow-hidden shadow-2xl"
+                        className="relative w-full bg-slate-950 overflow-hidden shadow-2xl rounded-lg"
                       >
                         <img 
                           src={panel.img} 
                           alt={`Story Panel ${i+1}`}
-                          className="w-full h-full object-contain transition-all duration-700"
+                          className="w-full h-auto max-h-[75vh] object-contain transition-all duration-700"
                           referrerPolicy="no-referrer"
                         />
                         
-                        <div className="absolute bottom-4 left-4 font-mono text-[10px] text-[#B48646] font-black tracking-widest pointer-events-none bg-slate-950/60 px-3 py-1.5 backdrop-blur-sm">
+                        <div className="absolute bottom-4 left-4 font-mono text-[10px] text-[#B48646] font-black tracking-widest pointer-events-none bg-slate-950/60 px-3 py-1.5 backdrop-blur-sm rounded">
                           {panel.sub}
                         </div>
                       </div>
@@ -1089,10 +1065,10 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ amount: 0.3, once: true }}
-                        className="space-y-6 max-w-4xl mx-auto px-6 md:px-0"
+                        className="space-y-4 max-w-4xl mx-auto px-6 md:px-0"
                       >
-                        <div className="text-white text-lg md:text-2xl font-bold leading-relaxed tracking-tight whitespace-pre-line text-center drop-shadow-lg min-h-[4em]">
-                          <Typewriter text={panel.text} speed={25} delay={300} />
+                        <div className="text-white text-lg md:text-2xl font-bold leading-relaxed tracking-tight whitespace-pre-line text-center drop-shadow-lg">
+                          {panel.text}
                         </div>
                         <div className="h-1 w-24 bg-[#B48646] mx-auto shadow-[0_0_10px_rgba(180,134,70,0.5)]" />
                       </motion.div>
