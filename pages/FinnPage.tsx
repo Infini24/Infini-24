@@ -434,37 +434,37 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
   const storyPanels = [
     {
       img: "https://res.cloudinary.com/dmgqewagr/image/upload/v1774343437/Chp1-planche1-1_syhiqz.bmp",
-      text: "Le silence règne dans le cockpit de l’Aura-24. À travers la vaste baie vitrée, une galaxie spirale déploie ses bras de lumière au milieu d'un vide abyssal. C’est une région oubliée, un recoin du cosmos où les lois de la physique semblent s’essouffler. Finn, immobile, observe l'immensité de dos.\n\nFinn : « Dans une autre partie de la galaxie… là où l’histoire se répète… »",
+      text: "Le silence règne dans le cockpit de l’Aura-24. À travers la vaste baie vitrée, une galaxie spirale déploie ses bras de lumière au milieu d'un vide abyssal. C’est une région oubliée, un recoin du cosmos où les lois de la physique semblent s’essouffler. Finn, immobile, observe l'immensité de dos.\n\nBulle de pensée (Finn) : « Dans une autre partie de la galaxie… là où l’histoire se répète… »",
       sub: "01 // LA CONTEMPLATION"
     },
     {
       img: "https://res.cloudinary.com/dmgqewagr/image/upload/v1774430590/Chp1-planche1-2_vbeohk.bmp",
-      text: "Finn se détourne de la vitre pour consulter ses terminaux. La lumière bleue des hologrammes se reflète sur son visage. D'un geste calme, il ajuste ses lunettes de visée.\n\nFinn : — « Analyse des flux… anomalie détectée. »",
+      text: "Finn se détourne de la vitre pour consulter ses terminaux. La lumière bleue des hologrammes se reflète sur son visage. D'un geste calme, il ajuste ses lunettes de visée.\n\nBulle de dialogue (Finn) : — « Analyse des flux… anomalie détectée. »",
       sub: "02 // L'ANALYSE"
     },
     {
       img: "https://res.cloudinary.com/dmgqewagr/image/upload/v1774430590/Chp1-planche1-3_dmloym.bmp",
-      text: "Soudain, l'écran principal s'embrase d'un orange d'alerte. Une onde de choc graphique traverse le moniteur.\n\nSFX : BIP… BIP… BIP…\nFinn : — « Code source identifié. »",
+      text: "Soudain, l'écran principal s'embrase d'un orange d'alerte. Une onde de choc graphique traverse le moniteur.\n\nSFX : BIP… BIP… BIP…\nBulle de dialogue (Finn) : — « Code source identifié. »",
       sub: "03 // L'ALERTE"
     },
     {
       img: "https://res.cloudinary.com/dmgqewagr/image/upload/v1774430591/Chp1-planche1-4_cq4cmc.bmp",
-      text: "L'image se resserre brutalement sur son regard. Derrière les verres de ses lunettes spéciales, le symbole de l'infini (∞) s'illumine d'un éclat cyan, trait pour trait avec le design de sa monture. Ses pupilles se contractent sous l'effet du flux de données.\n\nFinn : — « Anomalie temporelle… coordonnée 0-0-1… »",
+      text: "L'image se resserre brutalement sur son regard. Derrière les verres de ses lunettes spéciales, le symbole de l'infini (∞) s'illumine d'un éclat cyan, trait pour trait avec le design de sa monture. Ses pupilles se contractent sous l'effet du flux de données.\n\nBulle de dialogue (Finn) : — « Anomalie temporelle… coordonnée 0-0-1… »",
       sub: "04 // LE ZOOM"
     },
     {
       img: "https://res.cloudinary.com/dmgqewagr/image/upload/v1774430591/Chp1-planche1-5_f9aqvt.bmp",
-      text: "Au centre de l’Aura-24, un hologramme géant de la Terre apparaît. La planète bleue est encerclée par un halo vibrant et un signal infini qui l'enveloppe comme une barrière d'énergie. Finn retient son souffle devant la projection.\n\nFinn : — « La Terre… un point de convergence constant. »",
+      text: "Au centre de l’Aura-24, un hologramme géant de la Terre apparaît. La planète bleue est encerclée par un halo vibrant et un signal infini qui l'enveloppe comme une barrière d'énergie. Finn retient son souffle devant la projection.\n\nBulle de dialogue (Finn) : — « La Terre… un point de convergence constant. »",
       sub: "05 // LA DÉCOUVERTE"
     },
     {
       img: "https://res.cloudinary.com/dmgqewagr/image/upload/v1774430592/Chp1-planche1-6_ldmb1k.bmp",
-      text: "La tension monte. Finn fait face au lecteur, son visage marqué par une détermination froide. L'Unité Dorsale \"Zen-Infinity v2.0\" incrustée dans sa poitrine s'illumine violemment, projetant des rayons de lumière à travers la pièce sombre.\n\nFinn : « Une signature… que je n’ai pas ressentie depuis des éternités… »",
+      text: "La tension monte. Finn fait face au lecteur, son visage marqué par une détermination froide. L'Unité Dorsale \"Zen-Infinity v2.0\" incrustée dans sa poitrine (le symbole de l'infini sur son armure) s'illumine violemment, projetant des rayons de lumière à travers la pièce sombre.\n\nBulle de pensée (Finn) : « Une signature… que je n’ai pas ressentie depuis des éternités… »",
       sub: "06 // LA RÉVÉLATION"
     },
     {
       img: "https://res.cloudinary.com/dmgqewagr/image/upload/v1774430590/Chp1-planche1-7_tlxsh4.bmp",
-      text: "Un plan serré se concentre sur la main de Finn. Son doigt ganté, ferme et précis, appuie sur un bouton de commande de la console. L'interface sous son doigt émet un bref éclat de lumière.\n\nFinn : — « Le Signe Infini 24… m’appelle toujours. Activation du protocole... »",
+      text: "Un plan serré (Gros Plan) se concentre sur la main de Finn. Son doigt ganté, ferme et précis, appuie sur un bouton de commande de la console. L'interface sous son doigt émet un bref éclat de lumière.\n\nBulle de dialogue (Finn) : — « Le Signe Infini 24… m’appelle toujours. Activation du protocole... »",
       sub: "07 // L'ACTION"
     }
   ];
@@ -1050,14 +1050,14 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
               {/* Navigation Buttons */}
               <button 
                 onClick={() => scrollToStoryPanel(Math.max(0, currentStoryIndex - 1))}
-                className={`absolute top-4 left-1/2 -translate-x-1/2 z-[310] p-4 bg-slate-900/80 border border-[#B48646]/30 text-[#B48646] rounded-full backdrop-blur-md transition-all hover:bg-[#B48646] hover:text-slate-950 shadow-2xl ${currentStoryIndex === 0 ? 'opacity-0 pointer-events-none' : 'opacity-100 md:opacity-0 md:group-hover/nav:opacity-100'}`}
+                className={`absolute top-4 left-1/2 -translate-x-1/2 z-[310] p-4 bg-slate-900/80 text-[#B48646] rounded-full backdrop-blur-md transition-all hover:bg-[#B48646] hover:text-slate-950 shadow-2xl ${currentStoryIndex === 0 ? 'opacity-0 pointer-events-none' : 'opacity-100 md:opacity-0 md:group-hover/nav:opacity-100'}`}
               >
                 <ChevronUp size={32} />
               </button>
 
               <button 
                 onClick={() => scrollToStoryPanel(Math.min(storyPanels.length - 1, currentStoryIndex + 1))}
-                className={`absolute bottom-4 left-1/2 -translate-x-1/2 z-[310] p-4 bg-slate-900/80 border border-[#B48646]/30 text-[#B48646] rounded-full backdrop-blur-md transition-all hover:bg-[#B48646] hover:text-slate-950 shadow-2xl ${currentStoryIndex === storyPanels.length - 1 ? 'opacity-0 pointer-events-none' : 'opacity-100 md:opacity-0 md:group-hover/nav:opacity-100'}`}
+                className={`absolute bottom-4 left-1/2 -translate-x-1/2 z-[310] p-4 bg-slate-900/80 text-[#B48646] rounded-full backdrop-blur-md transition-all hover:bg-[#B48646] hover:text-slate-950 shadow-2xl ${currentStoryIndex === storyPanels.length - 1 ? 'opacity-0 pointer-events-none' : 'opacity-100 md:opacity-0 md:group-hover/nav:opacity-100'}`}
               >
                 <ChevronDown size={32} />
               </button>
@@ -1065,43 +1065,38 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
               <div 
                 ref={storyScrollRef}
                 onScroll={handleStoryScroll}
-                className="w-full h-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory custom-scrollbar flex flex-col items-center scroll-smooth"
+                className="w-full h-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory custom-scrollbar flex flex-col items-center scroll-smooth bg-slate-950"
               >
-                <div className="flex flex-col w-full h-auto px-4 md:px-0 items-center">
+                <div className="flex flex-col w-full h-auto items-center">
                   {/* Story Panels */}
                   {storyPanels.map((panel, i) => (
                     <div 
                       key={i} 
-                      className="w-full md:w-[75vw] h-full min-h-full snap-center flex flex-col gap-4 md:gap-10 py-10 md:py-20 shrink-0"
+                      className="w-full md:w-[85vw] min-h-screen snap-center flex flex-col items-center justify-center gap-6 md:gap-12 py-20 shrink-0"
                     >
                       <div 
-                        className="relative flex-1 group overflow-hidden border-2 border-[#B48646]/30 bg-slate-950 cursor-default"
+                        className="relative w-full max-w-6xl aspect-video md:aspect-[21/9] bg-slate-950 overflow-hidden shadow-2xl"
                       >
-                        {/* Technical Frame */}
-                        <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-[#B48646] z-20 pointer-events-none" />
-                        <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-[#B48646] z-20 pointer-events-none" />
-                        
                         <img 
                           src={panel.img} 
                           alt={`Story Panel ${i+1}`}
                           className="w-full h-full object-contain transition-all duration-700"
                           referrerPolicy="no-referrer"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-transparent pointer-events-none" />
                         
-                        <div className="absolute bottom-4 left-4 font-mono text-[10px] text-[#B48646] font-black tracking-widest pointer-events-none bg-slate-950/60 px-2 py-1 backdrop-blur-sm">
+                        <div className="absolute bottom-4 left-4 font-mono text-[10px] text-[#B48646] font-black tracking-widest pointer-events-none bg-slate-950/60 px-3 py-1.5 backdrop-blur-sm">
                           {panel.sub}
                         </div>
                       </div>
-                      <div className="space-y-4 max-w-2xl mx-auto px-4 md:px-0 overflow-y-auto custom-scrollbar">
-                        <div className="text-white text-base md:text-xl font-bold leading-relaxed tracking-tight whitespace-pre-line text-center">
+                      <div className="space-y-6 max-w-4xl mx-auto px-6 md:px-0">
+                        <div className="text-white text-lg md:text-2xl font-bold leading-relaxed tracking-tight whitespace-pre-line text-center drop-shadow-lg">
                           {currentStoryIndex === i ? (
                             <Typewriter key={i} text={panel.text} speed={25} delay={300} />
                           ) : (
                             <span className="opacity-0">{panel.text}</span>
                           )}
                         </div>
-                        <div className="h-1 w-20 bg-[#B48646] mx-auto" />
+                        <div className="h-1 w-24 bg-[#B48646] mx-auto shadow-[0_0_10px_rgba(180,134,70,0.5)]" />
                       </div>
                     </div>
                   ))}
