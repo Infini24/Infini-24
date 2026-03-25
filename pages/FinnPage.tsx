@@ -18,7 +18,9 @@ import {
   Layers,
   Eye,
   Rocket,
-  X
+  X,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 
 // --- TYPES ---
@@ -425,6 +427,68 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
   const [selectedAbility, setSelectedAbility] = useState<number>(0);
   const [hasSeenSecrets, setHasSeenSecrets] = useState(false);
   const [activeImage, setActiveImage] = useState<string | null>(null);
+  const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
+  const storyScrollRef = useRef<HTMLDivElement>(null);
+
+  const storyPanels = [
+    {
+      img: "https://res.cloudinary.com/dmgqewagr/image/upload/v1774343437/Chp1-planche1-1_syhiqz.bmp",
+      text: "Le silence règne dans le cockpit de l’Aura-24. À travers la vaste baie vitrée, une galaxie spirale déploie ses bras de lumière au milieu d'un vide abyssal. C’est une région oubliée, un recoin du cosmos où les lois de la physique semblent s’essouffler. Finn, immobile, observe l'immensité de dos.\n\nFinn : « Dans une autre partie de la galaxie… là où l’histoire se répète… »",
+      sub: "01 // LA CONTEMPLATION"
+    },
+    {
+      img: "https://res.cloudinary.com/dmgqewagr/image/upload/v1774430590/Chp1-planche1-2_vbeohk.bmp",
+      text: "Finn se détourne de la vitre pour consulter ses terminaux. La lumière bleue des hologrammes se reflète sur son visage. D'un geste calme, il ajuste ses lunettes de visée.\n\nFinn : — « Analyse des flux… anomalie détectée. »",
+      sub: "02 // L'ANALYSE"
+    },
+    {
+      img: "https://res.cloudinary.com/dmgqewagr/image/upload/v1774430590/Chp1-planche1-3_dmloym.bmp",
+      text: "Soudain, l'écran principal s'embrase d'un orange d'alerte. Une onde de choc graphique traverse le moniteur.\n\nSFX : BIP… BIP… BIP…\nFinn : — « Code source identifié. »",
+      sub: "03 // L'ALERTE"
+    },
+    {
+      img: "https://res.cloudinary.com/dmgqewagr/image/upload/v1774430591/Chp1-planche1-4_cq4cmc.bmp",
+      text: "L'image se resserre brutalement sur son regard. Derrière les verres de ses lunettes spéciales, le symbole de l'infini (∞) s'illumine d'un éclat cyan, trait pour trait avec le design de sa monture. Ses pupilles se contractent sous l'effet du flux de données.\n\nFinn : — « Anomalie temporelle… coordonnée 0-0-1… »",
+      sub: "04 // LE ZOOM"
+    },
+    {
+      img: "https://res.cloudinary.com/dmgqewagr/image/upload/v1774430591/Chp1-planche1-5_f9aqvt.bmp",
+      text: "Au centre de l’Aura-24, un hologramme géant de la Terre apparaît. La planète bleue est encerclée par un halo vibrant et un signal infini qui l'enveloppe comme une barrière d'énergie. Finn retient son souffle devant la projection.\n\nFinn : — « La Terre… un point de convergence constant. »",
+      sub: "05 // LA DÉCOUVERTE"
+    },
+    {
+      img: "https://res.cloudinary.com/dmgqewagr/image/upload/v1774430592/Chp1-planche1-6_ldmb1k.bmp",
+      text: "La tension monte. Finn fait face au lecteur, son visage marqué par une détermination froide. L'Unité Dorsale \"Zen-Infinity v2.0\" incrustée dans sa poitrine s'illumine violemment, projetant des rayons de lumière à travers la pièce sombre.\n\nFinn : « Une signature… que je n’ai pas ressentie depuis des éternités… »",
+      sub: "06 // LA RÉVÉLATION"
+    },
+    {
+      img: "https://res.cloudinary.com/dmgqewagr/image/upload/v1774430590/Chp1-planche1-7_tlxsh4.bmp",
+      text: "Un plan serré se concentre sur la main de Finn. Son doigt ganté, ferme et précis, appuie sur un bouton de commande de la console. L'interface sous son doigt émet un bref éclat de lumière.\n\nFinn : — « Le Signe Infini 24… m’appelle toujours. Activation du protocole... »",
+      sub: "07 // L'ACTION"
+    }
+  ];
+
+  const handleStoryScroll = () => {
+    if (storyScrollRef.current) {
+      const scrollLeft = storyScrollRef.current.scrollLeft;
+      const width = storyScrollRef.current.offsetWidth;
+      const newIndex = Math.round(scrollLeft / width);
+      if (newIndex !== currentStoryIndex) {
+        setCurrentStoryIndex(newIndex);
+      }
+    }
+  };
+
+  const scrollToStoryPanel = (index: number) => {
+    if (storyScrollRef.current) {
+      const width = storyScrollRef.current.offsetWidth;
+      storyScrollRef.current.scrollTo({
+        left: index * width,
+        behavior: 'smooth'
+      });
+      setCurrentStoryIndex(index);
+    }
+  };
 
   const sections = [
     {
@@ -986,98 +1050,89 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
             </div>
 
             {/* Horizontal Story Scroller */}
-            <div className="flex-1 overflow-x-auto overflow-y-auto md:overflow-y-hidden snap-x snap-mandatory custom-scrollbar-horizontal flex items-center">
-              <div className="flex h-full min-w-max px-[10vw] md:px-[20vw] gap-10 md:gap-20 items-center">
-                {/* Story Panels */}
-                {[
-                  {
-                    img: "https://res.cloudinary.com/dmgqewagr/image/upload/v1774343437/Chp1-planche1-1_syhiqz.bmp",
-                    text: "Le silence règne dans le cockpit de l’Aura-24. À travers la vaste baie vitrée, une galaxie spirale déploie ses bras de lumière au milieu d'un vide abyssal. C’est une région oubliée, un recoin du cosmos où les lois de la physique semblent s’essouffler. Finn, immobile, observe l'immensité de dos.\n\n« Dans une région oubliée de l'univers… là où le temps lui-même hésite à avancer… » s'affiche dans ses pensées.",
-                    sub: "01 // L'OBSERVATEUR"
-                  },
-                  {
-                    img: "https://res.cloudinary.com/dmgqewagr/image/upload/v1774430590/Chp1-planche1-2_vbeohk.bmp",
-                    text: "Les systèmes s'activent. Finn manipule les commandes avec une précision chirurgicale. L'Aura-24 répond à chaque impulsion, glissant silencieusement vers l'inconnu.",
-                    sub: "02 // MANOEUVRE"
-                  },
-                  {
-                    img: "https://res.cloudinary.com/dmgqewagr/image/upload/v1774430590/Chp1-planche1-3_dmloym.bmp",
-                    text: "Une anomalie visuelle apparaît sur les radars. Une distorsion chromatique qui défie toute logique esthétique. Finn ajuste ses lunettes, son regard s'intensifie.",
-                    sub: "03 // DÉTECTION"
-                  },
-                  {
-                    img: "https://res.cloudinary.com/dmgqewagr/image/upload/v1774430591/Chp1-planche1-4_cq4cmc.bmp",
-                    text: "Le saut dimensionnel est imminent. Les particules de lumière commencent à se courber autour du vaisseau, créant un tunnel de pixels scintillants.",
-                    sub: "04 // ACCÉLÉRATION"
-                  },
-                  {
-                    img: "https://res.cloudinary.com/dmgqewagr/image/upload/v1774430591/Chp1-planche1-5_f9aqvt.bmp",
-                    text: "La réalité se fragmente. Finn ressent chaque vibration du code source de l'univers. Il n'est plus seulement un pilote, il devient le flux.",
-                    sub: "05 // HYBRIDATION"
-                  },
-                  {
-                    img: "https://res.cloudinary.com/dmgqewagr/image/upload/v1774430592/Chp1-planche1-6_ldmb1k.bmp",
-                    text: "Au cœur de la faille, une vision se dessine. Des structures impossibles, des couleurs jamais vues par l'œil humain. Le futur d'Infini24 prend racine ici.",
-                    sub: "06 // RÉVÉLATION"
-                  },
-                  {
-                    img: "https://res.cloudinary.com/dmgqewagr/image/upload/v1774430590/Chp1-planche1-7_tlxsh4.bmp",
-                    text: "Le saut est réussi. Finn émerge de l'autre côté, transformé. La mission ne fait que commencer, et le destin de la création visuelle est entre ses mains.",
-                    sub: "07 // ÉMERGENCE"
-                  }
-                ].map((panel, i) => (
-                  <div 
-                    key={i} 
-                    className="w-[80vw] md:w-[60vw] h-auto md:h-[70vh] snap-center flex flex-col gap-6 md:gap-10 py-10 md:py-0"
-                  >
-                    <div 
-                      className="relative flex-none h-[40vh] md:flex-1 group overflow-hidden border-2 border-[#B48646]/30 bg-slate-900 cursor-default"
-                      onClick={() => setActiveImage(panel.img)}
-                    >
-                      {/* Technical Frame */}
-                      <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-[#B48646] z-20 pointer-events-none" />
-                      <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-[#B48646] z-20 pointer-events-none" />
-                      
-                      <img 
-                        src={panel.img} 
-                        alt={`Story Panel ${i+1}`}
-                        className="w-full h-full object-cover transition-all duration-1000 scale-105 group-hover:scale-100 cursor-pointer"
-                        referrerPolicy="no-referrer"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-60 pointer-events-none" />
-                      
-                      <div className="absolute bottom-4 left-4 font-mono text-[10px] text-[#B48646] font-black tracking-widest pointer-events-none">
-                        {panel.sub}
-                      </div>
+            <div className="relative flex-1 flex items-center group/nav">
+              {/* Navigation Buttons */}
+              <button 
+                onClick={() => scrollToStoryPanel(Math.max(0, currentStoryIndex - 1))}
+                className={`absolute left-4 md:left-10 z-[310] p-4 bg-slate-900/80 border border-[#B48646]/30 text-[#B48646] rounded-full backdrop-blur-md transition-all hover:bg-[#B48646] hover:text-slate-950 shadow-2xl ${currentStoryIndex === 0 ? 'opacity-0 pointer-events-none' : 'opacity-0 group-hover/nav:opacity-100'}`}
+              >
+                <ChevronLeft size={32} />
+              </button>
 
-                      {/* Preview Hint */}
-                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-slate-950/20 pointer-events-none">
-                        <div className="bg-[#B48646] text-slate-950 px-4 py-2 rounded-full font-black text-[10px] uppercase tracking-widest flex items-center gap-2">
-                          <Eye size={14} />
-                          AFFICHER L'IMAGE
+              <button 
+                onClick={() => scrollToStoryPanel(Math.min(storyPanels.length - 1, currentStoryIndex + 1))}
+                className={`absolute right-4 md:right-10 z-[310] p-4 bg-slate-900/80 border border-[#B48646]/30 text-[#B48646] rounded-full backdrop-blur-md transition-all hover:bg-[#B48646] hover:text-slate-950 shadow-2xl ${currentStoryIndex === storyPanels.length - 1 ? 'opacity-0 pointer-events-none' : 'opacity-0 group-hover/nav:opacity-100'}`}
+              >
+                <ChevronRight size={32} />
+              </button>
+
+              <div 
+                ref={storyScrollRef}
+                onScroll={handleStoryScroll}
+                className="w-full h-full overflow-x-auto overflow-y-auto md:overflow-y-hidden snap-x snap-mandatory custom-scrollbar-horizontal flex items-center scroll-smooth"
+              >
+                <div className="flex h-full min-w-max px-[10vw] md:px-[20vw] gap-10 md:gap-20 items-center">
+                  {/* Story Panels */}
+                  {storyPanels.map((panel, i) => (
+                    <div 
+                      key={i} 
+                      className="w-[80vw] md:w-[60vw] h-auto md:h-[70vh] snap-center flex flex-col gap-6 md:gap-10 py-10 md:py-0"
+                    >
+                      <div 
+                        className="relative flex-none h-[40vh] md:flex-1 group overflow-hidden border-2 border-[#B48646]/30 bg-slate-900 cursor-default"
+                        onClick={() => setActiveImage(panel.img)}
+                      >
+                        {/* Technical Frame */}
+                        <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-[#B48646] z-20 pointer-events-none" />
+                        <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-[#B48646] z-20 pointer-events-none" />
+                        
+                        <img 
+                          src={panel.img} 
+                          alt={`Story Panel ${i+1}`}
+                          className="w-full h-full object-cover transition-all duration-1000 scale-105 group-hover:scale-100 cursor-pointer"
+                          referrerPolicy="no-referrer"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-60 pointer-events-none" />
+                        
+                        <div className="absolute bottom-4 left-4 font-mono text-[10px] text-[#B48646] font-black tracking-widest pointer-events-none">
+                          {panel.sub}
+                        </div>
+
+                        {/* Preview Hint */}
+                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-slate-950/20 pointer-events-none">
+                          <div className="bg-[#B48646] text-slate-950 px-4 py-2 rounded-full font-black text-[10px] uppercase tracking-widest flex items-center gap-2">
+                            <Eye size={14} />
+                            AFFICHER L'IMAGE
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div className="space-y-4 max-w-2xl">
-                      <div className="text-white text-lg md:text-xl font-bold leading-relaxed tracking-tight whitespace-pre-line">
-                        <Typewriter text={panel.text} speed={30} delay={500} />
+                      <div className="space-y-4 max-w-2xl">
+                        <div className="text-white text-lg md:text-xl font-bold leading-relaxed tracking-tight whitespace-pre-line">
+                          <Typewriter text={panel.text} speed={30} delay={500} />
+                        </div>
+                        <div className="h-1 w-20 bg-[#B48646]" />
                       </div>
-                      <div className="h-1 w-20 bg-[#B48646]" />
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
 
             {/* Footer Navigation Hint */}
             <div className="p-6 md:p-10 border-t border-white/5 flex items-center justify-between bg-slate-950/80 backdrop-blur-md relative z-10">
-              <div className="flex items-center gap-4 text-slate-500 font-mono text-[10px] uppercase tracking-widest">
-                <div className="flex gap-1">
-                  <div className="w-2 h-2 bg-[#B48646] rounded-full" />
-                  <div className="w-2 h-2 bg-[#B48646]/20 rounded-full" />
-                  <div className="w-2 h-2 bg-[#B48646]/20 rounded-full" />
+              <div className="flex items-center gap-6 text-slate-500 font-mono text-[10px] uppercase tracking-widest">
+                <div className="flex gap-2">
+                  {storyPanels.map((_, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => scrollToStoryPanel(idx)}
+                      className={`w-3 h-3 rounded-full transition-all duration-500 ${idx === currentStoryIndex ? 'bg-[#B48646] w-8' : 'bg-[#B48646]/20 hover:bg-[#B48646]/40'}`}
+                    />
+                  ))}
                 </div>
-                <span>FIN DU CHAPITRE ACTUEL</span>
+                <span className="hidden md:block">
+                  {currentStoryIndex === storyPanels.length - 1 ? 'FIN DU CHAPITRE ACTUEL' : `PLANCHE ${currentStoryIndex + 1} / ${storyPanels.length}`}
+                </span>
               </div>
               <div className="flex items-center gap-6">
                 <button 
