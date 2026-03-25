@@ -20,7 +20,9 @@ import {
   Rocket,
   X,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  ChevronUp,
+  ChevronDown
 } from 'lucide-react';
 
 // --- TYPES ---
@@ -469,41 +471,22 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
 
   const handleStoryScroll = () => {
     if (storyScrollRef.current) {
-      const isMobile = window.innerWidth < 768;
-      if (isMobile) {
-        const scrollTop = storyScrollRef.current.scrollTop;
-        const height = storyScrollRef.current.offsetHeight;
-        const newIndex = Math.round(scrollTop / height);
-        if (newIndex !== currentStoryIndex) {
-          setCurrentStoryIndex(newIndex);
-        }
-      } else {
-        const scrollLeft = storyScrollRef.current.scrollLeft;
-        const width = storyScrollRef.current.offsetWidth;
-        const newIndex = Math.round(scrollLeft / width);
-        if (newIndex !== currentStoryIndex) {
-          setCurrentStoryIndex(newIndex);
-        }
+      const scrollTop = storyScrollRef.current.scrollTop;
+      const height = storyScrollRef.current.offsetHeight;
+      const newIndex = Math.round(scrollTop / height);
+      if (newIndex !== currentStoryIndex) {
+        setCurrentStoryIndex(newIndex);
       }
     }
   };
 
   const scrollToStoryPanel = (index: number) => {
     if (storyScrollRef.current) {
-      const isMobile = window.innerWidth < 768;
-      if (isMobile) {
-        const height = storyScrollRef.current.offsetHeight;
-        storyScrollRef.current.scrollTo({
-          top: index * height,
-          behavior: 'smooth'
-        });
-      } else {
-        const width = storyScrollRef.current.offsetWidth;
-        storyScrollRef.current.scrollTo({
-          left: index * width,
-          behavior: 'smooth'
-        });
-      }
+      const height = storyScrollRef.current.offsetHeight;
+      storyScrollRef.current.scrollTo({
+        top: index * height,
+        behavior: 'smooth'
+      });
       setCurrentStoryIndex(index);
     }
   };
@@ -1062,34 +1045,34 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
               </button>
             </div>
 
-            {/* Horizontal Story Scroller */}
-            <div className="relative flex-1 flex items-center group/nav">
+            {/* Vertical Story Scroller */}
+            <div className="relative flex-1 flex flex-col items-center group/nav overflow-hidden">
               {/* Navigation Buttons */}
               <button 
                 onClick={() => scrollToStoryPanel(Math.max(0, currentStoryIndex - 1))}
-                className={`absolute left-4 md:left-10 z-[310] p-4 bg-slate-900/80 border border-[#B48646]/30 text-[#B48646] rounded-full backdrop-blur-md transition-all hover:bg-[#B48646] hover:text-slate-950 shadow-2xl ${currentStoryIndex === 0 ? 'opacity-0 pointer-events-none' : 'opacity-100 md:opacity-0 md:group-hover/nav:opacity-100'}`}
+                className={`absolute top-4 left-1/2 -translate-x-1/2 z-[310] p-4 bg-slate-900/80 border border-[#B48646]/30 text-[#B48646] rounded-full backdrop-blur-md transition-all hover:bg-[#B48646] hover:text-slate-950 shadow-2xl ${currentStoryIndex === 0 ? 'opacity-0 pointer-events-none' : 'opacity-100 md:opacity-0 md:group-hover/nav:opacity-100'}`}
               >
-                <ChevronLeft size={32} />
+                <ChevronUp size={32} />
               </button>
 
               <button 
                 onClick={() => scrollToStoryPanel(Math.min(storyPanels.length - 1, currentStoryIndex + 1))}
-                className={`absolute right-4 md:right-10 z-[310] p-4 bg-slate-900/80 border border-[#B48646]/30 text-[#B48646] rounded-full backdrop-blur-md transition-all hover:bg-[#B48646] hover:text-slate-950 shadow-2xl ${currentStoryIndex === storyPanels.length - 1 ? 'opacity-0 pointer-events-none' : 'opacity-100 md:opacity-0 md:group-hover/nav:opacity-100'}`}
+                className={`absolute bottom-4 left-1/2 -translate-x-1/2 z-[310] p-4 bg-slate-900/80 border border-[#B48646]/30 text-[#B48646] rounded-full backdrop-blur-md transition-all hover:bg-[#B48646] hover:text-slate-950 shadow-2xl ${currentStoryIndex === storyPanels.length - 1 ? 'opacity-0 pointer-events-none' : 'opacity-100 md:opacity-0 md:group-hover/nav:opacity-100'}`}
               >
-                <ChevronRight size={32} />
+                <ChevronDown size={32} />
               </button>
 
               <div 
                 ref={storyScrollRef}
                 onScroll={handleStoryScroll}
-                className="w-full h-full overflow-x-auto overflow-y-auto md:overflow-y-hidden snap-y md:snap-x snap-mandatory custom-scrollbar flex items-center scroll-smooth"
+                className="w-full h-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory custom-scrollbar flex flex-col items-center scroll-smooth"
               >
-                <div className="flex flex-col md:flex-row h-full min-w-full md:min-w-max px-4 md:px-[20vw] gap-10 md:gap-20 items-center">
+                <div className="flex flex-col w-full h-auto px-4 md:px-0 items-center">
                   {/* Story Panels */}
                   {storyPanels.map((panel, i) => (
                     <div 
                       key={i} 
-                      className="w-full md:w-[60vw] h-[80vh] md:h-full snap-center flex flex-col gap-4 md:gap-10 py-6 md:py-0 shrink-0"
+                      className="w-full md:w-[75vw] h-full min-h-full snap-center flex flex-col gap-4 md:gap-10 py-10 md:py-20 shrink-0"
                     >
                       <div 
                         className="relative flex-1 group overflow-hidden border-2 border-[#B48646]/30 bg-slate-950 cursor-default"
@@ -1110,15 +1093,15 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
                           {panel.sub}
                         </div>
                       </div>
-                      <div className="space-y-4 max-w-2xl px-4 md:px-0 overflow-y-auto custom-scrollbar">
-                        <div className="text-white text-base md:text-xl font-bold leading-relaxed tracking-tight whitespace-pre-line">
+                      <div className="space-y-4 max-w-2xl mx-auto px-4 md:px-0 overflow-y-auto custom-scrollbar">
+                        <div className="text-white text-base md:text-xl font-bold leading-relaxed tracking-tight whitespace-pre-line text-center">
                           {currentStoryIndex === i ? (
                             <Typewriter key={i} text={panel.text} speed={25} delay={300} />
                           ) : (
                             <span className="opacity-0">{panel.text}</span>
                           )}
                         </div>
-                        <div className="h-1 w-20 bg-[#B48646]" />
+                        <div className="h-1 w-20 bg-[#B48646] mx-auto" />
                       </div>
                     </div>
                   ))}
