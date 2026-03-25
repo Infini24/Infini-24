@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import ReactMarkdown from 'react-markdown';
 import { 
   User, 
   Zap, 
@@ -407,37 +408,37 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
   const storyPanels = [
     {
       img: "https://res.cloudinary.com/dmgqewagr/image/upload/v1774343437/Chp1-planche1-1_syhiqz.bmp",
-      text: "Le silence règne dans le cockpit de l’Aura-24. À travers la vaste baie vitrée, une galaxie spirale déploie ses bras de lumière au milieu d'un vide abyssal. C’est une région oubliée, un recoin du cosmos où les lois de la physique semblent s’essouffler. Finn, immobile, observe l'immensité de dos.\n\nBulle de pensée (Finn) : « Dans une autre partie de la galaxie… là où l’histoire se répète… »",
+      text: "Le silence règne dans le cockpit de l’Aura-24. À travers la vaste baie vitrée, une galaxie spirale déploie ses bras de lumière au milieu d'un vide abyssal.\n\n*« Dans une autre partie de la galaxie… là où l’histoire se répète… »*",
       sub: "01 // LA CONTEMPLATION"
     },
     {
       img: "https://res.cloudinary.com/dmgqewagr/image/upload/v1774430590/Chp1-planche1-2_vbeohk.bmp",
-      text: "Finn se détourne de la vitre pour consulter ses terminaux. La lumière bleue des hologrammes se reflète sur son visage. D'un geste calme, il ajuste ses lunettes de visée.\n\nBulle de dialogue (Finn) : — « Analyse des flux… anomalie détectée. »",
+      text: "Finn se détourne de l'immensité pour consulter ses terminaux. La lumière bleue des hologrammes sculpte son visage alors qu'il ajuste ses lunettes de visée.\n\n— « Analyse des flux… anomalie détectée. »",
       sub: "02 // L'ANALYSE"
     },
     {
       img: "https://res.cloudinary.com/dmgqewagr/image/upload/v1774430590/Chp1-planche1-3_dmloym.bmp",
-      text: "Soudain, l'écran principal s'embrase d'un orange d'alerte. Une onde de choc graphique traverse le moniteur.\n\nSFX : BIP… BIP… BIP…\nBulle de dialogue (Finn) : — « Code source identifié. »",
+      text: "Soudain, l'écran principal s'embrase d'un orange d'alerte. Une onde de choc traverse les moniteurs.\n\n**BIP… BIP… BIP…**\n\n— « Code source identifié. »",
       sub: "03 // L'ALERTE"
     },
     {
       img: "https://res.cloudinary.com/dmgqewagr/image/upload/v1774430591/Chp1-planche1-4_cq4cmc.bmp",
-      text: "L'image se resserre brutalement sur son regard. Derrière les verres de ses lunettes spéciales, le symbole de l'infini (∞) s'illumine d'un éclat cyan, trait pour trait avec le design de sa monture. Ses pupilles se contractent sous l'effet du flux de données.\n\nBulle de dialogue (Finn) : — « Anomalie temporelle… coordonnée 0-0-1… »",
+      text: "L'image se resserre brutalement sur son regard. Derrière les verres, le symbole de l'infini s'illumine d'un éclat cyan. Les données défilent à une vitesse vertigineuse.\n\n— « Anomalie temporelle… coordonnée 0-0-1… »",
       sub: "04 // LE ZOOM"
     },
     {
       img: "https://res.cloudinary.com/dmgqewagr/image/upload/v1774438912/Chp1-planche1-5_syt9v4.bmp",
-      text: "Au centre de l’Aura-24, un hologramme géant de la Terre apparaît. La planète bleue est encerclée par un halo vibrant et un signal infini qui l'enveloppe comme une barrière d'énergie. Finn retient son souffle devant la projection.\n\nBulle de dialogue (Finn) : — « La Terre… un point de convergence constant. »",
+      text: "Au centre de l’Aura-24, un hologramme géant de la Terre apparaît, encerclé par un halo vibrant. Un signal infini enveloppe la planète comme une barrière d'énergie.\n\n— « La Terre… un point de convergence constant. »",
       sub: "05 // LA DÉCOUVERTE"
     },
     {
       img: "https://res.cloudinary.com/dmgqewagr/image/upload/v1774438911/Chp1-planche1-6_qccd6t.png",
-      text: "La tension monte. Finn fait face au lecteur, son visage marqué par une détermination froide. L'Unité Dorsale \"Zen-Infinity v2.0\" incrustée dans sa poitrine (le symbole de l'infini sur son armure) s'illumine violemment, projetant des rayons de lumière à travers la pièce sombre.\n\nBulle de pensée (Finn) : « Une signature… que je n’ai pas ressentie depuis des éternités… »",
+      text: "La tension monte. Finn fait face au vide, sa détermination gravée sur son visage. L'Unité Dorsale Zen-Infinity v2.0 s'illumine violemment, inondant la pièce de rayons de lumière.\n\n*« Une signature… que je n’ai pas ressentie depuis des éternités… »*",
       sub: "06 // LA RÉVÉLATION"
     },
     {
       img: "https://res.cloudinary.com/dmgqewagr/image/upload/v1774430590/Chp1-planche1-7_tlxsh4.bmp",
-      text: "Un plan serré (Gros Plan) se concentre sur la main de Finn. Son doigt ganté, ferme et précis, appuie sur un bouton de commande de la console. L'interface sous son doigt émet un bref éclat de lumière.\n\nBulle de dialogue (Finn) : — « Le Signe Infini 24… m’appelle toujours. Activation du protocole... »",
+      text: "Un doigt ganté s'abat sur la console avec précision. L'interface émet un bref éclat sous la pression.\n\n— « Le Signe Infini 24… m’appelle toujours. Activation du protocole... »",
       sub: "07 // L'ACTION"
     }
   ];
@@ -1067,8 +1068,8 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
                         viewport={{ amount: 0.3, once: true }}
                         className="space-y-4 max-w-4xl mx-auto px-6 md:px-0"
                       >
-                        <div className="text-white text-lg md:text-2xl font-bold leading-relaxed tracking-tight whitespace-pre-line text-center drop-shadow-lg">
-                          {panel.text}
+                        <div className="text-white text-lg md:text-2xl font-bold leading-relaxed tracking-tight whitespace-pre-line text-center drop-shadow-lg prose prose-invert max-w-none">
+                          <ReactMarkdown>{panel.text}</ReactMarkdown>
                         </div>
                         <div className="h-1 w-24 bg-[#B48646] mx-auto shadow-[0_0_10px_rgba(180,134,70,0.5)]" />
                       </motion.div>
