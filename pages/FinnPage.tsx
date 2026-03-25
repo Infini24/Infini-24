@@ -426,7 +426,6 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
   const [activeSection, setActiveSection] = useState<string>('identity');
   const [selectedAbility, setSelectedAbility] = useState<number>(0);
   const [hasSeenSecrets, setHasSeenSecrets] = useState(false);
-  const [activeImage, setActiveImage] = useState<string | null>(null);
   const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
   const storyScrollRef = useRef<HTMLDivElement>(null);
 
@@ -470,22 +469,41 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
 
   const handleStoryScroll = () => {
     if (storyScrollRef.current) {
-      const scrollLeft = storyScrollRef.current.scrollLeft;
-      const width = storyScrollRef.current.offsetWidth;
-      const newIndex = Math.round(scrollLeft / width);
-      if (newIndex !== currentStoryIndex) {
-        setCurrentStoryIndex(newIndex);
+      const isMobile = window.innerWidth < 768;
+      if (isMobile) {
+        const scrollTop = storyScrollRef.current.scrollTop;
+        const height = storyScrollRef.current.offsetHeight;
+        const newIndex = Math.round(scrollTop / height);
+        if (newIndex !== currentStoryIndex) {
+          setCurrentStoryIndex(newIndex);
+        }
+      } else {
+        const scrollLeft = storyScrollRef.current.scrollLeft;
+        const width = storyScrollRef.current.offsetWidth;
+        const newIndex = Math.round(scrollLeft / width);
+        if (newIndex !== currentStoryIndex) {
+          setCurrentStoryIndex(newIndex);
+        }
       }
     }
   };
 
   const scrollToStoryPanel = (index: number) => {
     if (storyScrollRef.current) {
-      const width = storyScrollRef.current.offsetWidth;
-      storyScrollRef.current.scrollTo({
-        left: index * width,
-        behavior: 'smooth'
-      });
+      const isMobile = window.innerWidth < 768;
+      if (isMobile) {
+        const height = storyScrollRef.current.offsetHeight;
+        storyScrollRef.current.scrollTo({
+          top: index * height,
+          behavior: 'smooth'
+        });
+      } else {
+        const width = storyScrollRef.current.offsetWidth;
+        storyScrollRef.current.scrollTo({
+          left: index * width,
+          behavior: 'smooth'
+        });
+      }
       setCurrentStoryIndex(index);
     }
   };
@@ -838,11 +856,6 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
                           {/* Compact Image Container */}
                           <div className="xl:col-span-5 space-y-4">
                             <div 
-                              onClick={() => { 
-                                playClickSound(); 
-                                const img = activeSectionData?.items?.[selectedAbility]?.image;
-                                if (img) setActiveImage(img); 
-                              }}
                               className="aspect-square bg-slate-900 border border-[#B48646]/20 p-6 relative group cursor-default overflow-hidden"
                             >
                               <div className="absolute inset-0 z-0 opacity-10 bg-[linear-gradient(to_right,#B48646_1px,transparent_1px),linear-gradient(to_bottom,#B48646_1px,transparent_1px)] bg-[size:20px_20px]" />
@@ -1054,14 +1067,14 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
               {/* Navigation Buttons */}
               <button 
                 onClick={() => scrollToStoryPanel(Math.max(0, currentStoryIndex - 1))}
-                className={`absolute left-4 md:left-10 z-[310] p-4 bg-slate-900/80 border border-[#B48646]/30 text-[#B48646] rounded-full backdrop-blur-md transition-all hover:bg-[#B48646] hover:text-slate-950 shadow-2xl ${currentStoryIndex === 0 ? 'opacity-0 pointer-events-none' : 'opacity-0 group-hover/nav:opacity-100'}`}
+                className={`absolute left-4 md:left-10 z-[310] p-4 bg-slate-900/80 border border-[#B48646]/30 text-[#B48646] rounded-full backdrop-blur-md transition-all hover:bg-[#B48646] hover:text-slate-950 shadow-2xl ${currentStoryIndex === 0 ? 'opacity-0 pointer-events-none' : 'opacity-100 md:opacity-0 md:group-hover/nav:opacity-100'}`}
               >
                 <ChevronLeft size={32} />
               </button>
 
               <button 
                 onClick={() => scrollToStoryPanel(Math.min(storyPanels.length - 1, currentStoryIndex + 1))}
-                className={`absolute right-4 md:right-10 z-[310] p-4 bg-slate-900/80 border border-[#B48646]/30 text-[#B48646] rounded-full backdrop-blur-md transition-all hover:bg-[#B48646] hover:text-slate-950 shadow-2xl ${currentStoryIndex === storyPanels.length - 1 ? 'opacity-0 pointer-events-none' : 'opacity-0 group-hover/nav:opacity-100'}`}
+                className={`absolute right-4 md:right-10 z-[310] p-4 bg-slate-900/80 border border-[#B48646]/30 text-[#B48646] rounded-full backdrop-blur-md transition-all hover:bg-[#B48646] hover:text-slate-950 shadow-2xl ${currentStoryIndex === storyPanels.length - 1 ? 'opacity-0 pointer-events-none' : 'opacity-100 md:opacity-0 md:group-hover/nav:opacity-100'}`}
               >
                 <ChevronRight size={32} />
               </button>
@@ -1069,18 +1082,17 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
               <div 
                 ref={storyScrollRef}
                 onScroll={handleStoryScroll}
-                className="w-full h-full overflow-x-auto overflow-y-auto md:overflow-y-hidden snap-x snap-mandatory custom-scrollbar-horizontal flex items-center scroll-smooth"
+                className="w-full h-full overflow-x-auto overflow-y-auto md:overflow-y-hidden snap-y md:snap-x snap-mandatory custom-scrollbar flex items-center scroll-smooth"
               >
-                <div className="flex h-full min-w-max px-[10vw] md:px-[20vw] gap-10 md:gap-20 items-center">
+                <div className="flex flex-col md:flex-row h-full min-w-full md:min-w-max px-4 md:px-[20vw] gap-10 md:gap-20 items-center">
                   {/* Story Panels */}
                   {storyPanels.map((panel, i) => (
                     <div 
                       key={i} 
-                      className="w-[80vw] md:w-[60vw] h-auto md:h-[70vh] snap-center flex flex-col gap-6 md:gap-10 py-10 md:py-0"
+                      className="w-full md:w-[60vw] h-[80vh] md:h-full snap-center flex flex-col gap-4 md:gap-10 py-6 md:py-0 shrink-0"
                     >
                       <div 
-                        className="relative flex-none h-[40vh] md:flex-1 group overflow-hidden border-2 border-[#B48646]/30 bg-slate-900 cursor-default"
-                        onClick={() => setActiveImage(panel.img)}
+                        className="relative flex-1 group overflow-hidden border-2 border-[#B48646]/30 bg-slate-950 cursor-default"
                       >
                         {/* Technical Frame */}
                         <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-[#B48646] z-20 pointer-events-none" />
@@ -1089,26 +1101,22 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
                         <img 
                           src={panel.img} 
                           alt={`Story Panel ${i+1}`}
-                          className="w-full h-full object-cover transition-all duration-1000 scale-105 group-hover:scale-100 cursor-pointer"
+                          className="w-full h-full object-contain transition-all duration-700"
                           referrerPolicy="no-referrer"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-60 pointer-events-none" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-transparent pointer-events-none" />
                         
-                        <div className="absolute bottom-4 left-4 font-mono text-[10px] text-[#B48646] font-black tracking-widest pointer-events-none">
+                        <div className="absolute bottom-4 left-4 font-mono text-[10px] text-[#B48646] font-black tracking-widest pointer-events-none bg-slate-950/60 px-2 py-1 backdrop-blur-sm">
                           {panel.sub}
                         </div>
-
-                        {/* Preview Hint */}
-                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-slate-950/20 pointer-events-none">
-                          <div className="bg-[#B48646] text-slate-950 px-4 py-2 rounded-full font-black text-[10px] uppercase tracking-widest flex items-center gap-2">
-                            <Eye size={14} />
-                            AFFICHER L'IMAGE
-                          </div>
-                        </div>
                       </div>
-                      <div className="space-y-4 max-w-2xl">
-                        <div className="text-white text-lg md:text-xl font-bold leading-relaxed tracking-tight whitespace-pre-line">
-                          <Typewriter text={panel.text} speed={30} delay={500} />
+                      <div className="space-y-4 max-w-2xl px-4 md:px-0 overflow-y-auto custom-scrollbar">
+                        <div className="text-white text-base md:text-xl font-bold leading-relaxed tracking-tight whitespace-pre-line">
+                          {currentStoryIndex === i ? (
+                            <Typewriter key={i} text={panel.text} speed={25} delay={300} />
+                          ) : (
+                            <span className="opacity-0">{panel.text}</span>
+                          )}
                         </div>
                         <div className="h-1 w-20 bg-[#B48646]" />
                       </div>
@@ -1146,100 +1154,6 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
                 </div>
               </div>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Floating Preview Modal */}
-      <AnimatePresence>
-        {activeImage && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setActiveImage(null)}
-            className="fixed inset-0 z-[500] bg-slate-950/98 backdrop-blur-3xl flex items-center justify-center p-4 md:p-10 cursor-default"
-          >
-            {/* Top Right Exit Button (Only if in story mode) */}
-            {showStory && (
-              <button 
-                onClick={(e) => { 
-                  e.stopPropagation(); 
-                  setActiveImage(null); 
-                  setShowStory(false); 
-                }}
-                className="absolute top-6 right-6 md:top-10 md:right-10 flex items-center gap-3 px-6 py-3 bg-red-600/20 hover:bg-red-600 text-white transition-all border border-red-500/50 rounded-full group z-[520] cursor-pointer shadow-2xl"
-              >
-                <span className="text-xs font-black uppercase tracking-[0.2em]">Quitter l'histoire</span>
-                <X size={24} className="group-hover:rotate-90 transition-transform" />
-              </button>
-            )}
-
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0, y: 20 }}
-              animate={{ 
-                scale: 1, 
-                opacity: 1, 
-                y: [0, -15, 0],
-              }}
-              exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              transition={{
-                y: {
-                  duration: 4,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                },
-                scale: { duration: 0.4 },
-                opacity: { duration: 0.4 }
-              }}
-              onClick={(e) => e.stopPropagation()}
-              className="relative max-w-6xl w-full h-full flex flex-col items-center justify-center gap-8 cursor-default"
-            >
-              <div 
-                className="relative w-full h-[80vh] flex items-center justify-center cursor-default"
-                onClick={() => setActiveImage(null)}
-              >
-                {/* Decorative Glow behind image */}
-                <div className="absolute inset-0 bg-[#B48646]/10 blur-[120px] rounded-full animate-pulse pointer-events-none" />
-                
-                <img 
-                  src={activeImage} 
-                  alt="Floating Preview Content" 
-                  className="max-w-full max-h-full object-contain drop-shadow-[0_0_80px_rgba(180,134,70,0.4)] pointer-events-auto cursor-pointer select-none border border-[#B48646]/20"
-                  referrerPolicy="no-referrer"
-                />
-                {/* Shield */}
-                <div className="absolute inset-0 z-10 pointer-events-none" />
-              </div>
-              
-              <div className="flex flex-col md:flex-row items-center gap-4 z-[510]">
-                <button 
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setActiveImage(null);
-                  }}
-                  className="px-10 py-4 bg-[#B48646] hover:bg-[#E5B066] text-slate-950 font-black text-sm uppercase tracking-[0.3em] transition-all rounded-full shadow-[0_0_30px_rgba(180,134,70,0.4)] active:scale-95 cursor-pointer whitespace-nowrap"
-                >
-                  FERMER LA VUE
-                </button>
-
-                {showStory && (
-                  <button 
-                    onClick={(e) => { 
-                      e.stopPropagation(); 
-                      setActiveImage(null); 
-                      setShowStory(false); 
-                    }}
-                    className="px-10 py-4 border-2 border-red-500 bg-red-500/10 hover:bg-red-500 text-white font-mono text-sm font-black uppercase tracking-[0.3em] transition-all rounded-full shadow-lg active:scale-95 cursor-pointer whitespace-nowrap"
-                  >
-                    RETOUR À L'INTERFACE
-                  </button>
-                )}
-              </div>
-              <div className="text-white/40 font-mono text-[10px] uppercase tracking-widest animate-pulse pointer-events-none">
-                OU CLIQUEZ N'IMPORTE OÙ POUR QUITTER
-              </div>
-            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
