@@ -408,38 +408,31 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
   const storyPanels = [
     {
       img: "https://res.cloudinary.com/dmgqewagr/image/upload/v1774343437/Chp1-planche1-1_syhiqz.bmp",
-      text: "Le silence règne dans le cockpit de l’Aura-24. À travers la vaste baie vitrée, une galaxie spirale déploie ses bras de lumière au milieu d'un vide abyssal.\n\n*« Dans une autre partie de la galaxie… là où l’histoire se répète… »*",
-      sub: "01 // LA CONTEMPLATION"
+      text: "Le silence règne dans le cockpit de l’Aura-24. À travers la vaste baie vitrée, une galaxie spirale déploie ses bras de lumière au milieu d'un vide abyssal.\n\n*« Dans une région oubliée de l'univers... Là où le temps lui-même hésite à avancer... »*"
     },
     {
       img: "https://res.cloudinary.com/dmgqewagr/image/upload/v1774430590/Chp1-planche1-2_vbeohk.bmp",
-      text: "Finn se détourne de l'immensité pour consulter ses terminaux. La lumière bleue des hologrammes sculpte son visage alors qu'il ajuste ses lunettes de visée.\n\n— « Analyse des flux… anomalie détectée. »",
-      sub: "02 // L'ANALYSE"
+      text: "Finn se détourne de l'immensité pour consulter ses terminaux. La lumière bleue des hologrammes sculpte son visage alors qu'il ajuste ses lunettes de visée.\n\n— « Analyse des flux… anomalie détectée. »"
     },
     {
       img: "https://res.cloudinary.com/dmgqewagr/image/upload/v1774430590/Chp1-planche1-3_dmloym.bmp",
-      text: "Soudain, l'écran principal s'embrase d'un orange d'alerte. Une onde de choc traverse les moniteurs.\n\n**BIP… BIP… BIP…**\n\n— « Code source identifié. »",
-      sub: "03 // L'ALERTE"
+      text: "Soudain, l'écran principal s'embrase d'un orange d'alerte. Une onde de choc traverse les moniteurs.\n\n**BIP… BIP… BIP…**\n\n— « Code source identifié. »"
     },
     {
       img: "https://res.cloudinary.com/dmgqewagr/image/upload/v1774430591/Chp1-planche1-4_cq4cmc.bmp",
-      text: "L'image se resserre brutalement sur son regard. Derrière les verres, le symbole de l'infini s'illumine d'un éclat cyan. Les données défilent à une vitesse vertigineuse.\n\n— « Anomalie temporelle… coordonnée 0-0-1… »",
-      sub: "04 // LE ZOOM"
+      text: "L'image se resserre brutalement sur son regard. Derrière les verres, le symbole de l'infini s'illumine d'un éclat cyan. Les données défilent à une vitesse vertigineuse.\n\n— « Anomalie temporelle… coordonnée 0-0-1… »"
     },
     {
       img: "https://res.cloudinary.com/dmgqewagr/image/upload/v1774438912/Chp1-planche1-5_syt9v4.bmp",
-      text: "Au centre de l’Aura-24, un hologramme géant de la Terre apparaît, encerclé par un halo vibrant. Un signal infini enveloppe la planète comme une barrière d'énergie.\n\n— « La Terre… un point de convergence constant. »",
-      sub: "05 // LA DÉCOUVERTE"
+      text: "Au centre de l’Aura-24, un hologramme géant de la Terre apparaît, encerclé par un halo vibrant. Un signal infini enveloppe la planète comme une barrière d'énergie.\n\n— « La Terre… un point de convergence constant. »"
     },
     {
       img: "https://res.cloudinary.com/dmgqewagr/image/upload/v1774438911/Chp1-planche1-6_qccd6t.png",
-      text: "La tension monte. Finn fait face au vide, sa détermination gravée sur son visage. L'Unité Dorsale Zen-Infinity v2.0 s'illumine violemment, inondant la pièce de rayons de lumière.\n\n*« Une signature… que je n’ai pas ressentie depuis des éternités… »*",
-      sub: "06 // LA RÉVÉLATION"
+      text: "La tension monte. Finn fait face au vide, sa détermination gravée sur son visage. L'Unité Dorsale Zen-Infinity v2.0 s'illumine violemment, inondant la pièce de rayons de lumière.\n\n*« Une signature… que je n’ai pas ressentie depuis des éternités… »*"
     },
     {
       img: "https://res.cloudinary.com/dmgqewagr/image/upload/v1774430590/Chp1-planche1-7_tlxsh4.bmp",
-      text: "Un doigt ganté s'abat sur la console avec précision. L'interface émet un bref éclat sous la pression.\n\n— « Le Signe Infini 24… m’appelle toujours. Activation du protocole... »",
-      sub: "07 // L'ACTION"
+      text: "Un doigt ganté s'abat sur la console avec précision. L'interface émet un bref éclat sous la pression.\n\n— « Le Signe Infini 24… m’appelle. Activation du protocole... »"
     }
   ];
 
@@ -1057,10 +1050,6 @@ const FinnPage: React.FC<FinnPageProps> = ({ onNavigate }) => {
                           className="w-full h-auto max-h-[75vh] object-contain transition-all duration-700"
                           referrerPolicy="no-referrer"
                         />
-                        
-                        <div className="absolute bottom-4 left-4 font-mono text-[10px] text-[#B48646] font-black tracking-widest pointer-events-none bg-slate-950/60 px-3 py-1.5 backdrop-blur-sm rounded">
-                          {panel.sub}
-                        </div>
                       </div>
                       <motion.div 
                         initial={{ opacity: 0, y: 20 }}
