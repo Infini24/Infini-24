@@ -207,7 +207,7 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
   }, [initialService]);
 
   const graphicFormulas = [
-    { id: 'identity_complete', label: 'Pack Identité Complète', price: 370, desc: 'Logo + Charte + Réseaux', info: 'Un pack complet pour lancer votre marque : logo, charte graphique et visuels réseaux sociaux.' },
+    { id: 'identity_complete', label: 'Pack Identité Complète', price: 350, desc: 'Logo + kit réseaux sociaux + carte de visite et flyer', info: 'Un pack complet pour lancer votre marque : logo, kit réseaux sociaux, carte de visite et flyer.' },
     { id: 'logo_creation', label: 'Création & Refonte Logo', price: 200, desc: 'Logo vectoriel haute qualité', info: 'Création d\'un logo unique ou modernisation de votre logo actuel.' },
     { id: 'print', label: 'Cartes de Visite & Flyers', price: 50, desc: 'Design prêt pour impression', info: 'Conception de supports papier professionnels prêts à être imprimés.' },
     { id: 'social_kit', label: 'Kit Réseaux Sociaux', price: 120, desc: 'Bannières et avatars pro', info: 'Habillage complet de vos profils sociaux pour une image cohérente.' },
@@ -368,16 +368,24 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                       <div className="flex items-center gap-2">
                         <span className="block font-black text-white text-base md:text-lg">{f.label}</span>
                         <div className="group relative z-[100]">
-                          <button 
-                            type="button"
+                          <div 
+                            role="button"
+                            tabIndex={0}
                             onClick={(e) => {
                               e.stopPropagation();
                               setActiveTooltip(activeTooltip === f.id ? null : f.id);
                             }}
-                            className="p-1 -m-1"
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                setActiveTooltip(activeTooltip === f.id ? null : f.id);
+                              }
+                            }}
+                            className="p-1 -m-1 cursor-pointer outline-none"
                           >
-                            <HelpCircle size={14} className="text-slate-500 hover:text-[#B48646] cursor-help transition-colors" />
-                          </button>
+                            <HelpCircle size={14} className="text-slate-500 hover:text-[#B48646] transition-colors" />
+                          </div>
                           <div className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-slate-900 border border-[#B48646]/30 rounded-lg text-[10px] text-slate-300 transition-opacity z-[50] shadow-2xl ${activeTooltip === f.id ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
                             {f.info}
                             <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-900"></div>
@@ -424,16 +432,24 @@ const ServicesPage: React.FC<{initialService: ServiceType | null, onClearInitial
                       <div className="flex items-center gap-2">
                         <span className="block font-black text-white text-base md:text-lg">{f.label}</span>
                         <div className="group relative z-[100]">
-                          <button 
-                            type="button"
+                          <div 
+                            role="button"
+                            tabIndex={0}
                             onClick={(e) => {
                               e.stopPropagation();
                               setActiveTooltip(activeTooltip === f.id ? null : f.id);
                             }}
-                            className="p-1 -m-1"
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                setActiveTooltip(activeTooltip === f.id ? null : f.id);
+                              }
+                            }}
+                            className="p-1 -m-1 cursor-pointer outline-none"
                           >
-                            <HelpCircle size={14} className="text-slate-500 hover:text-[#B48646] cursor-help transition-colors" />
-                          </button>
+                            <HelpCircle size={14} className="text-slate-500 hover:text-[#B48646] transition-colors" />
+                          </div>
                           <div className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-slate-900 border border-[#B48646]/30 rounded-lg text-[10px] text-slate-300 transition-opacity z-[50] shadow-2xl ${activeTooltip === f.id ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
                             {f.info}
                             <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-900"></div>
