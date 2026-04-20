@@ -33,7 +33,7 @@ const LegalNoticePage: React.FC<LegalNoticePageProps> = ({ onBack }) => {
               <p><strong>Siège social :</strong> 41 RUE des Charmes, 08440 Ville-sur-Lumes, France</p>
               <p><strong>SIRET :</strong> 994 527 976 00017</p>
               <p><strong>Code APE :</strong> 74.10Z (Activités spécialisées de design)</p>
-              <p><strong>Contact :</strong> dywen.officiel7@gmail.com</p>
+              <p><strong>Contact :</strong> infini.24@hotmail.com</p>
               <p><strong>TVA :</strong> TVA non applicable, article 293 B du Code Général des Impôts (CGI).</p>
             </div>
           </section>
@@ -89,7 +89,7 @@ const LegalNoticePage: React.FC<LegalNoticePageProps> = ({ onBack }) => {
                 <li><strong>Données collectées :</strong> Nous collectons uniquement les données nécessaires au traitement de vos commandes et à l'analyse d'audience via Google Analytics.</li>
                 <li><strong>Finalité :</strong> Gestion de la relation client et amélioration de l'expérience utilisateur.</li>
                 <li><strong>Cookies :</strong> Ce site utilise des cookies (Google AdSense et Analytics). Vous pouvez gérer vos préférences via le bandeau de consentement présent sur le site.</li>
-                <li><strong>Vos droits :</strong> Vous disposez d'un droit d'accès, de rectification et de suppression de vos données personnelles. Pour l'exercer, contactez-nous à : <strong>dywen.officiel7@gmail.com</strong>.</li>
+                <li><strong>Vos droits :</strong> Vous disposez d'un droit d'accès, de rectification et de suppression de vos données personnelles. Pour l'exercer, contactez-nous à : <strong>infini.24@hotmail.com</strong>.</li>
               </ul>
             </div>
           </section>

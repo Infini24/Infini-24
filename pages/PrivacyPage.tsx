@@ -28,7 +28,7 @@ const PrivacyPage: React.FC<PrivacyPageProps> = ({ onBack }) => {
             </div>
             <p className="text-slate-300 leading-relaxed text-sm md:text-base">
               Le responsable du traitement des données personnelles est <strong>Wendy Toussaint (EI - Infini 24)</strong>, situé au 41 RUE des Charmes, 08440 Ville-sur-Lumes, France.<br />
-              <strong>Contact :</strong> dywen.officiel7@gmail.com
+              <strong>Contact :</strong> infini.24@hotmail.com
             </p>
           </section>
 
@@ -106,7 +106,7 @@ const PrivacyPage: React.FC<PrivacyPageProps> = ({ onBack }) => {
                 <li>Droit d'opposition ou de limitation du traitement.</li>
                 <li>Droit à la portabilité de vos données.</li>
               </ul>
-              <p>Pour exercer ces droits, envoyez simplement un email à : <strong>dywen.officiel7@gmail.com</strong>. Nous traiterons votre demande sous 30 jours.</p>
+              <p>Pour exercer ces droits, envoyez simplement un email à : <strong>infini.24@hotmail.com</strong>. Nous traiterons votre demande sous 30 jours.</p>
             </div>
           </section>
 

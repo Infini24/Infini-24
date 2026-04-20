@@ -29,7 +29,7 @@ const ContactPage: React.FC = () => {
             toast.error("Veuillez remplir les champs obligatoires.");
             return;
         }
-        window.location.href = `mailto:dywen.officiel7@gmail.com?subject=Contact&body=${formData.message}`;
+        window.location.href = `mailto:infini.24@hotmail.com?subject=Contact&body=${formData.message}`;
     };
 
     return (
@@ -51,7 +51,7 @@ const ContactPage: React.FC = () => {
                         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                             {[
                                 { icon: <Smartphone size={24} />, label: "SMS", href: "sms:+33663083676" },
-                                { icon: <Mail size={24} />, label: "Email", href: "mailto:dywen.officiel7@gmail.com" },
+                                { icon: <Mail size={24} />, label: "Email", href: "mailto:infini.24@hotmail.com" },
                                 { icon: <MessageCircle size={24} />, label: "WhatsApp", href: "https://wa.me/33663083676" },
                                 { icon: <Facebook size={24} />, label: "Messenger", href: "https://m.me/61584316950503" }
                             ].map((item, i) => (

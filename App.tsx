@@ -109,7 +109,7 @@ const GlobalFooter = ({ onNavigate }: { onNavigate: (index: number) => void }) =
           <button onClick={() => onNavigate(6)} className="text-[10px] font-bold hover:text-[#B48646] uppercase tracking-widest transition-colors">Mentions Légales</button>
           <div className="flex items-center gap-4 ml-4">
             <a href="https://www.facebook.com/profile.php?id=61584316950503" target="_blank" rel="noreferrer" className="hover:text-[#B48646] transition-all hover:scale-110"><Facebook size={16} /></a>
-            <a href="mailto:dywen.officiel7@gmail.com" className="hover:text-[#B48646] transition-all hover:scale-110"><Mail size={16} /></a>
+            <a href="mailto:infini.24@hotmail.com" className="hover:text-[#B48646] transition-all hover:scale-110"><Mail size={16} /></a>
           </div>
         </div>
       </div>

@@ -58,7 +58,7 @@ Dans l'attente de votre validation,
 Cordialement.`);
 
     setTimeout(() => {
-        window.location.href = `mailto:dywen.officiel7@gmail.com?subject=${subject}&body=${body}`;
+        window.location.href = `mailto:infini.24@hotmail.com?subject=${subject}&body=${body}`;
     }, 1000);
 
     setTimeout(() => {
