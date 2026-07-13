@@ -24,6 +24,15 @@ interface Project {
 // --- DATA (VOS PROJETS) ---
 const projects: Project[] = [
   {
+    id: 'anniversaire-14-ans',
+    title: "Vidéo d'Anniversaire – Rétrospective 14 ans",
+    category: 'Vidéo',
+    date: 'Juillet 2026',
+    description: "Découvrez un exemple concret de création de vidéo d'anniversaire rétrospective. Réalisée pour célébrer les 14 ans d'une jeune fille, cette vidéo rassemble des souvenirs précieux de sa naissance jusqu'à ses 14 ans. Un montage rythmé, dynamique et chargé d'émotion qui illustre parfaitement notre savoir-faire pour immortaliser vos plus beaux moments de vie.\n\nCaractéristiques de la prestation : Montage anniversaire personnalisé de 7 minutes, synchronisé sur 2 pistes musicales — avec la 1ère musique entièrement personnalisée et basée sur le titre M.A.S DRISS (Forfait de souvenirs numérisés et animés. Valeur de la prestation : 220€).",
+    videoUrl: 'cA_DND9PmJU', // ID de la vidéo YouTube https://youtu.be/cA_DND9PmJU
+    videoPoster: 'https://images.unsplash.com/photo-1530103862676-de8c9debad1d?q=80&w=2070&auto=format&fit=crop',
+  },
+  {
     id: 'hommage-souvenirs',
     title: 'Hommage & Obsèques',
     category: 'Vidéo',
