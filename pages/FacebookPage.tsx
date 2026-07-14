@@ -41,11 +41,21 @@ export const FacebookPage: React.FC = () => {
   const pageId = "61584316950503";
   const messengerUrl = "https://m.me/61584316950503";
 
+  // Official Token provided by user
+  const defaultToken = "EAAYF6ZCDDVbMBR07EhVkp3n3aAOn13sT0ou0NIROB6C5gGBxyofOdQZBRYnrAFKfURqfVhgbM1MFaZCQqhFAtaoPxPtXZAdTQRZCGPtv1ry4wZAYEd05IxIjPQLKnGEbbrkOJSNsofNvRVs43BbD0Aifm5EamjZASomXpV0bmKLUaqlpFV3vjRJUZCUBAOanbxcKIz73kdDAeavqiEj0kY0ByCjZB4jpnEGOJ12JAx6JcFud2MLWUKYZALuBOoZAtvZCnSZC03AJz5hHyUXgZCPB0OoxXsNOja";
+
   // State
-  const [activeSubTab, setActiveSubTab] = useState<'iframe' | 'api' | 'guide'>('iframe');
   const [accessToken, setAccessToken] = useState<string>(() => {
-    return localStorage.getItem('fb_page_access_token') || '';
+    return localStorage.getItem('fb_page_access_token') || defaultToken;
   });
+  
+  const [activeSubTab, setActiveSubTab] = useState<'iframe' | 'api' | 'guide'>(() => {
+    return (localStorage.getItem('fb_page_access_token') || defaultToken) ? 'api' : 'iframe';
+  });
+
+  const [pageName, setPageName] = useState("INFINI24 - Créateur de Souvenirs");
+  const [pagePicture, setPagePicture] = useState("https://images.unsplash.com/photo-1513151233558-d860c5398176?q=80&w=2070&auto=format&fit=crop");
+  
   const [isTokenEditing, setIsTokenEditing] = useState(false);
   const [tempToken, setTempToken] = useState('');
   const [apiPosts, setApiPosts] = useState<FBPost[]>([]);
@@ -96,13 +106,65 @@ export const FacebookPage: React.FC = () => {
     setIsLoadingApi(true);
     setApiError(null);
 
+    let targetEndpoint = "me";
+    let name = "INFINI24 - Créateur de Souvenirs";
+    let picture = "https://images.unsplash.com/photo-1513151233558-d860c5398176?q=80&w=2070&auto=format&fit=crop";
+
     try {
-      // Fetch feed with fields
-      const response = await fetch(
-        `https://graph.facebook.com/v19.0/${pageId}/posts?fields=id,message,story,created_time,full_picture,shares,likes.summary(true).limit(0),comments.limit(10){id,message,from,created_time}&access_token=${tokenToUse}`
+      // First, try fetching metadata from /me
+      const meMetaRes = await fetch(
+        `https://graph.facebook.com/v19.0/me?fields=id,name,picture.type(large)&access_token=${tokenToUse}`
+      );
+      const meMetaData = await meMetaRes.json();
+      
+      if (meMetaData && !meMetaData.error) {
+        targetEndpoint = "me";
+        if (meMetaData.name) name = meMetaData.name;
+        if (meMetaData.picture?.data?.url) picture = meMetaData.picture.data.url;
+      } else {
+        // Fallback to explicit page ID if /me fails
+        const pageMetaRes = await fetch(
+          `https://graph.facebook.com/v19.0/${pageId}?fields=id,name,picture.type(large)&access_token=${tokenToUse}`
+        );
+        const pageMetaData = await pageMetaRes.json();
+        if (pageMetaData && !pageMetaData.error) {
+          targetEndpoint = pageId;
+          if (pageMetaData.name) name = pageMetaData.name;
+          if (pageMetaData.picture?.data?.url) picture = pageMetaData.picture.data.url;
+        } else {
+          console.warn("Meta API Metadata checks failed, continuing with /me as a best effort.", meMetaData?.error);
+        }
+      }
+    } catch (metaErr) {
+      console.warn("Meta API metadata fetch failed, continuing with /me", metaErr);
+    }
+
+    setPageName(name);
+    setPagePicture(picture);
+
+    try {
+      // Fetch feed from target endpoint
+      let response = await fetch(
+        `https://graph.facebook.com/v19.0/${targetEndpoint}/posts?fields=id,message,story,created_time,full_picture,shares,likes.summary(true).limit(0),comments.limit(10){id,message,from,created_time}&access_token=${tokenToUse}`
       );
 
-      const data = await response.json();
+      let data = await response.json();
+
+      // Fallback switch if the main target failed
+      if (data.error) {
+        const altEndpoint = targetEndpoint === "me" ? pageId : "me";
+        console.log(`Primary feed endpoint failed, trying fallback to: ${altEndpoint}...`);
+        
+        const fallbackRes = await fetch(
+          `https://graph.facebook.com/v19.0/${altEndpoint}/posts?fields=id,message,story,created_time,full_picture,shares,likes.summary(true).limit(0),comments.limit(10){id,message,from,created_time}&access_token=${tokenToUse}`
+        );
+        const fallbackData = await fallbackRes.json();
+        
+        if (!fallbackData.error) {
+          data = fallbackData;
+          targetEndpoint = altEndpoint;
+        }
+      }
 
       if (data.error) {
         throw new Error(data.error.message || "Erreur de connexion avec l'API Facebook.");
@@ -111,27 +173,44 @@ export const FacebookPage: React.FC = () => {
       if (data.data) {
         // Map API posts to our FBPost interface
         const formattedPosts: FBPost[] = data.data.map((item: any) => {
-          const dateObj = new Date(item.created_time);
-          const formattedDate = dateObj.toLocaleDateString('fr-FR', {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-          });
+          let formattedDate = "Publication récente";
+          try {
+            if (item.created_time) {
+              const dateObj = new Date(item.created_time);
+              formattedDate = dateObj.toLocaleDateString('fr-FR', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+              });
+            }
+          } catch (e) {
+            console.error(e);
+          }
 
           // Fetch comments
           const rawComments = item.comments?.data || [];
-          const commentsList = rawComments.map((c: any) => ({
-            author: c.from?.name || "Abonné Facebook",
-            text: c.message || "",
-            date: new Date(c.created_time).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
-          }));
+          const commentsList = rawComments.map((c: any) => {
+            let formattedCommentDate = "Récemment";
+            try {
+              if (c.created_time) {
+                formattedCommentDate = new Date(c.created_time).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+              }
+            } catch (e) {
+              console.error(e);
+            }
+            return {
+              author: c.from?.name || "Abonné Facebook",
+              text: c.message || "",
+              date: formattedCommentDate
+            };
+          });
 
           return {
             id: item.id,
-            author: "INFINI24 - Créateur de Souvenirs",
-            avatar: "https://images.unsplash.com/photo-1513151233558-d860c5398176?q=80&w=2070&auto=format&fit=crop",
+            author: name,
+            avatar: picture,
             date: formattedDate,
             content: item.message || item.story || "Publication sans texte.",
             image: item.full_picture || undefined,
