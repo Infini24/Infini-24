@@ -268,7 +268,11 @@ const FacebookPage: React.FC<FacebookPageProps> = ({ onNavigate }) => {
       }
     } catch (err: any) {
       console.error("Facebook Feed Fetch Error:", err);
-      setApiError(err.message || "Impossible de charger le flux Facebook.");
+      if (err.message?.includes("Failed to fetch") || err.name === "TypeError" || !navigator.onLine) {
+        setApiError("Failed to fetch (Bloqué par votre navigateur ou un AdBlocker comme uBlock/Brave/Safari, ou problème de connexion)");
+      } else {
+        setApiError(err.message || "Impossible de charger le flux Facebook.");
+      }
     } finally {
       setIsLoadingApi(false);
     }
