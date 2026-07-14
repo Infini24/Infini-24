@@ -12,7 +12,6 @@ import ContestPage from './pages/ContestPage';
 import PrivacyPage from './pages/PrivacyPage';
 import LegalNoticePage from './pages/LegalNoticePage';
 import FinnPage from './pages/FinnPage';
-import FacebookPage from './pages/FacebookPage';
 import FinnPresenceBubble from './components/FinnPresenceBubble';
 // import FinnAssistant from './components/FinnAssistant';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -37,7 +36,6 @@ const GlobalHeader = ({
     { name: "Services", index: 2 },
     { name: "Réalisations", index: 1 },
     { name: "Finn", index: 7 },
-    { name: "Facebook", index: 8 },
     { name: "Concours", index: 4 },
     { name: "Contact", index: 3 }
   ];
@@ -110,7 +108,6 @@ const GlobalFooter = ({ onNavigate }: { onNavigate: (index: number) => void }) =
           <button onClick={() => onNavigate(5)} className="text-[10px] font-bold hover:text-[#B48646] uppercase tracking-widest transition-colors">Confidentialité</button>
           <button onClick={() => onNavigate(6)} className="text-[10px] font-bold hover:text-[#B48646] uppercase tracking-widest transition-colors">Mentions Légales</button>
           <div className="flex items-center gap-4 ml-4">
-            <a href="https://www.facebook.com/profile.php?id=61584316950503" target="_blank" rel="noreferrer" className="hover:text-[#B48646] transition-all hover:scale-110"><Facebook size={16} /></a>
             <a href="mailto:infini.24@hotmail.com" className="hover:text-[#B48646] transition-all hover:scale-110"><Mail size={16} /></a>
           </div>
         </div>
@@ -128,7 +125,6 @@ const MobileNavigation = ({ activeTab, onNavigate }: { activeTab: number; onNavi
         { icon: Calculator, index: 2 },
         { icon: ImageIcon, index: 1 },
         { icon: User, index: 7 },
-        { icon: Facebook, index: 8 },
         { icon: Timer, index: 4 },
         { icon: Mail, index: 3 }
       ].map((item) => (
@@ -194,7 +190,6 @@ const App = () => {
       if (path.includes('confidentialite')) return 5;
       if (path.includes('mentions-legales')) return 6;
       if (path.includes('finn')) return 7;
-      if (path.includes('facebook')) return 8;
       return -1; // Not Found
     };
 
@@ -220,7 +215,7 @@ const App = () => {
     const paths: Record<number, string> = { 
       0: '/', 1: '/realisations', 2: '/services', 3: '/contact', 
       4: '/concours', 5: '/confidentialite', 6: '/mentions-legales',
-      7: '/finn', 8: '/facebook'
+      7: '/finn'
     };
     
     if (window.location.pathname !== paths[index]) {
@@ -392,14 +387,6 @@ const App = () => {
             <div className={activeTab === 7 ? 'block' : 'hidden'}>
               <ErrorBoundary>
                 <FinnPage onNavigate={handleNavigate} />
-              </ErrorBoundary>
-            </div>
-          )}
-          
-          {mountedTabs.includes(8) && (
-            <div className={activeTab === 8 ? 'block' : 'hidden'}>
-              <ErrorBoundary>
-                <FacebookPage />
               </ErrorBoundary>
             </div>
           )}
