@@ -18,7 +18,7 @@ if (hasFirebaseConfig) {
     
     // Auto-authenticate visitor anonymously for secure firestore writes
     signInAnonymously(auth).catch((error) => {
-      console.error("Firebase Anonymous Auth failed:", error);
+      console.warn("Firebase Anonymous Auth was not enabled or restricted (expected if disabled in Console):", error);
     });
   } catch (error) {
     console.error("Firebase initialization failed:", error);
