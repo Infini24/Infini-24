@@ -12,6 +12,7 @@ import ContestPage from './pages/ContestPage';
 import PrivacyPage from './pages/PrivacyPage';
 import LegalNoticePage from './pages/LegalNoticePage';
 import FinnPage from './pages/FinnPage';
+import FacebookPage from './pages/FacebookPage';
 import FinnPresenceBubble from './components/FinnPresenceBubble';
 // import FinnAssistant from './components/FinnAssistant';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -36,6 +37,7 @@ const GlobalHeader = ({
     { name: "Services", index: 2 },
     { name: "Réalisations", index: 1 },
     { name: "Finn", index: 7 },
+    { name: "Facebook", index: 8 },
     { name: "Concours", index: 4 },
     { name: "Contact", index: 3 }
   ];
@@ -120,25 +122,26 @@ const GlobalFooter = ({ onNavigate }: { onNavigate: (index: number) => void }) =
 /* --- NAVIGATION MOBILE --- */
 const MobileNavigation = ({ activeTab, onNavigate }: { activeTab: number; onNavigate: (index: number) => void }) => {
   return (
-    <div className="md:hidden fixed bottom-0 left-0 right-0 bg-slate-950/90 backdrop-blur-md border-t border-white/5 px-6 py-4 flex justify-between items-center z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.2)]">
+    <div className="md:hidden fixed bottom-0 left-0 right-0 bg-slate-950/90 backdrop-blur-md border-t border-white/5 px-4 py-3 flex justify-between items-center z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.2)]">
       {[
         { icon: Home, index: 0 },
         { icon: Calculator, index: 2 },
         { icon: ImageIcon, index: 1 },
         { icon: User, index: 7 },
+        { icon: Facebook, index: 8 },
         { icon: Timer, index: 4 },
         { icon: Mail, index: 3 }
       ].map((item) => (
         <button
           key={item.index}
           onClick={() => onNavigate(item.index)}
-          className={`p-3 rounded-2xl transition-all border-2 ${
+          className={`p-2 rounded-xl transition-all border-2 ${
             activeTab === item.index 
             ? 'border-[#B48646] text-[#B48646] shadow-sm -translate-y-1 bg-[#B48646]/10' 
             : 'text-slate-500 border-transparent hover:bg-white/5'
           }`}
         >
-          <item.icon size={24} strokeWidth={activeTab === item.index ? 2.5 : 2} />
+          <item.icon size={20} strokeWidth={activeTab === item.index ? 2.5 : 2} />
         </button>
       ))}
     </div>
@@ -191,6 +194,7 @@ const App = () => {
       if (path.includes('confidentialite')) return 5;
       if (path.includes('mentions-legales')) return 6;
       if (path.includes('finn')) return 7;
+      if (path.includes('facebook')) return 8;
       return -1; // Not Found
     };
 
@@ -216,7 +220,7 @@ const App = () => {
     const paths: Record<number, string> = { 
       0: '/', 1: '/realisations', 2: '/services', 3: '/contact', 
       4: '/concours', 5: '/confidentialite', 6: '/mentions-legales',
-      7: '/finn'
+      7: '/finn', 8: '/facebook'
     };
     
     if (window.location.pathname !== paths[index]) {
@@ -388,6 +392,14 @@ const App = () => {
             <div className={activeTab === 7 ? 'block' : 'hidden'}>
               <ErrorBoundary>
                 <FinnPage onNavigate={handleNavigate} />
+              </ErrorBoundary>
+            </div>
+          )}
+          
+          {mountedTabs.includes(8) && (
+            <div className={activeTab === 8 ? 'block' : 'hidden'}>
+              <ErrorBoundary>
+                <FacebookPage />
               </ErrorBoundary>
             </div>
           )}
