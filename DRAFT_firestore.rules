@@ -1,0 +1,79 @@
+rules_version = '2';
+service cloudwork.firestore {
+  match /databases/{database}/documents {
+    
+    // 1. Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Primitive Definitions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // Validation Blueprints
+
+    // Validates a realization feedback stats document
+    function isValidRealizationFeedback(data) {
+      return data.keys().hasAll(['likesCount', 'heartsCount', 'solidariesCount', 'sadsCount'])
+        && data.keys().size() == 4
+        && data.likesCount is int && data.likesCount >= 0
+        && data.heartsCount is int && data.heartsCount >= 0
+        && data.solidariesCount is int && data.solidariesCount >= 0
+        && data.sadsCount is int && data.sadsCount >= 0;
+    }
+
+    // Validates a comment
+    function isValidComment(data) {
+      return data.keys().hasAll(['authorName', 'content', 'createdAt'])
+        && data.keys().size() == 3
+        && data.authorName is string && data.authorName.size() > 0 && data.authorName.size() <= 50
+        && data.content is string && data.content.size() > 0 && data.content.size() <= 500
+        && data.createdAt is timestamp && data.createdAt == request.time;
+    }
+
+    // Rules for Realization Feedback stats
+    match /realizations_feedback/{realizationId} {
+      allow get: if isValidId(realizationId);
+      allow list: if false; // No blanket listing of stats, only fetching specific realization stats
+      
+      allow create: if isSignedIn() 
+        && isValidId(realizationId) 
+        && isValidRealizationFeedback(incoming());
+        
+      allow update: if isSignedIn() 
+        && isValidId(realizationId) 
+        && isValidRealizationFeedback(incoming())
+        && incoming().diff(existing()).affectedKeys().hasAny(['likesCount', 'heartsCount', 'solidariesCount', 'sadsCount'])
+        && incoming().diff(existing()).affectedKeys().hasOnly(['likesCount', 'heartsCount', 'solidariesCount', 'sadsCount']);
+    }
+
+    // Rules for Comments subcollection
+    match /realizations_feedback/{realizationId}/comments/{commentId} {
+      allow get, list: if isValidId(realizationId) && isValidId(commentId);
+      
+      // Allow listing comments of a specific realization (limit size, order etc can be validated)
+      allow list: if isValidId(realizationId);
+
+      allow create: if isSignedIn()
+        && isValidId(realizationId)
+        && isValidId(commentId)
+        && isValidComment(incoming());
+
+      allow update, delete: if false; // Comments cannot be edited or deleted by visitors
+    }
+  }
+}

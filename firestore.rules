@@ -1,0 +1,31 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Global Safety Net (default deny)
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Rules for Realizations Feedback Stats
+    match /realizations_feedback/{realizationId} {
+      allow get: if true;
+      allow list: if false;
+      allow create, update: if request.resource.data.keys().hasAll(['likesCount', 'heartsCount', 'solidariesCount', 'sadsCount'])
+        && request.resource.data.keys().size() == 4
+        && request.resource.data.likesCount is int
+        && request.resource.data.heartsCount is int
+        && request.resource.data.solidariesCount is int
+        && request.resource.data.sadsCount is int;
+
+      // Rules for Comments subcollection
+      match /comments/{commentId} {
+        allow get, list: if true;
+        allow create: if request.resource.data.keys().hasAll(['authorName', 'content', 'createdAt'])
+          && request.resource.data.keys().size() == 3
+          && request.resource.data.authorName is string
+          && request.resource.data.content is string;
+      }
+    }
+  }
+}

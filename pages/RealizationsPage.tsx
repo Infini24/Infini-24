@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { Image as ImageIcon, Instagram, Facebook, Maximize2, ExternalLink, X, Play, Film, Linkedin } from 'lucide-react';
+import { RealizationFeedbackSection } from './RealizationFeedbackSection';
 
 // --- TYPES ---
 interface ProjectImage {
@@ -199,6 +200,10 @@ const RealizationsPage: React.FC = () => {
                   ))}
                 </div>
               )}
+
+              {/* SECTION RETOURS / FEEDBACK SÉCURISÉ */}
+              <RealizationFeedbackSection projectId={project.id} />
+
 
             </div>
           ))}
