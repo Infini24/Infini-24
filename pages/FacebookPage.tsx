@@ -52,6 +52,10 @@ const FacebookPage: React.FC<FacebookPageProps> = ({ onNavigate }) => {
 
   // State
   const [accessToken, setAccessToken] = useState<string>(() => {
+    const envToken = import.meta.env.VITE_FACEBOOK_TOKEN as string;
+    if (envToken && envToken.trim() !== "") {
+      return envToken.trim();
+    }
     const stored = localStorage.getItem('fb_page_access_token');
     // Force update if empty or if it's the old invalid token prefix
     if (!stored || stored.startsWith("EAAYF6ZCDDV")) {
